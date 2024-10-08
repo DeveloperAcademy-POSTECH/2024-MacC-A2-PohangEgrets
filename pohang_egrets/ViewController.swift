@@ -115,8 +115,8 @@ extension ViewController {
                 let pointBLocationNormCG = try CGPoint(x: observation.pointInImage(jointB).location.x, y: observation.pointInImage(jointB).location.y)
                 
                 // 누적 평균 좌표로 변환
-                let updatedPointA = updatePoint(for: jointA, with: pointALocationNormCG, method: .median)
-                let updatedPointB = updatePoint(for: jointB, with: pointBLocationNormCG, method: .median)
+                let updatedPointA = updatePoint(for: jointA, with: pointALocationNormCG, method: .movingAverage)
+                let updatedPointB = updatePoint(for: jointB, with: pointBLocationNormCG, method: .movingAverage)
                 
                 // 화면 좌표로 변환
                 let pointALocation = CGPoint(x: updatedPointA.y * screenWidth, y: updatedPointA.x * screenHeight)
@@ -162,6 +162,9 @@ extension ViewController {
         case .median:
             print("median")
             return calculateMedianPoint(for: joint, with: newPoint)
+        case .movingAverage:
+            print("movingAverage")
+            return calculateMovingAverage(for: joint, with: newPoint)
         }
     }
     
@@ -206,7 +209,30 @@ extension ViewController {
         
     }
     
+    private func calculateMovingAverage(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint) -> CGPoint {
+        
+        var jointArray = jointPreviousTenPoints[joint] ?? [CGPoint](repeating: CGPoint(x: 0, y: 0), count: 10)
+        
+        jointArray.removeFirst(1)
+        jointArray.append(newPoint)
+        
+        jointPreviousTenPoints[joint] = jointArray
+        
+        var xAverage: Double = 0
+        var yAverage: Double = 0
+        
+        for point in jointArray {
+            xAverage += point.x
+            yAverage += point.y
+        }
+        
+        xAverage /= Double(jointArray.count)
+        yAverage /= Double(jointArray.count)
+        
+        return CGPoint(x: xAverage, y: yAverage)
+    }
+    
     enum CalculationMethod {
-        case average, median
+        case average, median, movingAverage
     }
 }
