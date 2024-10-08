@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     var overlayLayer = CALayer()
     
     var jointAveragePoints: [VNHumanBodyPose3DObservation.JointName: CGPoint] = [:]
+    var jointPreviousTenPoints: [VNHumanBodyPose3DObservation.JointName: [CGPoint] ] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -114,8 +115,8 @@ extension ViewController {
                 let pointBLocationNormCG = try CGPoint(x: observation.pointInImage(jointB).location.x, y: observation.pointInImage(jointB).location.y)
                 
                 // 누적 평균 좌표로 변환
-                let updatedPointA = updatePoint(for: jointA, with: pointALocationNormCG, method: .average)
-                let updatedPointB = updatePoint(for: jointB, with: pointBLocationNormCG, method: .average)
+                let updatedPointA = updatePoint(for: jointA, with: pointALocationNormCG, method: .median)
+                let updatedPointB = updatePoint(for: jointB, with: pointBLocationNormCG, method: .median)
                 
                 // 화면 좌표로 변환
                 let pointALocation = CGPoint(x: updatedPointA.y * screenWidth, y: updatedPointA.x * screenHeight)
@@ -159,7 +160,8 @@ extension ViewController {
             print("average")
             return calculateAveragePoint(for: joint, with: newPoint)
         case .median:
-            return calculateAveragePoint(for: joint, with: newPoint)
+            print("median")
+            return calculateMedianPoint(for: joint, with: newPoint)
         }
     }
     
@@ -178,6 +180,31 @@ extension ViewController {
         return averagedPoint
     }
     
+    private func calculateMedianPoint(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint) -> CGPoint {
+        
+        var jointArray = jointPreviousTenPoints[joint] ?? [CGPoint](repeating: CGPoint(x: 0, y: 0), count: 10)
+        
+        jointArray.removeFirst(1)
+        jointArray.append(newPoint)
+        
+        jointPreviousTenPoints[joint] = jointArray
+        
+        return getMedianPoint(history: jointArray)
+    }
+    
+    private func getMedianPoint(history: [CGPoint]) -> CGPoint {
+        var xHistory = history.map(\.x)
+        var yHistory = history.map(\.y)
+        
+        xHistory = xHistory.sorted()
+        yHistory = yHistory.sorted()
+        
+        let xMedian = (xHistory[4] + xHistory[5]) / 2
+        let yMedian = (yHistory[4] + yHistory[5]) / 2
+        
+        return CGPoint(x: xMedian, y: yMedian)
+        
+    }
     
     enum CalculationMethod {
         case average, median
