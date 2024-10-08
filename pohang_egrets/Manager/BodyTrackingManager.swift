@@ -21,7 +21,7 @@ class BodyTrackingManager {
     private var lastRequestTime: TimeInterval = 0
     
     // 트래킹 요청 간격 
-    private let requestInterval: TimeInterval = 0.3
+    private let requestInterval: TimeInterval = 0.05
     
     func processFrame(sampleBuffer: CMSampleBuffer) {
         let currentTime = CACurrentMediaTime()
