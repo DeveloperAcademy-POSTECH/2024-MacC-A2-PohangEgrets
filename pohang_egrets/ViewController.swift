@@ -114,12 +114,12 @@ extension ViewController {
                 let pointBLocationNormCG = try CGPoint(x: observation.pointInImage(jointB).location.x, y: observation.pointInImage(jointB).location.y)
                 
                 // 누적 평균 좌표로 변환
-                let averagedPointA = updateAveragePoint(for: jointA, with: pointALocationNormCG)
-                let averagedPointB = updateAveragePoint(for: jointB, with: pointBLocationNormCG)
+                let updatedPointA = updatePoint(for: jointA, with: pointALocationNormCG, method: .average)
+                let updatedPointB = updatePoint(for: jointB, with: pointBLocationNormCG, method: .average)
                 
                 // 화면 좌표로 변환
-                let pointALocation = CGPoint(x: averagedPointA.y * screenWidth, y: averagedPointA.x * screenHeight)
-                let pointBLocation = CGPoint(x: averagedPointB.y * screenWidth, y: averagedPointB.x * screenHeight)
+                let pointALocation = CGPoint(x: updatedPointA.y * screenWidth, y: updatedPointA.x * screenHeight)
+                let pointBLocation = CGPoint(x: updatedPointB.y * screenWidth, y: updatedPointB.x * screenHeight)
 
                 
                 // 경로에 선 추가
@@ -151,8 +151,20 @@ extension ViewController {
     }
     
     // 관절 좌표의 평균을 계산하는 함수
-    private func updateAveragePoint(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint) -> CGPoint {
+    private func updatePoint(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint, method: CalculationMethod) -> CGPoint {
         // 이전에 저장된 좌표가 있다면 불러오기
+        
+        switch method {
+        case .average:
+            print("average")
+            return calculateAveragePoint(for: joint, with: newPoint)
+        case .median:
+            return calculateAveragePoint(for: joint, with: newPoint)
+        }
+    }
+    
+    private func calculateAveragePoint(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint) -> CGPoint {
+        
         let previousPoint = jointAveragePoints[joint] ?? newPoint
         
         let averagedX = (previousPoint.x * 0.7) + (newPoint.x * 0.3)
@@ -164,5 +176,10 @@ extension ViewController {
         jointAveragePoints[joint] = averagedPoint
         
         return averagedPoint
+    }
+    
+    
+    enum CalculationMethod {
+        case average, median
     }
 }
