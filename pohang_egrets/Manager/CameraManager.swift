@@ -27,7 +27,7 @@ class CameraManager: NSObject {
     
     private func setupSession() {
         captureSession = AVCaptureSession()
-        captureSession?.sessionPreset = .high
+        captureSession?.sessionPreset = .high // high의 경우 프레임 기본 30
         
         guard let captureSession = captureSession else { return }
         
@@ -38,6 +38,15 @@ class CameraManager: NSObject {
         }
         
         captureSession.addInput(input)
+        
+        do {
+            try frontCamera.lockForConfiguration()
+            frontCamera.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: 30)  // 최소 프레임 속도 조절
+            frontCamera.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: 30)  // 최대 프레임 속도 조절
+            frontCamera.unlockForConfiguration()
+        } catch {
+            print("카메라 설정 실패: \(error.localizedDescription)")
+        }
         
         videoDataOutput = AVCaptureVideoDataOutput()
         videoDataOutput?.setSampleBufferDelegate(self, queue: DispatchQueue(label: "VideoDataOutputQueue"))

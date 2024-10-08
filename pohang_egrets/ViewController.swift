@@ -16,6 +16,11 @@ class ViewController: UIViewController {
     var previewLayer: AVCaptureVideoPreviewLayer?
     var overlayLayer = CALayer()
     
+    var jointAveragePoints: [VNHumanBodyPose3DObservation.JointName: CGPoint] = [:]
+    var jointPreviousTenPoints: [VNHumanBodyPose3DObservation.JointName: [CGPoint] ] = [:]
+    var jointPointsAndAverage: [VNHumanBodyPose3DObservation.JointName: (lastTen: [CGPoint], average: CGPoint)] = [:]
+    var thresholdPercentage: Float = 1
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -52,91 +57,216 @@ extension ViewController: BodyTrackingManagerDelegate {
         do {
             guard let observation = observations.first else { return }
             
-            // 이전 Line, Point 지우기
-            
-            clearOverlayLayer()
-            
-            let torso = try observation.recognizedPoints(.torso)
-            let leftArm = try observation.recognizedPoints(.leftArm)
-            if torso[.rightShoulder] != nil {
-                
-            // MARK: - cameraRelativePosition 예시 코드
-                
-                let rightShoulderPosition = try observation.cameraRelativePosition(.rightShoulder)
-                print("rightShoulder Camera Position: \(rightShoulderPosition)")
+            DispatchQueue.main.async {
+                self.drawBodyPose(observation: observation)
             }
-            
-            // MARK: - x,y,z(단위 m) 예시 코드
-            
-            guard let rightShoulder = torso[.rightShoulder] else { return }
-            
-            let rightPosition = rightShoulder.localPosition
-            let translationright = simd_make_float3(rightPosition.columns.3[0],
-                                                    rightPosition.columns.3[1],
-                                                    rightPosition.columns.3[2])
-            print("rightShoulder / x: \(translationright.x * 100), y: \(translationright.y * 100), z: \(translationright.z * 100)")
-            print("\(observation.parentJointName(.rightShoulder))")
-            
-            // MARK: - pointInImage 예시 코드
-            
-            let centerHead2D = try observation.pointInImage(.centerHead).location
-            print("pointInImage centerHead:\(centerHead2D)")
-            let centerShoulder2D = try observation.pointInImage(.centerShoulder).location
-            print("pintInImage centerShoulder:\(centerShoulder2D)")
-            
-            // MARK: - pointInImage 값으로 Line, Point 찍기
-            
-            let centerHeadPoint = convertToScreenCoordinates(point: centerHead2D)
-            let centerShoulderPoint = convertToScreenCoordinates(point: centerShoulder2D)
-            
-            drawLine(from: centerHeadPoint, to: centerShoulderPoint, color: UIColor.green.cgColor)
-            drawPoint(at: centerHeadPoint, color: UIColor.green.cgColor)
-        } catch {
-            print("error")
         }
     }
 }
 
 extension ViewController {
     
-    // MARK: - Line
-
-    private func drawLine(from start: CGPoint, to end: CGPoint, color: CGColor) {
-        let path = UIBezierPath()
-        path.move(to: start)
-        path.addLine(to: end)
-        
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.path = path.cgPath
-        shapeLayer.strokeColor = color
-        shapeLayer.lineWidth = 2.0
-        
-        overlayLayer.addSublayer(shapeLayer)
-    }
-    
-    // MARK: - Point
-    
-    private func drawPoint(at position: CGPoint, color: CGColor) {
-        let circlePath = UIBezierPath(arcCenter: position, radius: 5, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
-        
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.path = circlePath.cgPath
-        shapeLayer.fillColor = color
-        
-        overlayLayer.addSublayer(shapeLayer)
-    }
-    
     // MARK: - Method to clear the overlay layer
-
+    
     private func clearOverlayLayer() {
         overlayLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
     }
     
-    // MARK: - Method to convert normalized (0.0 - 1.0) points to screen coordinates
+    // MARK: - drawBodyPose
     
-    private func convertToScreenCoordinates(point: CGPoint) -> CGPoint {
-        let x = point.x * view.bounds.width
-        let y = point.y * view.bounds.height
-        return CGPoint(x: x, y: y)
+    private func drawBodyPose(observation: VNHumanBodyPose3DObservation) {
+        guard let previewLayer = self.previewLayer else { return }
+        
+        // 기존의 라인과 포인트를 지움
+        clearOverlayLayer()
+        
+        do {
+            let recognizedPoints = try observation.recognizedPoints(.all)
+            
+            // 새로운 CAShapeLayer 생성
+            let shapeLayer = CAShapeLayer()
+            let path = UIBezierPath()
+            
+            let jointPairs: [(VNHumanBodyPose3DObservation.JointName, VNHumanBodyPose3DObservation.JointName)] = [
+                (.centerShoulder, .centerHead),  //neck -> centerShoulder, nose -> centerHead
+                (.centerShoulder, .leftShoulder),
+                (.centerShoulder, .rightShoulder),
+                (.leftShoulder, .leftElbow),
+                (.leftElbow, .leftWrist),
+                (.rightShoulder, .rightElbow),
+                (.rightElbow, .rightWrist),
+                (.leftShoulder, .leftHip),
+                (.rightShoulder, .rightHip),
+                (.leftHip, .rightHip),
+                (.leftHip, .leftKnee),
+                (.leftKnee, .leftAnkle),
+                (.rightHip, .rightKnee),
+                (.rightKnee, .rightAnkle)
+            ]
+            
+            for (jointA, jointB) in jointPairs {
+                guard observation.confidence > 0.8 else {
+                    continue
+                }
+                
+                let screenWidth = view.bounds.width
+                let screenHeight = view.bounds.height
+                
+                // 각 관절의 위치를 가져오기
+                let pointALocationNormCG = try CGPoint(x: observation.pointInImage(jointA).location.x, y: observation.pointInImage(jointA).location.y)
+                let pointBLocationNormCG = try CGPoint(x: observation.pointInImage(jointB).location.x, y: observation.pointInImage(jointB).location.y)
+                
+                // 누적 평균 좌표로 변환
+                let updatedPointA = updatePoint(for: jointA, with: pointALocationNormCG, method: .movingThreshold)
+                let updatedPointB = updatePoint(for: jointB, with: pointBLocationNormCG, method: .movingThreshold)
+                
+                // 화면 좌표로 변환
+                let pointALocation = CGPoint(x: updatedPointA.y * screenWidth, y: updatedPointA.x * screenHeight)
+                let pointBLocation = CGPoint(x: updatedPointB.y * screenWidth, y: updatedPointB.x * screenHeight)
+
+                
+                // 경로에 선 추가
+                path.move(to: pointALocation)
+                path.addLine(to: pointBLocation)
+            }
+            
+            // Path를 CAShapeLayer에 설정
+            shapeLayer.path = path.cgPath
+            shapeLayer.strokeColor = UIColor.green.cgColor
+            shapeLayer.lineWidth = 2.0
+            
+            // 원 그리기 (중심점)
+            let point = VNPoint(x: 0, y: 0)
+            let pointLocation = CGPoint(x: point.location.x, y: 1 - point.location.y)
+            let convertedPoint = previewLayer.layerPointConverted(fromCaptureDevicePoint: pointLocation)
+            
+            let circlePath = UIBezierPath(arcCenter: convertedPoint, radius: 5, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
+            let circleShapeLayer = CAShapeLayer()
+            circleShapeLayer.path = circlePath.cgPath
+            circleShapeLayer.fillColor = UIColor.blue.cgColor
+            
+            // CAShapeLayer 추가
+            overlayLayer.addSublayer(shapeLayer)
+            overlayLayer.addSublayer(circleShapeLayer)
+        } catch {
+            print("관절 포인트를 가져오는 중 오류 발생: \(error)")
+        }
+    }
+    
+    // 관절 좌표의 평균을 계산하는 함수
+    private func updatePoint(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint, method: CalculationMethod) -> CGPoint {
+        // 이전에 저장된 좌표가 있다면 불러오기
+        
+        print("joint: \(joint), newPoint: \(newPoint)")
+        
+        switch method {
+        case .average:
+            print("average")
+            return calculateAveragePoint(for: joint, with: newPoint)
+        case .median:
+            print("median")
+            return calculateMedianPoint(for: joint, with: newPoint)
+        case .movingAverage:
+            print("movingAverage")
+            return calculateMovingAverage(for: joint, with: newPoint)
+        case .movingThreshold:
+            print("movingThreshold")
+            return calculateMovingThreshold(for: joint, with: newPoint)
+        }
+    }
+    
+    //이안 코드
+    private func calculateAveragePoint(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint) -> CGPoint {
+        
+        let previousPoint = jointAveragePoints[joint] ?? newPoint
+        
+        let averagedX = (previousPoint.x * 0.7) + (newPoint.x * 0.3)
+        let averagedY = (previousPoint.y * 0.7) + (newPoint.y * 0.3)
+        
+        let averagedPoint = CGPoint(x: averagedX, y: averagedY)
+        
+        // 딕셔너리에 업데이트된 좌표 저장
+        jointAveragePoints[joint] = averagedPoint
+        
+        return averagedPoint
+    }
+    
+    private func calculateMedianPoint(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint) -> CGPoint {
+        
+        var jointArray = jointPreviousTenPoints[joint] ?? [CGPoint](repeating: CGPoint(x: 0, y: 0), count: 10)
+        
+        jointArray.removeFirst(1)
+        jointArray.append(newPoint)
+        
+        jointPreviousTenPoints[joint] = jointArray
+        
+        return getMedianPoint(history: jointArray)
+    }
+    
+    private func getMedianPoint(history: [CGPoint]) -> CGPoint {
+        var xHistory = history.map(\.x)
+        var yHistory = history.map(\.y)
+        
+        xHistory = xHistory.sorted()
+        yHistory = yHistory.sorted()
+        
+        let xMedian = (xHistory[4] + xHistory[5]) / 2
+        let yMedian = (yHistory[4] + yHistory[5]) / 2
+        
+        return CGPoint(x: xMedian, y: yMedian)
+        
+    }
+    
+    private func calculateMovingAverage(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint) -> CGPoint {
+        
+        var jointArray = jointPreviousTenPoints[joint] ?? [CGPoint](repeating: CGPoint(x: 0, y: 0), count: 10)
+        
+        jointArray.removeFirst(1)
+        jointArray.append(newPoint)
+        
+        jointPreviousTenPoints[joint] = jointArray
+        
+        var xAverage: Double = 0
+        var yAverage: Double = 0
+        
+        for point in jointArray {
+            xAverage += point.x
+            yAverage += point.y
+        }
+        
+        xAverage /= Double(jointArray.count)
+        yAverage /= Double(jointArray.count)
+        
+        return CGPoint(x: xAverage, y: yAverage)
+    }
+    
+    private func calculateMovingThreshold(for joint: VNHumanBodyPose3DObservation.JointName, with newPoint: CGPoint) -> CGPoint {
+        
+        var jointInfo = jointPointsAndAverage[joint] ?? (lastTen: [CGPoint](repeating: CGPoint(x: newPoint.x, y: newPoint.y), count: 10), average: newPoint)
+
+        if newPoint.x > (jointInfo.average.x * CGFloat(1 - thresholdPercentage)),
+           newPoint.x < (jointInfo.average.x * CGFloat(1 + thresholdPercentage)),
+           newPoint.y > (jointInfo.average.y * CGFloat(1 - thresholdPercentage)),
+           newPoint.y < (jointInfo.average.y * CGFloat(1 + thresholdPercentage)) {
+            print("done")
+            jointInfo.lastTen.removeFirst()
+            jointInfo.lastTen.append(newPoint)
+            var xAvg: CGFloat = 0
+            var yAvg: CGFloat = 0
+            for i in jointInfo.lastTen {
+                xAvg += i.x
+                yAvg += i.y
+            }
+            xAvg = xAvg / CGFloat(jointInfo.lastTen.count)
+            yAvg = yAvg / CGFloat(jointInfo.lastTen.count)
+            jointInfo.average = CGPoint(x: xAvg, y: yAvg)
+            jointPointsAndAverage[joint] = jointInfo
+        }
+        
+        return jointInfo.average
+    }
+    
+    enum CalculationMethod {
+        case average, median, movingAverage, movingThreshold
     }
 }
