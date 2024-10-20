@@ -12,49 +12,69 @@ struct MainView: View {
     
     var body: some View {
         GeometryReader { geo in
-            let size = geo.size
-            let circleSize: CGFloat = size.width / 2.5
-            let circleRadius = circleSize / 2
+            let screenSize = geo.size
+            let circleSize: CGFloat = screenSize.width * 0.66
             
-            VStack {
-                Spacer()
-                Text("\(viewModel.heartRate)")
-                    .foregroundStyle(.white)
+            VStack(spacing: 0) {
+                HStack {
+                    Spacer()
+                    VStack {
+                        Text("\(Int(viewModel.heartRate))")
+                            .font(Font.system(size: 20, weight: .bold))
+                        Text("BPM")
+                            .font(Font.system(size: 12, weight: .bold))
+                    }
+                    .padding(.trailing, 12)
+                }
+                .padding(.top, -20)
 
-                Circle()
-                    .fill(Color.clear)
-                    .stroke(Color.gray, lineWidth: 2)
-                    .frame(width: circleSize, height: circleSize)
-                    .overlay(
-                        Wave(offSet: viewModel.waveOffset, percent: viewModel.percent)
-                            .fill(Color.blue)
-                    )
-                    .clipShape(Circle())
-                    .offset(x: viewModel.uiPosition)
-                    .animation(.easeIn(duration: 1), value: viewModel.uiPosition)
-                    .onAppear {
+                Button {
+                    viewModel.isTrigger.toggle()
+                    
+                    if viewModel.isTrigger == true {
                         viewModel.startWorkoutSession()
                         viewModel.increasingWaterPercent()
                         withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
                             viewModel.waveOffset = Angle(degrees: 360)
                         }
-                        viewModel.updateUIPositionBasedOnHeartRate(geoWidth: size.width, circleRadius: circleRadius)
-                        viewModel.monitoringHeartRate(geoWidth: size.width, circleRadius: circleRadius)
-                    }
-                    .onChange(of: viewModel.liveWorkoutUseCase.heartRate) {
-                        print("view: \(viewModel.liveWorkoutUseCase.heartRate)")
-                        viewModel.updateUIPositionBasedOnHeartRate(geoWidth: size.width, circleRadius: circleRadius)
-                    }
-                    .onDisappear {
+                        viewModel.updateUIPositionBasedOnHeartRate(geoWidth: screenSize.width)
+                        viewModel.monitoringHeartRate(geoWidth: screenSize.width)
+                    } else {
                         viewModel.endWorkoutSession()
                         viewModel.stopIncreasingPercent()
                     }
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(Color.clear)
+                            .stroke(.circleBg, lineWidth: 10)
+                            .frame(width: circleSize, height: circleSize)
+                            .overlay(
+                                ZStack {
+                                    Wave(offSet: viewModel.waveOffset, percent: viewModel.percent)
+                                        .fill(Color.circleBg)
+                                    Text("START")
+                                        .foregroundStyle(viewModel.isTrigger ? .clear : .white)
+                                        .font(Font.system(size: 24, weight: .bold))
+                                }
+                            )
+                            .clipShape(Circle())
+                    }
+                }
+                .buttonStyle(PlainButtonStyle())
+                .offset(x: viewModel.uiPosition)
+                .animation(.easeIn(duration: 1), value: viewModel.uiPosition)
+                .onDisappear {
+                    viewModel.endWorkoutSession()
+                    viewModel.stopIncreasingPercent()
+                }
+                .ignoresSafeArea(.all)
+                
                 Spacer()
             }
         }
     }
 }
-
 
 #Preview {
     MainView()

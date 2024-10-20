@@ -17,6 +17,7 @@ class MainViewModel: ObservableObject {
     
     @Published var uiPosition: CGFloat = 0.0
     @Published var heartRate = 0.0
+    @Published var isTrigger = false
     
     var cancellables = Set<AnyCancellable>()
     
@@ -28,12 +29,12 @@ class MainViewModel: ObservableObject {
     
     // MARK: - Function
     
-    func monitoringHeartRate(geoWidth: CGFloat, circleRadius: CGFloat) {
+    func monitoringHeartRate(geoWidth: CGFloat) {
         liveWorkoutUseCase.$heartRate
             .receive(on: RunLoop.main)
             .sink { [weak self] newHeartRate in
                 self?.heartRate = newHeartRate
-                self?.updateUIPositionBasedOnHeartRate(geoWidth: geoWidth, circleRadius: circleRadius)
+                self?.updateUIPositionBasedOnHeartRate(geoWidth: geoWidth)
             }
             .store(in: &cancellables)
     }
@@ -60,15 +61,12 @@ class MainViewModel: ObservableObject {
      양 끝 단 128이하 일 때 geo.size.width/2 , 152 이상 일 때 -geo.size.width/2
      128 ~ 152 사이일 때 geo.size.width/2 ~ -geo.size.width/2 사이에서 값의 크기에 따라 이동하게
      */
-    func updateUIPositionBasedOnHeartRate(geoWidth: CGFloat, circleRadius: CGFloat) {
+    func updateUIPositionBasedOnHeartRate(geoWidth: CGFloat) {
         let minHeartRate: Double = 128
         let maxHeartRate: Double = 152
         
-        // 왼쪽과 오른쪽에서 반만 보이도록 하는 위치 설정
-        let minPosition = -geoWidth / 2 + circleRadius
-        let maxPosition = geoWidth - circleRadius
-        
-        print("min: \(minPosition), max: \(maxPosition)")
+        let minPosition = -geoWidth / 2
+        let maxPosition = geoWidth / 2
         
         if heartRate <= minHeartRate {
             uiPosition = minPosition

@@ -79,7 +79,7 @@
 				App/pohang_egrets_watchApp.swift,
 				"App/pohang-egrets-watch-Watch-App-Info.plist",
 				"Preview Content/Preview Assets+Watch.xcassets",
-				"Resource/Assets+iPhone.xcassets",
+				"Resource/Assets+Watch.xcassets",
 				Source/Domain/UseCase/Watch/LiveWorkoutUseCase.swift,
 				Source/Presentation/Watch/Main/View/Component/Wave.swift,
 				Source/Presentation/Watch/Main/View/MainView.swift,
@@ -128,7 +128,7 @@
 			membershipExceptions = (
 				App/pohang_egrets_watchApp.swift,
 				"Preview Content/Preview Assets+Watch.xcassets",
-				"Resource/Assets+iPhone.xcassets",
+				"Resource/Assets+Watch.xcassets",
 				Source/Domain/Entity/WorkoutSummary.swift,
 				Source/Domain/UseCase/Shared/FormatDateUseCase.swift,
 				Source/Domain/UseCase/Watch/LiveWorkoutUseCase.swift,
