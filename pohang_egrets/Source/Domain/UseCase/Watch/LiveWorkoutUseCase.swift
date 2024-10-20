@@ -17,27 +17,27 @@ class LiveWorkoutUseCase: NSObject, ObservableObject {
             }
         }
     }
-
+    
     let healthStore = HKHealthStore()
     var session: HKWorkoutSession?
     var builder: HKLiveWorkoutBuilder?
-
+    
     func requestAuthorization() {
         let typesToShare: Set = [
             HKQuantityType.workoutType()
         ]
-
+        
         let typesToRead: Set = [
             HKQuantityType.quantityType(forIdentifier: .heartRate)!,
             HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
             HKObjectType.activitySummaryType()
         ]
-
+        
         healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { (success, error) in
-           
+            
         }
     }
-
+    
     // MARK: - Session State Control (Workout Session 시작, 중지, 종료)
     
     @Published var running = false
@@ -46,7 +46,7 @@ class LiveWorkoutUseCase: NSObject, ObservableObject {
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = workoutType
         configuration.locationType = .outdoor
-
+        
         do {
             session = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
             builder = session?.associatedWorkoutBuilder()
@@ -54,20 +54,20 @@ class LiveWorkoutUseCase: NSObject, ObservableObject {
             
             return
         }
-
+        
         session?.delegate = self
         builder?.delegate = self
         
         builder?.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore,
-                                                     workoutConfiguration: configuration)
-
+                                                      workoutConfiguration: configuration)
+        
         let startDate = Date()
         session?.startActivity(with: startDate)
         builder?.beginCollection(withStart: startDate) { (success, error) in
             
         }
     }
-
+    
     func togglePause() {
         if running == true {
             self.pause()
@@ -75,22 +75,22 @@ class LiveWorkoutUseCase: NSObject, ObservableObject {
             resume()
         }
     }
-
+    
     private func pause() {
         session?.pause()
     }
-
+    
     private func resume() {
         session?.resume()
     }
-
+    
     func endWorkout() {
         session?.end()
         showingSummaryView = true
     }
-
+    
     // MARK: - Live Workout Metrics (Workout 실시간 데이터)
-    @Published var heartRate: Double = 0
+    @Published var heartRate: Double = 0 
     @Published var averageHeartRate: Double = 0
     @Published var workout: HKWorkout?
 
