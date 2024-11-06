@@ -17,10 +17,23 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         epochSeconds: Int
     ) {
         let db = Firestore.firestore()
-        db.collection("userAppData").document(id).setData([
-            "userID": id,
-            "appData": ["appName": appName, "timeStamp": epochSeconds]
-        ])
+        let docRef = db.collection("userAppData").document(id)
+        docRef.getDocument { (document, error) in
+            if let document = document {
+                if document.exists {
+                    docRef.updateData([
+                        "appData": FieldValue.arrayUnion([["appName": appName, "timeStamp": epochSeconds]])
+                    ])
+                } else {
+                    db.collection("userAppData").document(id).setData([
+                        "userID": id,
+                        "appData": [["appName": appName, "timeStamp": epochSeconds]]
+                    ])
+                }
+            } else {
+                print("Error: \(error?.localizedDescription ?? "No error description")")
+            }
+        }
     }
     
 }
