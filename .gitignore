@@ -140,7 +140,7 @@ xcuserdata
 Secret.plist
 
 # Firebase
-GoogleService-Info.plist
+*GoogleService-Info.plist
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,swiftpm,swiftpackagemanager,macos,xcode
 
