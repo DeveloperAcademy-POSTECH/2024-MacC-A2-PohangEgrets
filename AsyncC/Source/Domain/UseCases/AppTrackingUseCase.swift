@@ -10,19 +10,21 @@ import Foundation
 final class AppTrackingUseCase {
     
     private let firebaseRepository: FirebaseRepository
+    private let localRepository: LocalRepository
     
     init() {
         firebaseRepository = FirebaseRepository()
+        localRepository = LocalRepository()
     }
     
-    func updateAppTracking(appName: String) {
-        let id = getUserID()
+    private func updateAppTracking(appName: String) {
+        let id = getUserIDFromLocal()
         let epochSeconds = Int(Date().timeIntervalSince1970)
         firebaseRepository.setUserAppData(id: id, appName: appName, epochSeconds: epochSeconds)
     }
     
-    func getUserID() -> String {
-        // Data layer에서 user default 갖고오기
-        return "mia"
+    private func getUserIDFromLocal() -> String {
+        return localRepository.getUserID()
     }
+    
 }
