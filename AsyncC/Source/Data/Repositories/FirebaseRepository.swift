@@ -39,10 +39,11 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
-    func setUpListenersForUserAppData(userIDs: [String], handler: @escaping (Result<UserAppData, Error>) -> Void) {
+    func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void) {
         
         let db = Firestore.firestore()
-        for userID in userIDs {
+        for userID in userIDsToTrack {
+            if userID == userIDToIgnore { continue }
             let docRef = db.collection("userAppData").document(userID)
             
             let listener = docRef
@@ -81,8 +82,16 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         
     }
     
+    func removeListenersForUserAppData() {
+        for listener in userAppDataListeners {
+            listener.remove()
+        }
+        userAppDataListeners = []
+    }
     
     // MARK: - TeamMetaData 통신
+    var teamMetaDataListener: ListenerRegistration? = nil
+    
     func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("teamMetaData").document(teamData.inviteCode)
@@ -124,6 +133,37 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 return
             }
         }
+    }
+    
+    func setUpListenerForTeamData(teamCode: String, handler: @escaping (Result<TeamMetaData, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("teamMetaData").document(teamCode)
+        
+        teamMetaDataListener = docRef
+            .addSnapshotListener { (document, error) in
+                guard let document, document.exists else {
+                    if let error {
+                        handler(.failure(error))
+                    } else {
+                        handler(.failure(FirebaseError(errorMessage: "Team does not exist exists")))
+                    }
+                    return
+                }
+                
+                guard let data = document.data() else {
+                    if let error {
+                        handler(.failure(error))
+                    } else {
+                        print("Document data was empty.")
+                    }
+                    return
+                }
+                let teamData = TeamMetaData(memberIDs: data["memberIDs"] as? [String] ?? [],
+                                            teamName: data["teamName"] as? String ?? "",
+                                            inviteCode: data["inviteCode"] as? String ?? "",
+                                            hostID: data["hostID"] as? String ?? "")
+                handler(.success(teamData))
+            }
     }
     
 }

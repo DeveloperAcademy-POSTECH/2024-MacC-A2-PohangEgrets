@@ -11,7 +11,6 @@ final class AppTrackingUseCase: ObservableObject {
     
     private let firebaseRepository: FirebaseRepository
     private let localRepository: LocalRepository
-    private var teamMemberIDs = ["ingt", "mia", "topia"] // 추후에 팀 생성 + 팀 정보 갖고오기 하면 바꿀 예정
     @Published var teamMemberAppTrackings: [String: [String]] = [:]
     
     init() {
@@ -29,8 +28,9 @@ final class AppTrackingUseCase: ObservableObject {
         return localRepository.getUserID()
     }
     
-    func setupAppTracking() {
-        firebaseRepository.setUpListenersForUserAppData(userIDs: teamMemberIDs) { result in
+    func setupAppTracking(fbRepository: FirebaseRepository, teamMemberIDs: [String]) {
+        let userID = getUserIDFromLocal()
+        fbRepository.setUpListenersForUserAppData(userIDToIgnore: userID, userIDsToTrack: teamMemberIDs) { result in
             switch result {
             case .success(let appData):
                 self.updateAppTracking(with: appData)
@@ -38,6 +38,10 @@ final class AppTrackingUseCase: ObservableObject {
                 print(error)
             }
         }
+    }
+    
+    func resetAppTrackings() {
+        teamMemberAppTrackings.removeAll()
     }
     
     private func updateAppTracking(with updatedData: UserAppData) {
