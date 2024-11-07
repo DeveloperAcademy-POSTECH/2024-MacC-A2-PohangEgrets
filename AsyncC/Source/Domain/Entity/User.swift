@@ -8,7 +8,7 @@
 import Foundation
 
 struct User { // 처음 계정 생성할때만 edit
-    let id: UUID
+    let id: String
     let email: String
     let name: String
 }

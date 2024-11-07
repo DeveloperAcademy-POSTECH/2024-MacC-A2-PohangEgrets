@@ -24,7 +24,7 @@ final class TeamManagingUseCase {
         
         firebaseRepository.createNewTeamInFirestore(teamData: teamMetaData) { result in
             switch result {
-            case .success(var message):
+            case .success(let message):
                 print(message)
             case .failure(let error):
                 print(error.localizedDescription)
@@ -38,5 +38,18 @@ final class TeamManagingUseCase {
         let characters = "abcdefghijklmnopqrstuvwxyz0123456789"
         
         return String((0..<6).compactMap { _ in characters.randomElement() })
+    }
+    
+    func addNewMemberToTeam(teamCode: String) {
+        let userID = localRepository.getUserID()
+        
+        firebaseRepository.addNewMemberToTeam(teamCode: teamCode, userID: userID) { result in
+            switch result {
+            case .success(let teamData):
+                self.localRepository.saveTeamCode(teamData.inviteCode)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }

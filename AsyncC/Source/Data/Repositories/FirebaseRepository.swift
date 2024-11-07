@@ -94,6 +94,29 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         handler(.success("Created new team"))
     }
     
+    func addNewMemberToTeam(teamCode: String, userID: String, handler: @escaping (Result<TeamMetaData, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("teamMetaData").document(teamCode)
+        
+        docRef.getDocument { (document, error) in
+            if let document, document.exists {
+                docRef.updateData([
+                    "memberIDs": FieldValue.arrayUnion([userID])
+                ])
+                var members = document["memberIDs"] as? [String] ?? []
+                members.append(userID)
+                let teamData  = TeamMetaData(memberIDs: members,
+                                             teamName: document["teamName"] as? String ?? "",
+                                             inviteCode: document["inviteCode"] as? String ?? "",
+                                             hostID: document["hostID"] as? String ?? "")
+                handler(.success(teamData))
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "Team does not exist exists")))
+                return
+            }
+        }
+    }
+    
 }
 
 
