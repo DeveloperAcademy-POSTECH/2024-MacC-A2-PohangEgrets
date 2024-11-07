@@ -36,4 +36,32 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
+    func setUsers(
+        id: String,
+        email: String,
+        name: String
+    ) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("users").document(id)
+        docRef.getDocument { (document, error) in
+            if let document = document {
+                if document.exists {
+                    docRef.updateData([
+                        "id": id,
+                        "email": email,
+                        "name": name
+                    ])
+                } else {
+                    db.collection("users").document(id).setData([
+                        "id": id,
+                        "email": email,
+                        "name": name
+                    ])
+                }
+            } else {
+                print("Error: \(error?.localizedDescription ?? "No error description")")
+            }
+        }
+    }
+    
 }
