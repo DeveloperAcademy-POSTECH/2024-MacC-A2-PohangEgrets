@@ -12,4 +12,7 @@ protocol FirebaseRepositoryProtocol {
                      epochSeconds: Int) -> Void
     
     func setUpListenerForUserAppData(userID: String, handler: @escaping (Result<UserAppData, Error>) -> Void)
+    
+    func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void)
+                                      
 }

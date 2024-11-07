@@ -74,4 +74,33 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         
     }
     
+    func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("teamMetaData").document(teamData.inviteCode)
+        
+        docRef.getDocument { (document, error) in
+            if let document, document.exists {
+                handler(.failure(FirebaseError(errorMessage: "Team already exists")))
+                return
+            }
+        }
+        
+        docRef.setData([
+            "hostID" : teamData.hostID,
+            "inviteCode" : teamData.inviteCode,
+            "teamName" : teamData.teamName,
+            "memberIDs": teamData.memberIDs
+        ])
+        handler(.success("Created new team"))
+    }
+    
+}
+
+
+class FirebaseError: Error {
+    let errorMessage: String
+    
+    init(errorMessage: String) {
+        self.errorMessage = errorMessage
+    }
 }
