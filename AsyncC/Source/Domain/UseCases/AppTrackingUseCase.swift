@@ -30,14 +30,12 @@ final class AppTrackingUseCase: ObservableObject {
     }
     
     func setupAppTracking() {
-        for member in teamMemberIDs {
-            firebaseRepository.setUpListenerForUserAppData(userID: member) { result in
-                switch result {
-                case .success(let appData):
-                    self.updateAppTracking(with: appData)
-                case .failure(let error):
-                    print(error)
-                }
+        firebaseRepository.setUpListenersForUserAppData(userIDs: teamMemberIDs) { result in
+            switch result {
+            case .success(let appData):
+                self.updateAppTracking(with: appData)
+            case .failure(let error):
+                print(error)
             }
         }
     }

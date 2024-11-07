@@ -11,6 +11,9 @@ import FirebaseFirestore
 
 final class FirebaseRepository: FirebaseRepositoryProtocol
 {
+    // MARK: - User, UserAppData 통신
+    var userAppDataListeners: [ListenerRegistration] = []
+    
     func setUserAppData(
         id: String,
         appName: String,
@@ -36,44 +39,50 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
-    func setUpListenerForUserAppData(userID: String, handler: @escaping (Result<UserAppData, any Error>) -> Void) {
-        let db = Firestore.firestore()
-        let docRef = db.collection("userAppData").document(userID)
+    func setUpListenersForUserAppData(userIDs: [String], handler: @escaping (Result<UserAppData, Error>) -> Void) {
         
-        docRef
-            .addSnapshotListener { (documentSnapshot, error) in
-                guard let document = documentSnapshot else {
-                    if let error {
-                        handler(.failure(error))
-                    } else {
-                        print("Error fetching document")
+        let db = Firestore.firestore()
+        for userID in userIDs {
+            let docRef = db.collection("userAppData").document(userID)
+            
+            let listener = docRef
+                .addSnapshotListener { (documentSnapshot, error) in
+                    guard let document = documentSnapshot else {
+                        if let error {
+                            handler(.failure(error))
+                        } else {
+                            print("Error fetching document")
+                        }
+                        return
                     }
-                    return
-                }
-                guard let data = document.data() else {
-                    if let error {
-                        handler(.failure(error))
-                    } else {
-                        print("Document data was empty.")
+                    guard let data = document.data() else {
+                        if let error {
+                            handler(.failure(error))
+                        } else {
+                            print("Document data was empty.")
+                        }
+                        return
                     }
-                    return
-                }
-                
-                let appDataTuples: [(String, Int)] = (data["appData"] as? [[String: Any]])?.compactMap { entry in
-                    if let appName = entry["appName"] as? String,
-                       let timeStamp = entry["timeStamp"] as? Int {
-                        return (appName, timeStamp)
-                    } else {
-                        return nil
+                    
+                    let appDataTuples: [(String, Int)] = (data["appData"] as? [[String: Any]])?.compactMap { entry in
+                        if let appName = entry["appName"] as? String,
+                           let timeStamp = entry["timeStamp"] as? Int {
+                            return (appName, timeStamp)
+                        } else {
+                            return nil
+                        }
+                    } ?? []
+                    if !appDataTuples.isEmpty, let id = data["userID"] as? String {
+                        handler(.success(UserAppData(userID: id, appData: appDataTuples)))
                     }
-                } ?? []
-                if !appDataTuples.isEmpty, let id = data["userID"] as? String {
-                    handler(.success(UserAppData(userID: id, appData: appDataTuples)))
                 }
-            }
+            userAppDataListeners.append(listener)
+        }
         
     }
     
+    
+    // MARK: - TeamMetaData 통신
     func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("teamMetaData").document(teamData.inviteCode)
