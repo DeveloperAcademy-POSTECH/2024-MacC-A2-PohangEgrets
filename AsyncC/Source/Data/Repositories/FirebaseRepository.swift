@@ -64,4 +64,42 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
+    func setUpListenerForUserAppData(userID: String, handler: @escaping (Result<UserAppData, any Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("userAppData").document(userID)
+        
+        docRef
+            .addSnapshotListener { (documentSnapshot, error) in
+                guard let document = documentSnapshot else {
+                    if let error {
+                        handler(.failure(error))
+                    } else {
+                        print("Error fetching document")
+                    }
+                    return
+                }
+                guard let data = document.data() else {
+                    if let error {
+                        handler(.failure(error))
+                    } else {
+                        print("Document data was empty.")
+                    }
+                    return
+                }
+                
+                let appDataTuples: [(String, Int)] = (data["appData"] as? [[String: Any]])?.compactMap { entry in
+                    if let appName = entry["appName"] as? String,
+                       let timeStamp = entry["timeStamp"] as? Int {
+                        return (appName, timeStamp)
+                    } else {
+                        return nil
+                    }
+                } ?? []
+                if !appDataTuples.isEmpty, let id = data["userID"] as? String {
+                    handler(.success(UserAppData(userID: id, appData: appDataTuples)))
+                }
+            }
+        
+    }
+    
 }
