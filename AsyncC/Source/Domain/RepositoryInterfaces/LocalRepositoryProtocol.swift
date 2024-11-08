@@ -11,4 +11,8 @@ protocol LocalRepositoryProtocol {
     
     func saveUserID(_ inputID: String)
     
+    func saveTeamCode(_ inputTeamCode: String)
+    
+    func getTeamCode() -> String
+    
 }
