@@ -28,6 +28,8 @@ final class TeamManagingUseCase {
             switch result {
             case .success(let message):
                 print(message)
+                self.localRepository.saveTeamCode(teamMetaData.inviteCode)
+                self.setUpAllListeners(using: teamMetaData)
             case .failure(let error):
                 print(error.localizedDescription)
             }
