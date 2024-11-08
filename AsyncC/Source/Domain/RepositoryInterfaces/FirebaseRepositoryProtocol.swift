@@ -21,4 +21,8 @@ protocol FirebaseRepositoryProtocol {
 
     func setUpListenerForTeamData(teamCode: String, handler: @escaping (Result<TeamMetaData, Error>) -> Void)
     
+    func getTeamData(teamCode: String, handler: @escaping ((Result<TeamMetaData, Error>) -> Void))
+    
+    func getHostName(hostID: String, handler: @escaping ((Result<String, Error>) -> Void))
+    
 }

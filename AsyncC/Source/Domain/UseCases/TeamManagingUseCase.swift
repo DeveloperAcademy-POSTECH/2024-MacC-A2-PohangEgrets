@@ -79,4 +79,26 @@ final class TeamManagingUseCase {
         appTrackingUseCase.resetAppTrackings()
         appTrackingUseCase.setupAppTracking(fbRepository: firebaseRepository, teamMemberIDs: updatedMemberIDs)
     }
+    
+    func getTeamNameAndHostName(for teamInviteCode: String,
+                                handler: @escaping ((Result<(teamName: String, hostName: String), Error>)) -> Void) {
+        firebaseRepository.getTeamData(teamCode: teamInviteCode) { result in
+            switch result {
+            case .success(let teamData):
+                self.firebaseRepository.getHostName(hostID: teamData.hostID) { hostNameResult in
+                    switch hostNameResult {
+                    case .success(let hostName):
+                        print((teamName: teamData.teamName, hostName: hostName))
+                        handler(.success((teamName: teamData.teamName, hostName: hostName)))
+                    case .failure(let error):
+                        handler(.failure(error))
+                    }
+                    
+                }
+            case .failure(let error):
+                handler(.failure(error))
+            }
+            
+        }
+    }
 }

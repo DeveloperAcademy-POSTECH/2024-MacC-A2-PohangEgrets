@@ -166,6 +166,37 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             }
     }
     
+    func getTeamData(teamCode: String, handler: @escaping ((Result<TeamMetaData, Error>) -> Void)){
+        let db = Firestore.firestore()
+        let docRef = db.collection("teamMetaData").document(teamCode)
+        
+        docRef.getDocument { (document, error) in
+            if let document, document.exists {
+                guard let data = document.data() else {return}
+                let teamData  = TeamMetaData(memberIDs: data["memberIDs"] as? [String] ?? [],
+                                             teamName: data["teamName"] as? String ?? "",
+                                             inviteCode: data["inviteCode"] as? String ?? "",
+                                             hostID: data["hostID"] as? String ?? "")
+                handler(.success(teamData))
+                return
+            }
+            handler(.failure(FirebaseError(errorMessage: "No team data found")))
+        }
+    }
+    
+    func getHostName(hostID: String, handler: @escaping ((Result<String, Error>) -> Void)) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("users").document(hostID)
+        docRef.getDocument { (document, error) in
+            if let document, document.exists {
+                let hostName = document["name"] as? String ?? ""
+                handler(.success(hostName))
+                return
+            }
+        }
+        handler(.failure(FirebaseError(errorMessage: "No host found")))
+    }
+    
 }
 
 
