@@ -215,6 +215,20 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         teamMetaDataListener = nil
     }
     
+    func removeAllUsersInTeam(teamCode: String) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("teamMetaData").document(teamCode)
+        docRef.getDocument { (document, error) in
+            if let document, document.exists {
+                docRef.updateData([
+                    "memberIDs": []
+                ])
+                return
+            }
+        }
+    }
+    
+    
 }
 
 

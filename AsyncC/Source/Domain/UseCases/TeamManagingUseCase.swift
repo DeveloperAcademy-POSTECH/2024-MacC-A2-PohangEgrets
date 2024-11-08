@@ -67,7 +67,11 @@ final class TeamManagingUseCase {
             
             switch result {
             case .success(let teamData):
-                self.refreshUserAppDataListeners(for: teamData.memberIDs)
+                if teamData.memberIDs.isEmpty {
+                    self.leaveTeam()
+                } else {
+                    self.refreshUserAppDataListeners(for: teamData.memberIDs)
+                }
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -112,5 +116,10 @@ final class TeamManagingUseCase {
         firebaseRepository.removeTeamListener()
         firebaseRepository.removeUser(userID: userID, teamCode: teamCode)
         localRepository.resetTeamCode()
+    }
+    
+    func deleteTeam() {
+        let teamCode = localRepository.getTeamCode()
+        firebaseRepository.removeAllUsersInTeam(teamCode: teamCode)
     }
 }

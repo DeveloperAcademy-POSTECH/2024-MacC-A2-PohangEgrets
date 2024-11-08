@@ -29,4 +29,6 @@ protocol FirebaseRepositoryProtocol {
     
     func removeTeamListener()
     
+    func removeAllUsersInTeam(teamCode: String)
+    
 }
