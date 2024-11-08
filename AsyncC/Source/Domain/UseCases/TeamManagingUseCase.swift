@@ -101,4 +101,16 @@ final class TeamManagingUseCase {
             
         }
     }
+    
+    func leaveTeam() {
+        let userID = localRepository.getUserID()
+        let teamCode = localRepository.getTeamCode()
+        
+        
+        firebaseRepository.removeListenersForUserAppData()
+        appTrackingUseCase.resetAppTrackings()
+        firebaseRepository.removeTeamListener()
+        firebaseRepository.removeUser(userID: userID, teamCode: teamCode)
+        localRepository.resetTeamCode()
+    }
 }

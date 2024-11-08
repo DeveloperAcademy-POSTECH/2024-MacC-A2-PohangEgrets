@@ -25,4 +25,8 @@ protocol FirebaseRepositoryProtocol {
     
     func getHostName(hostID: String, handler: @escaping ((Result<String, Error>) -> Void))
     
+    func removeUser(userID: String, teamCode: String)
+    
+    func removeTeamListener()
+    
 }

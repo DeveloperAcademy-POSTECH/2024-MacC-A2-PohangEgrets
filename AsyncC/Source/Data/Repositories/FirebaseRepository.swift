@@ -197,6 +197,24 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         handler(.failure(FirebaseError(errorMessage: "No host found")))
     }
     
+    func removeUser(userID: String, teamCode: String) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("teamMetaData").document(teamCode)
+        docRef.getDocument { (document, error) in
+            if let document, document.exists {
+                docRef.updateData([
+                    "memberIDs": FieldValue.arrayRemove([userID])
+                ])
+                return
+            }
+        }
+    }
+    
+    func removeTeamListener() {
+        teamMetaDataListener?.remove()
+        teamMetaDataListener = nil
+    }
+    
 }
 
 

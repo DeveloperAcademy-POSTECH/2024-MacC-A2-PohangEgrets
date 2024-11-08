@@ -27,4 +27,8 @@ final class LocalRepository: LocalRepositoryProtocol {
         return teamCode
     }
     
+    func resetTeamCode() {
+        teamCode = ""
+    }
+    
 }
