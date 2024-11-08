@@ -56,6 +56,26 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
+    func sendEmoticon(
+        sender: String,
+        emoticon: String,
+        receiver: String
+    ) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("emoticons").document(receiver)
+        docRef.getDocument { (document, error) in
+            if let document = document {
+                db.collection("emoticons").document(receiver).setData([
+                    "sender": sender,
+                    "emoticon": emoticon,
+                    "receiver": receiver
+                ])
+            } else {
+                print("Error: \(error?.localizedDescription ?? "No error description")")
+            }
+        }
+    }
+    
     func setUpListenerForUserAppData(userID: String, handler: @escaping (Result<UserAppData, any Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("userAppData").document(userID)
@@ -92,6 +112,42 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 }
             }
         
+    }
+    
+    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, any Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("emoticons").document(userID)
+        
+        docRef
+            .addSnapshotListener { (documentSnapshot, error) in
+                guard let document = documentSnapshot else {
+                    if let error {
+                        handler(.failure(error))
+                    } else {
+                        print("Error fetching document")
+                    }
+                    return
+                }
+                
+                guard let data = document.data() else {
+                    if let error {
+                        handler(.failure(error))
+                    } else {
+                        print("Document data was empty.")
+                    }
+                    return
+                }
+                
+                guard let sender = data["sender"] as? String,
+                      let receiver = data["receiver"] as? String,
+                      let emoticonRawValue = data["emoticon"] as? String,
+                      let emoticonOption = Emoticon.emoticonOption(rawValue: emoticonRawValue) else {
+                    let mappingError = NSError(domain: "MappingError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid data format"])
+                    handler(.failure(mappingError))
+                    return
+                }
+                handler(.success(Emoticon(receiver: receiver, emoticon: emoticonOption, sender: sender)))
+            }
     }
     
 }

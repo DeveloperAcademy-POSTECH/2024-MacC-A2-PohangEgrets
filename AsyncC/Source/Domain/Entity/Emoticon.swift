@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct Emotion {
+struct Emoticon {
     var receiver: String // 받는이 UUID
-    var emotion: emotionOption?
+    var emoticon: emoticonOption
     var sender: String //보낸이 UUID
     
-    enum emotionOption {
+    enum emoticonOption: String {
         case getHelp
         case giveHelp
         case yes
