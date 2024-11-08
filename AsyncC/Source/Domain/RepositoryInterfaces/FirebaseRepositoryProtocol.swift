@@ -30,5 +30,15 @@ protocol FirebaseRepositoryProtocol {
     func removeTeamListener()
     
     func removeAllUsersInTeam(teamCode: String)
+
+    func setUsers(id: String,
+                  email: String,
+                  name: String) -> Void
     
+    func sendEmoticon(sender: String,
+                      emoticon: String,
+                      receiver: String) -> Void
+    
+    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, any Error>) -> Void)
+
 }
