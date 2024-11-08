@@ -11,7 +11,7 @@ import FirebaseFirestore
 
 final class FirebaseRepository: FirebaseRepositoryProtocol
 {
-    // MARK: - User, UserAppData 통신
+    // MARK: - User, UserAppData 통신 및 관리
     var userAppDataListeners: [ListenerRegistration] = []
     
     func setUserAppData(
@@ -89,7 +89,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         userAppDataListeners = []
     }
     
-    // MARK: - TeamMetaData 통신
+    // MARK: - TeamMetaData 통신 및 관리
     var teamMetaDataListener: ListenerRegistration? = nil
     
     func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void) {

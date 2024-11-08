@@ -19,6 +19,7 @@ final class TeamManagingUseCase {
         appTrackingUseCase = AppTrackingUseCase()
     }
     
+    // MARK: - 새로운 Team 생성
     func createNewTeam(teamName: String) -> String {
         let teamCode = generateTeamCode()
         let hostID = localRepository.getUserID()
@@ -44,6 +45,7 @@ final class TeamManagingUseCase {
         return String((0..<6).compactMap { _ in characters.randomElement() })
     }
     
+    // MARK: - 기존 Team 참가
     func addNewMemberToTeam(teamCode: String) {
         let userID = localRepository.getUserID()
         
@@ -60,6 +62,7 @@ final class TeamManagingUseCase {
         }
     }
     
+    // MARK: - Listener 생성 및 업데이트
     private func setUpAllListeners(using teamData: TeamMetaData) {
         let teamInviteCode = teamData.inviteCode
         
@@ -84,6 +87,7 @@ final class TeamManagingUseCase {
         appTrackingUseCase.setupAppTracking(fbRepository: firebaseRepository, teamMemberIDs: updatedMemberIDs)
     }
     
+    // MARK: - Team 정보 갖고오기
     func getTeamNameAndHostName(for teamInviteCode: String,
                                 handler: @escaping ((Result<(teamName: String, hostName: String), Error>)) -> Void) {
         firebaseRepository.getTeamData(teamCode: teamInviteCode) { result in
@@ -106,6 +110,7 @@ final class TeamManagingUseCase {
         }
     }
     
+    // MARK: - Team 나가기 및 지우기 
     func leaveTeam() {
         let userID = localRepository.getUserID()
         let teamCode = localRepository.getTeamCode()
