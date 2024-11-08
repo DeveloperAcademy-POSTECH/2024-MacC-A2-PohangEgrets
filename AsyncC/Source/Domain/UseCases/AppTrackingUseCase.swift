@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppKit
 
 final class AppTrackingUseCase: ObservableObject {
     
@@ -13,10 +14,42 @@ final class AppTrackingUseCase: ObservableObject {
     private let localRepository: LocalRepository
     private var teamMemberIDs = ["ingt", "mia", "topia"] // 추후에 팀 생성 + 팀 정보 갖고오기 하면 바꿀 예정
     @Published var teamMemberAppTrackings: [String: [String]] = [:]
+    private var currentApp: NSRunningApplication? = nil
     
     init() {
         firebaseRepository = FirebaseRepository()
         localRepository = LocalRepository()
+    }
+    
+    func startAppTracking() {
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main) { [weak self] notification in
+                guard let self = self else { return }
+                if let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
+                    self.handleAppChangedIfNeeded(app: app)
+                }
+        }
+    }
+
+    private func handleAppChangedIfNeeded(app: NSRunningApplication) {
+        if self.currentApp != app {
+            self.currentApp = app
+            self.handleAppChanged(app: app)
+        }
+    }
+    
+    private func handleAppChanged(app: NSRunningApplication) {
+        if let appName = app.localizedName {
+            updateAppTracking(appName: appName)
+        } else {
+            updateAppTracking(appName: "Unknown")
+        }
+    }
+    
+    func stopAppTracking() {
+        NSWorkspace.shared.notificationCenter.removeObserver(self)
     }
     
     private func updateAppTracking(appName: String) {
