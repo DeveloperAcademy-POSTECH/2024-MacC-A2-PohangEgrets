@@ -15,9 +15,9 @@ final class AppTrackingUseCase: ObservableObject {
     @Published var teamMemberAppTrackings: [String: [String]] = [:]
     private var currentApp: NSRunningApplication? = nil
     
-    init() {
-        firebaseRepository = FirebaseRepository()
-        localRepository = LocalRepository()
+    init(localRepo: LocalRepository, firebaseRepo: FirebaseRepository) {
+        self.localRepository = localRepo
+        self.firebaseRepository = firebaseRepo
     }
     
     func startAppTracking() {
