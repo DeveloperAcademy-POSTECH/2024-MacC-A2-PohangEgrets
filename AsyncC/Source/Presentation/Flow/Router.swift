@@ -31,6 +31,7 @@ class Router: ObservableObject{
         case CreateTeamView
         case JoinTeamView
         case MainStatusView
+        case LoginView
     }
     
     @ViewBuilder func view(for route: AsyncCViews) -> some View {
@@ -43,6 +44,8 @@ class Router: ObservableObject{
             JoinTeamView(viewModel: JoinTeamViewModel(teamManagingUseCase: teamManagingUseCase))
         case .MainStatusView:
             MainStatusView()
+        case .LoginView:
+            LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         }
     }
     
