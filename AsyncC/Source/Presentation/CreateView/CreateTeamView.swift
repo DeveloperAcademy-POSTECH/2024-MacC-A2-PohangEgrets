@@ -32,7 +32,8 @@ struct CreateTeamView: View {
             Button("생성하기") {
                 print(teamName)
             }
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
+            .disabled(teamName.isEmpty)
+            .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
         }
         .fixedSize(horizontal: false, vertical: true)
     }
