@@ -22,4 +22,10 @@ class JoinTeamViewModel: ObservableObject {
             }
         }
     }
+    
+    func getDetailsOfTeam(_ code: String, handler: @escaping (Result<(teamName: String, hostName: String), Error>) -> Void)  {
+        teamManagingUseCase.getTeamNameAndHostName(for: code) { result in
+            handler(result)
+        }
+    }
 }

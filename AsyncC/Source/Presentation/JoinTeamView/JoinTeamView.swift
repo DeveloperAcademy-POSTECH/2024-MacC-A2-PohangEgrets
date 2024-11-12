@@ -13,6 +13,7 @@ struct JoinTeamView: View {
     @State var viewModel: JoinTeamViewModel
     
     @State var isPresented: Bool = false
+    @State var teamDetails: (teamName: String, hostName: String) = ("", "")
     
     var body: some View {
         ZStack {
@@ -39,8 +40,16 @@ struct JoinTeamView: View {
                         await viewModel.addMemberToTeam(teamCode)
                         // Handle error when team cannot be found
                     }
-                    isPresented = true
-                    
+                    viewModel.getDetailsOfTeam(teamCode) { result in
+                        switch result {
+                        case .success(let team):
+                            teamDetails = (team.teamName, team.hostName)
+                            isPresented = true
+                        case .failure(let error):
+                            print(error.localizedDescription)
+                        }
+                        
+                    }
                 }
                 .disabled(teamCode.isEmpty)
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
@@ -51,11 +60,11 @@ struct JoinTeamView: View {
                     VStack {
                         Text("팀명")
                             .foregroundStyle(.black)
-                        Text("포항 이그렛츠")
+                        Text(teamDetails.teamName)
                             .foregroundStyle(.black)
                         Text("호스트")
                             .foregroundStyle(.black)
-                        Text("이완재")
+                        Text(teamDetails.hostName)
                             .foregroundStyle(.black)
                         Button {
                             isPresented = false
