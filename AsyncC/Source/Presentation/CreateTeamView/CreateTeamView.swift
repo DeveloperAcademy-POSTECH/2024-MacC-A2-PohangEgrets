@@ -31,7 +31,12 @@ struct CreateTeamView: View {
                 .textFieldStyle(.roundedBorder)
                 .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
             Button("생성하기") {
-                print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
+                let dispatchGroup = DispatchGroup()
+                DispatchQueue.global(qos: .userInitiated).async(group: dispatchGroup) {
+                    print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
+                }
+                dispatchGroup.wait()
+                router.push(view: .MainStatusView)
             }
             .disabled(teamName.isEmpty)
             .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))

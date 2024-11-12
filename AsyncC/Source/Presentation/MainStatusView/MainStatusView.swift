@@ -11,9 +11,12 @@ struct MainStatusView: View {
     @EnvironmentObject var router: Router
     
     var body: some View {
-        VStack {
-            Text("Status View")
+        VStack {     
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundStyle(.tint)
+            Text("Hello, world!")
         }
-        .fixedSize(horizontal: false, vertical: true)
+        .fixedSize(horizontal: true, vertical: false)
     }
 }
