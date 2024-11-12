@@ -37,7 +37,7 @@ class Router: ObservableObject{
         case .CreateOrJoinTeamView:
             CreateOrJoinTeamView(viewModel: CreateOrJoinTeamViewModel(teamUseCase: teamManagingUseCase))
         case .CreateTeamView:
-            CreateTeamView()
+            CreateTeamView(viewModel: CreateTeamViewModel(teamManagingUseCase: teamManagingUseCase))
         case .JoinTeamView:
             JoinTeamView()
         }

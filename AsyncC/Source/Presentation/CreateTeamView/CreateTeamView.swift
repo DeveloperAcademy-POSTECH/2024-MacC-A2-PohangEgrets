@@ -10,6 +10,7 @@ import SwiftUI
 struct CreateTeamView: View {
     @EnvironmentObject var router: Router
     @State var teamName: String = ""
+    @State var viewModel: CreateTeamViewModel
     
     var body: some View {
         VStack {
@@ -30,7 +31,7 @@ struct CreateTeamView: View {
                 .textFieldStyle(.roundedBorder)
                 .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
             Button("생성하기") {
-                print(teamName)
+                print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
             }
             .disabled(teamName.isEmpty)
             .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
