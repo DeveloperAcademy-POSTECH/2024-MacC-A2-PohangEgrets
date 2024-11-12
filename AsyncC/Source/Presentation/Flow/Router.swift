@@ -28,12 +28,15 @@ class Router: ObservableObject{
     
     enum AsyncCViews: Hashable{
         case CreateOrJoinTeamView
+        case CreateTeamView
     }
     
     @ViewBuilder func view(for route: AsyncCViews) -> some View {
         switch route{
         case .CreateOrJoinTeamView:
             CreateOrJoinTeamView(viewModel: CreateOrJoinTeamViewModel(teamUseCase: teamManagingUseCase))
+        case .CreateTeamView:
+            CreateTeamView()
         }
     }
     
