@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CreateOrJoinTeamView: View {
+    @EnvironmentObject var router: Router
+    
     var widthOfButton: CGFloat = 100
     var heightOfButton: CGFloat = 120
     
