@@ -11,9 +11,9 @@ final class EmoticonUseCase {
     private let firebaseRepository: FirebaseRepository
     private let localRepository: LocalRepository
     
-    init() {
-        firebaseRepository = FirebaseRepository()
-        localRepository = LocalRepository()
+    init(localRepo: LocalRepository, firebaseRepo: FirebaseRepository) {
+        self.localRepository = localRepo
+        self.firebaseRepository = firebaseRepo
     }
     
     func send(emoticon: Emoticon.emoticonOption, receiver: String) {

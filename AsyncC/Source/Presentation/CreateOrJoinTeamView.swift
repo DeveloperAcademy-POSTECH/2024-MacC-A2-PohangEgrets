@@ -9,17 +9,16 @@ import SwiftUI
 
 struct CreateOrJoinTeamView: View {
     @EnvironmentObject var router: Router
+    var viewModel: CreateOrJoinTeamViewModel
     
     var widthOfButton: CGFloat = 100
     var heightOfButton: CGFloat = 120
     
     
     var body: some View {
-        NavigationStack {
             VStack {
                 HStack {
                     Button {
-                        // Create Team
                         print("Create Team")
                     } label: {
                         VStack {
@@ -53,10 +52,5 @@ struct CreateOrJoinTeamView: View {
                     
                 }.padding()
             }
-        }
     }
-}
-
-#Preview {
-    CreateOrJoinTeamView()
 }

@@ -13,9 +13,9 @@ final class AccountManagingUseCase {
     private let localRepository: LocalRepository
     private let firebaseRepository: FirebaseRepository
     
-    init() {
-        localRepository = LocalRepository()
-        firebaseRepository = FirebaseRepository()
+    init(localRepo: LocalRepository, firebaseRepo: FirebaseRepository) {
+        self.localRepository = localRepo
+        self.firebaseRepository = firebaseRepo
     }
     
     private func saveUserIDToLocal(userID: String) {

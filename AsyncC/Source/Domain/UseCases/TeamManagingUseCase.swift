@@ -13,10 +13,10 @@ final class TeamManagingUseCase {
     private let localRepository: LocalRepository
     private let appTrackingUseCase: AppTrackingUseCase
     
-    init() {
-        firebaseRepository = FirebaseRepository()
-        localRepository = LocalRepository()
-        appTrackingUseCase = AppTrackingUseCase()
+    init(localRepo: LocalRepository, firebaseRepo: FirebaseRepository, appTrackingUseCase: AppTrackingUseCase) {
+        self.localRepository = localRepo
+        self.firebaseRepository = firebaseRepo
+        self.appTrackingUseCase = appTrackingUseCase
     }
     
     // MARK: - 새로운 Team 생성
