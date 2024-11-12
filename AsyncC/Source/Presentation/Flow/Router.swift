@@ -40,7 +40,7 @@ class Router: ObservableObject{
         case .CreateTeamView:
             CreateTeamView(viewModel: CreateTeamViewModel(teamManagingUseCase: teamManagingUseCase))
         case .JoinTeamView:
-            JoinTeamView()
+            JoinTeamView(viewModel: JoinTeamViewModel(teamManagingUseCase: teamManagingUseCase))
         case .MainStatusView:
             MainStatusView()
         }

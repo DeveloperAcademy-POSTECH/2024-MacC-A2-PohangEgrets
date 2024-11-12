@@ -17,6 +17,7 @@ struct MainStatusView: View {
                 .foregroundStyle(.tint)
             Text("Hello, world!")
         }
-        .fixedSize(horizontal: true, vertical: false)
+        .frame(width: 200, height: 200)
+        .fixedSize(horizontal: false, vertical: false)
     }
 }
