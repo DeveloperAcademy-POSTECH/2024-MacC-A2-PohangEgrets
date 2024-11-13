@@ -33,7 +33,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func makeHUDWindow() {
         hudWindow = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 300, height: 200),
-            styleMask: [.nonactivatingPanel],
+            styleMask: [.nonactivatingPanel, .titled],
             backing: .buffered, defer: false
         )
     }

@@ -16,5 +16,12 @@ class MainStatusViewModel: ObservableObject {
         self.appTrackingUseCase = appTrackingUseCase
     }
     
+    func getTeamName() -> String {
+        teamManagingUseCase.getTeamName()
+    }
+    
+    func getTeamCode() -> String {
+        teamManagingUseCase.getTeamCode()
+    }
     
 }
