@@ -10,6 +10,8 @@ import SwiftUI
 struct MainStatusView: View {
     @EnvironmentObject var router: Router
     
+    var viewModel: MainStatusViewModel
+    
     var body: some View {
         VStack {     
             Image(systemName: "globe")
