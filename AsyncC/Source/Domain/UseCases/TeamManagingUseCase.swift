@@ -30,6 +30,7 @@ final class TeamManagingUseCase {
             case .success(let message):
                 print(message)
                 self.localRepository.saveTeamCode(teamMetaData.inviteCode)
+                self.localRepository.saveTeamName(teamName)
                 self.setUpAllListeners(using: teamMetaData)
             case .failure(let error):
                 print(error.localizedDescription)
@@ -54,6 +55,7 @@ final class TeamManagingUseCase {
             case .success(let teamData):
                 let teamInviteCode = teamData.inviteCode
                 self.localRepository.saveTeamCode(teamInviteCode)
+                self.localRepository.saveTeamName(teamData.teamName)
                 self.setUpAllListeners(using: teamData)
                 
             case .failure(let error):
@@ -110,6 +112,14 @@ final class TeamManagingUseCase {
         }
     }
     
+    func getTeamName() -> String {
+        return localRepository.getTeamName()
+    }
+    
+    func getTeamCode() -> String {
+        return localRepository.getTeamCode()
+    }
+    
     // MARK: - Team 나가기 및 지우기 
     func leaveTeam() {
         let userID = localRepository.getUserID()
@@ -121,6 +131,7 @@ final class TeamManagingUseCase {
         firebaseRepository.removeTeamListener()
         firebaseRepository.removeUser(userID: userID, teamCode: teamCode)
         localRepository.resetTeamCode()
+        localRepository.resetTeamName()
     }
     
     func deleteTeam() {

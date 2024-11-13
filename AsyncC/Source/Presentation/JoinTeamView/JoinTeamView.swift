@@ -36,10 +36,6 @@ struct JoinTeamView: View {
                     .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                     .disabled(isPresented)
                 Button("참여하기") {
-                    Task {
-                        await viewModel.addMemberToTeam(teamCode)
-                        // Handle error when team cannot be found
-                    }
                     viewModel.getDetailsOfTeam(teamCode) { result in
                         switch result {
                         case .success(let team):
@@ -68,6 +64,10 @@ struct JoinTeamView: View {
                             .foregroundStyle(.black)
                         Button {
                             isPresented = false
+                            Task {
+                                await viewModel.addMemberToTeam(teamCode)
+                                // Handle error when team cannot be foundgi
+                            }
                             router.push(view: .MainStatusView)
                         } label: {
                             Text("팀 참여하기")
