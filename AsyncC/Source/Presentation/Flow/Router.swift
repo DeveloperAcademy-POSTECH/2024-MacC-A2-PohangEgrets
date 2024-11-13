@@ -28,6 +28,9 @@ class Router: ObservableObject{
     
     enum AsyncCViews: Hashable{
         case CreateOrJoinTeamView
+        case CreateTeamView
+        case JoinTeamView
+        case MainStatusView
         case LoginView
     }
     
@@ -35,6 +38,12 @@ class Router: ObservableObject{
         switch route{
         case .CreateOrJoinTeamView:
             CreateOrJoinTeamView(viewModel: CreateOrJoinTeamViewModel(teamUseCase: teamManagingUseCase))
+        case .CreateTeamView:
+            CreateTeamView(viewModel: CreateTeamViewModel(teamManagingUseCase: teamManagingUseCase))
+        case .JoinTeamView:
+            JoinTeamView(viewModel: JoinTeamViewModel(teamManagingUseCase: teamManagingUseCase))
+        case .MainStatusView:
+            MainStatusView()
         case .LoginView:
             LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         }

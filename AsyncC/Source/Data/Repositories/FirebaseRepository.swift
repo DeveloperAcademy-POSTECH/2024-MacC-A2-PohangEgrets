@@ -264,7 +264,9 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         let docRef = db.collection("users").document(hostID)
         docRef.getDocument { (document, error) in
             if let document, document.exists {
-                let hostName = document["name"] as? String ?? ""
+                guard let data = document.data() else {return}
+                let hostName = data["name"] as? String ?? ""
+                print("data: \(hostName)")
                 handler(.success(hostName))
                 return
             }

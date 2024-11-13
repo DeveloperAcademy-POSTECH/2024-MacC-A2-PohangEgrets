@@ -19,6 +19,7 @@ struct CreateOrJoinTeamView: View {
             VStack {
                 HStack {
                     Button {
+                        router.push(view: .CreateTeamView)
                         print("Create Team")
                     } label: {
                         VStack {
@@ -34,7 +35,7 @@ struct CreateOrJoinTeamView: View {
                     .buttonStyle(.borderedProminent)
                     .tint(.white)
                     Button {
-                        // Create Team
+                        router.push(view: .JoinTeamView)
                         print("Join Team")
                     } label: {
                         VStack {
