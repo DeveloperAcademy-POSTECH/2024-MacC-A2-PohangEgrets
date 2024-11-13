@@ -28,10 +28,7 @@ final class TeamManagingUseCase {
         firebaseRepository.createNewTeamInFirestore(teamData: teamMetaData) { result in
             switch result {
             case .success(let message):
-                print(message)
-                self.localRepository.saveTeamCode(teamMetaData.inviteCode)
-                self.localRepository.saveTeamName(teamName)
-                self.setUpAllListeners(using: teamMetaData)
+                self.onboardTeam(teamData: teamMetaData)
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -53,15 +50,20 @@ final class TeamManagingUseCase {
         firebaseRepository.addNewMemberToTeam(teamCode: teamCode, userID: userID) { result in
             switch result {
             case .success(let teamData):
-                let teamInviteCode = teamData.inviteCode
-                self.localRepository.saveTeamCode(teamInviteCode)
-                self.localRepository.saveTeamName(teamData.teamName)
-                self.setUpAllListeners(using: teamData)
+                self.onboardTeam(teamData: teamData)
                 
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    private func onboardTeam(teamData: TeamMetaData) {
+        let teamInviteCode = teamData.inviteCode
+        self.localRepository.saveTeamCode(teamInviteCode)
+        self.localRepository.saveTeamName(teamData.teamName)
+        self.appTrackingUseCase.startAppTracking()
+        self.setUpAllListeners(using: teamData)
     }
     
     // MARK: - Listener 생성 및 업데이트
@@ -128,6 +130,7 @@ final class TeamManagingUseCase {
         
         firebaseRepository.removeListenersForUserAppData()
         appTrackingUseCase.resetAppTrackings()
+        appTrackingUseCase.stopAppTracking()
         firebaseRepository.removeTeamListener()
         firebaseRepository.removeUser(userID: userID, teamCode: teamCode)
         localRepository.resetTeamCode()
@@ -137,5 +140,6 @@ final class TeamManagingUseCase {
     func deleteTeam() {
         let teamCode = localRepository.getTeamCode()
         firebaseRepository.removeAllUsersInTeam(teamCode: teamCode)
+        appTrackingUseCase.stopAppTracking()
     }
 }
