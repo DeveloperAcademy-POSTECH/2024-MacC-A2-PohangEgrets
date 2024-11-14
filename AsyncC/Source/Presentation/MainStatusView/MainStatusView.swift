@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 struct MainStatusView: View {
     @EnvironmentObject var router: Router
     
-    var viewModel: MainStatusViewModel
+    @StateObject var viewModel: MainStatusViewModel
     
     var body: some View {
         VStack(alignment: .leading){
@@ -26,6 +26,13 @@ struct MainStatusView: View {
                 }
             }
             Divider()
+            ForEach(viewModel.appTrackings.keys.sorted(), id: \.self) { key in
+                Text(key)
+                ForEach(viewModel.appTrackings[key] ?? [], id:\.self) { appName in
+                    Text(appName)
+                }
+            }
+            Spacer()
         }
         .padding(16)
         .fixedSize(horizontal: false, vertical: true)

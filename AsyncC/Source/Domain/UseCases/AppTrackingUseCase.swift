@@ -80,8 +80,8 @@ final class AppTrackingUseCase: ObservableObject {
     private func updateAppTracking(with updatedData: UserAppData) {
         let userID = updatedData.userID
         var appData = updatedData.appData
-        var arrayOfLatestApps = [String](repeating: "", count: 5)
-        var count = min(4, appData.count - 1)
+        var arrayOfLatestApps = [String](repeating: "", count: 3)
+        var count = min(2, appData.count - 1)
         var uniqueApps: Set<String> = []
         
         while count >= 0 {
