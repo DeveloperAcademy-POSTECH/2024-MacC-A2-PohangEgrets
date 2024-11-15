@@ -11,6 +11,7 @@ final class LocalRepository: LocalRepositoryProtocol {
     @AppStorage("userID") var userID: String = ""
     @AppStorage("userName") var userName: String = ""
     @AppStorage("teamCode") var teamCode: String = ""
+    @AppStorage("teamName") var teamName: String = ""
     
     func getUserID() -> String {
         return userID
@@ -40,4 +41,15 @@ final class LocalRepository: LocalRepositoryProtocol {
         teamCode = ""
     }
     
+    func saveTeamName(_ inputTeamName: String) {
+        teamName = inputTeamName
+    }
+    
+    func getTeamName() -> String {
+        return teamName
+    }
+    
+    func resetTeamName() {
+        teamName = ""
+    }
 }
