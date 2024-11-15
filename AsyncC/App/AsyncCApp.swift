@@ -9,8 +9,10 @@ import SwiftUI
 import FirebaseCore
 
 class AppDelegate: NSObject, NSApplicationDelegate {
+    private var launchWindowController: NSWindowController?
     var statusBarItem: NSStatusItem?
     var hudWindow: NSPanel?
+    let router = Router()
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Firebase configure
@@ -19,6 +21,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setUpStatusBarItem()
         
         setUpHUDWindow()
+        
+        router.appDelegate = self
     }
     
     func setUpStatusBarItem() {
@@ -41,16 +45,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func setUpHUDWindow() {
         makeHUDWindow()
         
-        let router = Router()
-
         // Remove the default background color of NSPanel
         hudWindow?.isOpaque = false
-        hudWindow?.backgroundColor = .clear
+        hudWindow?.backgroundColor = .black
         
         hudWindow?.isMovable = false
         hudWindow?.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
         hudWindow?.level = .floating
-        hudWindow?.contentViewController = NSHostingController(rootView: ContentView().environmentObject(router))
+        hudWindow?.contentViewController = NSHostingController(rootView: MainStatusView(viewModel: MainStatusViewModel(teamManagingUseCase: self.router.teamManagingUseCase, appTrackingUseCase: self.router.appTrackingUseCase)))
         
         // Set the CornerRadius for the View inside the NSPanel
         hudWindow?.contentView?.wantsLayer = true
@@ -75,19 +77,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
     }
+    
+    func showHUDWindow() {
+        if let hudWindow = self.hudWindow, let button = statusBarItem?.button {
+            print("hi")
+            if hudWindow.isVisible {
+                hudWindow.orderOut(nil)
+            } else {
+                if let screen = button.window?.screen {
+                    let statusBarFrame = button.window?.frame ?? NSRect(x: 0, y: 0, width: 0, height: 0)
+                    let xPosition = statusBarFrame.origin.x
+                    let yPosition = screen.frame.maxY - statusBarFrame.height
+                    
+                    hudWindow.setFrameOrigin(NSPoint(x: xPosition, y: yPosition))
+                }
+                
+                hudWindow.makeKeyAndOrderFront(nil)
+            }
+        }
+    }
+    
 }
 
 @main
 struct AsyncCApp: App {
-  // Register app delegate for Firebase setup
-  @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
-
-
-  var body: some Scene {
-      // Remove WindowGroup to prevent the main window from appearing
-      // and only display the Status Bar item.
-      Settings {
-          EmptyView()
-      }
-  }
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView().environmentObject(delegate.router)
+        }
+    }
 }
