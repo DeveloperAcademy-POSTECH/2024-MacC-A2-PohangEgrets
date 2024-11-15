@@ -36,7 +36,8 @@ struct CreateTeamView: View {
                     print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
                 }
                 dispatchGroup.wait()
-                router.push(view: .MainStatusView)
+                NSApplication.shared.keyWindow?.close()
+                router.showHUDWindow()
             }
             .disabled(teamName.isEmpty)
             .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))

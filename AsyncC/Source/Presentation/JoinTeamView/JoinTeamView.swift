@@ -66,9 +66,10 @@ struct JoinTeamView: View {
                             isPresented = false
                             Task {
                                 await viewModel.addMemberToTeam(teamCode)
-                                // Handle error when team cannot be foundgi
                             }
-                            router.push(view: .MainStatusView)
+                            NSApplication.shared.keyWindow?.close()
+                            router.showHUDWindow()
+                            
                         } label: {
                             Text("팀 참여하기")
                                 .foregroundStyle(.black)

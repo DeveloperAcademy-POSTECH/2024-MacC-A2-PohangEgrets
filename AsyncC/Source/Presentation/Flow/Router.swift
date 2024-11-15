@@ -11,6 +11,8 @@ import SwiftUI
 class Router: ObservableObject{
     @Published var path: NavigationPath = NavigationPath()
     
+    var appDelegate: AppDelegate?
+    
     var firebaseRepository = FirebaseRepository()
     var localRepository = LocalRepository()
     
@@ -55,5 +57,12 @@ class Router: ObservableObject{
     
     func pop(){
         path.removeLast()
+    }
+    
+    func showHUDWindow() {
+        if let delegate = appDelegate {
+            print("here")
+            delegate.showHUDWindow()
+        }
     }
 }
