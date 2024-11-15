@@ -48,21 +48,48 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         let docRef = db.collection("users").document(id)
         docRef.getDocument { (document, error) in
             if let document = document {
-                if document.exists {
-                    // Change User Name on Firebase
-                    db.collection("users").document(id).setData([
-                        "name": name
-                    ], merge: true)
-                } else {
-                    // First Register User Information on Firebase
-                    db.collection("users").document(id).setData([
-                        "id": id,
-                        "email": email,
-                        "name": name
-                    ])
-                }
+                db.collection("users").document(id).setData([
+                    "id": id,
+                    "email": email,
+                    "name": name
+                ])
             } else {
                 print("Error: \(error?.localizedDescription ?? "No error description")")
+            }
+        }
+    }
+    
+    func updateUsers(
+        id: String,
+        email: String? = nil,
+        name: String? = nil
+    ) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("users").document(id)
+        
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                var dataToUpdate: [String: Any] = [:]
+                
+                if let email = email {
+                    dataToUpdate["email"] = email
+                }
+                
+                if let name = name {
+                    dataToUpdate["name"] = name
+                }
+                
+                if !dataToUpdate.isEmpty {
+                    db.collection("users").document(id).setData(dataToUpdate, merge: true)
+                } else {
+                    print("No fields to update.")
+                }
+            } else {
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                } else {
+                    print("Document does not exist.")
+                }
             }
         }
     }
