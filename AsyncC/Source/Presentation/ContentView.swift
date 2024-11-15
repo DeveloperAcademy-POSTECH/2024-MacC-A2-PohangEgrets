@@ -16,7 +16,7 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Button {
-                router.push(view: .CreateOrJoinTeamView)
+                router.push(view: .LoginView)
             } label: {
                 Text("click here")
             }

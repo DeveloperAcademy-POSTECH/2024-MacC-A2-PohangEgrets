@@ -65,20 +65,19 @@ final class AccountManagingUseCase {
                 appleIDCredential.fullName?.familyName  // 성
             ].compactMap { $0 } // nil을 제거
              .joined(separator: " ") // 공백으로 연결
-            
-            // MARK: - UserID를 Firebase에 확인해 (있다면 이름을 UserDefault에 넣기) / (없다면 파이어베이스에 넣고 이름을 UserDefault에 넣기)
+                        
             firebaseRepository.checkExistUserBy(userID: userID) { exists, name in
                 if exists {
                     if let name = name {
                         self.saveUserIDToLocal(userID: userID)
                         self.saveUserNameToLocal(userName: name)
-                        print("Exists in Firebse, so i fetch \(name) from Firebase")
+                        print("Exists in Firebase, so i fetch \(name) from Firebase")
                     }
                 } else {
                     self.saveUserIDToLocal(userID: userID)
                     self.saveUserNameToLocal(userName: fullName)
                     self.saveUserIDToFirebase(id: userID, email: email ?? "N/A", name: "\(fullName.isEmpty ? "N/A" : fullName)")
-                    print("Not exists in Firebse, so i save \(fullName) to Firebase")
+                    print("Not exists in Firebase, so i save \(fullName) to Firebase")
                 }
             }
             
@@ -100,4 +99,7 @@ final class AccountManagingUseCase {
         saveUserNameToLocal(userName: userName)
         changeUserNameToFirebase(name: userName)
     }
+    
+    // MARK: - 회원 탈퇴기능 필요
+    
 }
