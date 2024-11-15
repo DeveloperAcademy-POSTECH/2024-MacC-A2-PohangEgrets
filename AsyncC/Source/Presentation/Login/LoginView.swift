@@ -14,7 +14,6 @@ struct LoginView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            
             Image(systemName: "heart.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -25,7 +24,6 @@ struct LoginView: View {
             SignInWithAppleButton(.signIn, onRequest: viewModel.accountManagingUseCase.signInRequest, onCompletion: viewModel.accountManagingUseCase.handleAuthorization)
                 .frame(width: 120, height: 28)
                 .padding(.top, 28)
-            
             Spacer()
         }
         .frame(width: 270, height: 200)

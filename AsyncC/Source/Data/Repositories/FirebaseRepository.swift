@@ -48,13 +48,44 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         let docRef = db.collection("users").document(id)
         docRef.getDocument { (document, error) in
             if let document = document {
-                db.collection("users").document(id).setData([
-                    "id": id,
-                    "email": email,
-                    "name": name
-                ])
+                if document.exists {
+                    // Change User Name on Firebase
+                    db.collection("users").document(id).setData([
+                        "name": name
+                    ], merge: true)
+                } else {
+                    // First Register User Information on Firebase
+                    db.collection("users").document(id).setData([
+                        "id": id,
+                        "email": email,
+                        "name": name
+                    ])
+                }
             } else {
                 print("Error: \(error?.localizedDescription ?? "No error description")")
+            }
+        }
+    }
+    
+    func checkExistUserBy(userID: String, completion: @escaping (Bool, String?) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("users").document(userID)
+        
+        docRef.getDocument { (document, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                completion(false, nil)
+                return
+            }
+            
+            if let document = document, document.exists {
+                if let name = document.data()?["name"] as? String {
+                    completion(true, name)
+                } else {
+                    completion(true, nil)
+                }
+            } else {
+                completion(false, nil)
             }
         }
     }
