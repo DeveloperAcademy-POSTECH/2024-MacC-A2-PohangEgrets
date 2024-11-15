@@ -20,38 +20,41 @@ struct CreateOrJoinTeamView: View {
                 HStack {
                     Button {
                         router.push(view: .CreateTeamView)
-                        print("Create Team")
                     } label: {
-                        VStack {
+                        VStack (alignment: .center){
                             Image("CreateTeamIcon")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
                             Text("팀 생성하기")
-                                .foregroundStyle(.black)
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
                         }
                     }
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                     .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
-                    .buttonStyle(.borderedProminent)
-                    .tint(.white)
+                    .shadow(color: .gray, radius: 3, x: 1, y: 1)
+                    
                     Button {
                         router.push(view: .JoinTeamView)
                         print("Join Team")
                     } label: {
-                        VStack {
+                        VStack{
                             Image("JoinTeamIcon")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
                             Text("팀 참가하기")
-                                .foregroundStyle(.black)
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
                         }
                     }
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                     .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
-                    .buttonStyle(.borderedProminent)
-                    .tint(.white)
+                    .shadow(color: .gray, radius: 3, x: 1, y: 1)
                     
                 }.padding()
             }
+            .frame(width: 270, height: 230)
     }
 }
