@@ -35,6 +35,12 @@ protocol FirebaseRepositoryProtocol {
                   email: String,
                   name: String) -> Void
     
+    func updateUsers(id: String,
+                     email: String?,
+                     name: String?) -> Void
+    
+    func checkExistUserBy(userID: String, completion: @escaping (Bool, String?) -> Void)
+    
     func sendEmoticon(sender: String,
                       emoticon: String,
                       receiver: String) -> Void
