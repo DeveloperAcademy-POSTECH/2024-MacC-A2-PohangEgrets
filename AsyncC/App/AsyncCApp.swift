@@ -17,12 +17,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Firebase configure
         FirebaseApp.configure()
-        
+                
         setUpStatusBarItem()
         
         setUpHUDWindow()
         
         router.appDelegate = self
+        
     }
     
     func setUpStatusBarItem() {
@@ -105,7 +106,9 @@ struct AsyncCApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(delegate.router)
+            ContentView()
+                .environmentObject(delegate.router)
+                .preferredColorScheme(.light)
         }
     }
 }
