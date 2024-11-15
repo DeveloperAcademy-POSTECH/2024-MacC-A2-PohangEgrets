@@ -12,11 +12,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var launchWindowController: NSWindowController?
     var statusBarItem: NSStatusItem?
     var hudWindow: NSPanel?
+    var contentViewWindow: NSWindow?
     let router = Router()
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Firebase configure
         FirebaseApp.configure()
+        
+        setUpContentViewWindow()
         
         setUpStatusBarItem()
         
@@ -37,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func makeHUDWindow() {
         hudWindow = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 300, height: 200),
-            styleMask: [.nonactivatingPanel, .titled],
+            styleMask: [.nonactivatingPanel],
             backing: .buffered, defer: false
         )
     }
@@ -47,7 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Remove the default background color of NSPanel
         hudWindow?.isOpaque = false
-        hudWindow?.backgroundColor = .black
+        hudWindow?.backgroundColor = .clear
         
         hudWindow?.isMovable = false
         hudWindow?.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
@@ -58,6 +61,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         hudWindow?.contentView?.wantsLayer = true
         hudWindow?.contentView?.layer?.cornerRadius = 5.0
         hudWindow?.contentView?.layer?.masksToBounds = true
+    }
+    
+    func makeContentViewWindow() {
+        contentViewWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 270, height: 233),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+    }
+    
+    func setUpContentViewWindow() {
+        makeContentViewWindow()
+        
+        contentViewWindow?.level = .floating
+        contentViewWindow?.center()
+        contentViewWindow?.title = "AsyncC"
+        contentViewWindow?.isReleasedWhenClosed = false
+        contentViewWindow?.contentView = NSHostingView(rootView: ContentView().environmentObject(self.router))
+        contentViewWindow?.makeKeyAndOrderFront(nil)
     }
     
     @objc func toggleHUDWindow() {

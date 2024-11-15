@@ -42,5 +42,6 @@ struct CreateTeamView: View {
             .disabled(teamName.isEmpty)
             .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
         }
+        .frame(width: 270, height: 200)
     }
 }
