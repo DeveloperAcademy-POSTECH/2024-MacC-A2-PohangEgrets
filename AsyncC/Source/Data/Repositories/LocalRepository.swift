@@ -8,7 +8,8 @@
 import SwiftUI
 
 final class LocalRepository: LocalRepositoryProtocol {
-    @AppStorage("userID") var userID: String = "mia"
+    @AppStorage("userID") var userID: String = ""
+    @AppStorage("userName") var userName: String = ""
     @AppStorage("teamCode") var teamCode: String = ""
     
     func getUserID() -> String {
@@ -17,6 +18,14 @@ final class LocalRepository: LocalRepositoryProtocol {
     
     func saveUserID(_ inputID: String) {
         self.userID = inputID
+    }
+    
+    func getUserName() -> String {
+        return userName
+    }
+    
+    func saveUserName(_ inputName: String) {
+        self.userName = inputName
     }
     
     func saveTeamCode(_ inputTeamCode: String) {

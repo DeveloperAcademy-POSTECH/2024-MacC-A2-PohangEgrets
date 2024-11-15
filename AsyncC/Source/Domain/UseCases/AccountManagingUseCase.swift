@@ -18,12 +18,28 @@ final class AccountManagingUseCase {
         self.firebaseRepository = firebaseRepo
     }
     
+    func isSignedIn() -> Bool {
+        if localRepository.userID.isEmpty {
+            return false
+        } else {
+            return true
+        }
+    }
+    
     private func saveUserIDToLocal(userID: String) {
         localRepository.saveUserID(userID)
     }
     
+    private func saveUserNameToLocal(userName: String) {
+        localRepository.saveUserName(userName)
+    }
+    
     private func saveUserIDToFirebase(id: String, email: String, name: String) {
         firebaseRepository.setUsers(id: id, email: email, name: name)
+    }
+    
+    private func changeUserNameToFirebase(name: String) {
+        firebaseRepository.setUsers(id: localRepository.userID, email: "", name: name)
     }
     
     func signInRequest(request: ASAuthorizationAppleIDRequest) {
@@ -50,8 +66,21 @@ final class AccountManagingUseCase {
             ].compactMap { $0 } // nil을 제거
              .joined(separator: " ") // 공백으로 연결
             
-            saveUserIDToLocal(userID: userID)
-            saveUserIDToFirebase(id: userID, email: email ?? "N/A", name: "\(fullName.isEmpty ? "N/A" : fullName)")
+            // MARK: - UserID를 Firebase에 확인해 (있다면 이름을 UserDefault에 넣기) / (없다면 파이어베이스에 넣고 이름을 UserDefault에 넣기)
+            firebaseRepository.checkExistUserBy(userID: userID) { exists, name in
+                if exists {
+                    if let name = name {
+                        self.saveUserIDToLocal(userID: userID)
+                        self.saveUserNameToLocal(userName: name)
+                        print("Exists in Firebse, so i fetch \(name) from Firebase")
+                    }
+                } else {
+                    self.saveUserIDToLocal(userID: userID)
+                    self.saveUserNameToLocal(userName: fullName)
+                    self.saveUserIDToFirebase(id: userID, email: email ?? "N/A", name: "\(fullName.isEmpty ? "N/A" : fullName)")
+                    print("Not exists in Firebse, so i save \(fullName) to Firebase")
+                }
+            }
             
         default:
             break
@@ -60,5 +89,15 @@ final class AccountManagingUseCase {
     
     private func handleAuthorizationFail(with error: Error) {
         print("인증 실패: \(error.localizedDescription)")
+    }
+    
+    func signOut() {
+        self.saveUserNameToLocal(userName: "")
+        self.saveUserIDToLocal(userID: "")
+    }
+    
+    func changeUserName(userName: String) {
+        saveUserNameToLocal(userName: userName)
+        changeUserNameToFirebase(name: userName)
     }
 }
