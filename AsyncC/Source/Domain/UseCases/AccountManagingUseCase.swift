@@ -39,7 +39,7 @@ final class AccountManagingUseCase {
     }
     
     private func changeUserNameToFirebase(name: String) {
-        firebaseRepository.setUsers(id: localRepository.userID, email: "", name: name)
+        firebaseRepository.updateUsers(id: localRepository.userID, name: name)
     }
     
     func signInRequest(request: ASAuthorizationAppleIDRequest) {

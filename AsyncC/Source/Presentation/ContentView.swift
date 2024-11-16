@@ -12,19 +12,21 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack(path: $router.path) {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Button {
-                router.push(view: .LoginView)
-            } label: {
-                Text("click here")
+            VStack {
+                Text("Launch Screen")
             }
-            Text("Hello, world!")
-                .navigationDestination(for: Router.AsyncCViews.self) { destination in
-                    router.view(for: destination)
+            .onAppear {
+                if router.accountManagingUseCase.isSignedIn() {
+                    router.push(view: .CreateOrJoinTeamView)
+                } else {
+                    router.push(view: .LoginView)
                 }
-        }
+            }
+            .navigationDestination(for: Router.AsyncCViews.self) { destination in
+                router.view(for: destination)
+            }
+            .navigationBarBackButtonHidden(true)
+        }        
     }
 }
 

@@ -40,5 +40,6 @@ struct CreateTeamView: View {
             .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12))
             Spacer()
         }
+        .frame(width: 270, height: 200)
     }
 }

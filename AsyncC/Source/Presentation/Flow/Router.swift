@@ -28,7 +28,7 @@ class Router: ObservableObject{
         teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase)
     }
     
-    enum AsyncCViews: Hashable{
+    enum AsyncCViews: Hashable {
         case CreateOrJoinTeamView
         case CreateTeamView
         case JoinTeamView

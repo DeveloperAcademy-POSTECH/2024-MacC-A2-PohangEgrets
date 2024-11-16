@@ -16,11 +16,15 @@ struct CreateOrJoinTeamView: View {
     
     
     var body: some View {
-            VStack {
-                HStack {
-                    Button {
-                        router.push(view: .CreateTeamView)
-                    } label: {
+        VStack {
+            HStack {
+                Button {
+                    router.push(view: .CreateTeamView)
+                } label: {
+                    ZStack {
+                        Rectangle()
+                            .frame(width: widthOfButton, height: heightOfButton)
+                            .foregroundStyle(.clear)
                         VStack (alignment: .center){
                             Image("CreateTeamIcon")
                                 .resizable()
@@ -30,15 +34,19 @@ struct CreateOrJoinTeamView: View {
                                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
                         }
                     }
-                    .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
-                    .shadow(color: .gray, radius: 3, x: 1, y: 1)
-                    
-                    Button {
-                        router.push(view: .JoinTeamView)
-                        print("Join Team")
-                    } label: {
+                }
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
+                .shadow(color: .gray, radius: 3, x: 1, y: 1)
+                Button {
+                    router.push(view: .JoinTeamView)
+                    print("Join Team")
+                } label: {
+                    ZStack {
+                        Rectangle()
+                            .frame(width: widthOfButton, height: heightOfButton)
+                            .foregroundStyle(.clear)
                         VStack{
                             Image("JoinTeamIcon")
                                 .resizable()
@@ -48,13 +56,14 @@ struct CreateOrJoinTeamView: View {
                                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
                         }
                     }
-                    .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
-                    .shadow(color: .gray, radius: 3, x: 1, y: 1)
-                    
-                }.padding()
-            }
-            .frame(width: 270, height: 230)
+                }
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
+                .shadow(color: .gray, radius: 3, x: 1, y: 1)
+                
+            }.padding()
+        }
+        .frame(width: 270, height: 200)
     }
 }
