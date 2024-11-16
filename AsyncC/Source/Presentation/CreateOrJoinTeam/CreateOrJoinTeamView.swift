@@ -39,6 +39,9 @@ struct CreateOrJoinTeamView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
                 .shadow(color: .gray, radius: 3, x: 1, y: 1)
+                
+                Spacer()
+                
                 Button {
                     router.push(view: .JoinTeamView)
                     print("Join Team")
@@ -62,7 +65,7 @@ struct CreateOrJoinTeamView: View {
                 .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
                 .shadow(color: .gray, radius: 3, x: 1, y: 1)
                 
-            }.padding()
+            }.padding(25)
         }
         .frame(width: 270, height: 200)
     }
