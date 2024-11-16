@@ -17,39 +17,39 @@ struct JoinTeamView: View {
     
     var body: some View {
         ZStack {
-            VStack {
-                Button {
-                    router.pop()
-                } label: {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                        Text("팀 참여하기")
-                        Spacer()
-                    }
-                }
-                .buttonStyle(.plain)
-                .padding(EdgeInsets(top: 0, leading: 12, bottom: 8, trailing: 0))
-                Divider()
-                    .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
+            VStack(alignment: .center) {
+                Text("팀 참여하기")
+                    .font(Font.system(size: 16, weight: .semibold))
+                    .padding(EdgeInsets(top: 30, leading: 12, bottom: 0, trailing: 0))
                 TextField("팀 코드를 입력하세요", text:  $teamCode)
                     .textFieldStyle(.roundedBorder)
-                    .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                    .padding(EdgeInsets(top: 16, leading: 24, bottom: 31, trailing: 24))
                     .disabled(isPresented)
-                Button("참여하기") {
-                    viewModel.getDetailsOfTeam(teamCode) { result in
-                        switch result {
-                        case .success(let team):
-                            teamDetails = (team.teamName, team.hostName)
-                            isPresented = true
-                        case .failure(let error):
-                            print(error.localizedDescription)
-                        }
-                        
+                HStack {
+                    Spacer()
+                    Button("취소") {
+                        router.pop()
                     }
+                    Button("참여하기") {
+                        viewModel.getDetailsOfTeam(teamCode) { result in
+                            switch result {
+                            case .success(let team):
+                                teamDetails = (team.teamName, team.hostName)
+                                isPresented = true
+                            case .failure(let error):
+                                print(error.localizedDescription)
+                            }
+                            
+                        }
+                    }
+                    .disabled(teamCode.isEmpty)
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12))
+                    
                 }
-                .disabled(teamCode.isEmpty)
-                .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12))
+                Spacer()
             }
+            .frame(width: 270, height: 200)
             if isPresented {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
