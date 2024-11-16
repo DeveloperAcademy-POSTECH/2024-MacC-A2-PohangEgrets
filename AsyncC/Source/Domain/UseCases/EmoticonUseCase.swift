@@ -8,10 +8,10 @@
 import Foundation
 
 final class EmoticonUseCase {
-    private let firebaseRepository: FirebaseRepository
-    private let localRepository: LocalRepository
+    private let firebaseRepository: FirebaseRepositoryProtocol
+    private let localRepository: LocalRepositoryProtocol
     
-    init(localRepo: LocalRepository, firebaseRepo: FirebaseRepository) {
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
     }

@@ -7,6 +7,11 @@
 
 protocol LocalRepositoryProtocol {
     
+    var userID: String { get set }
+    var userName: String { get set }
+    var teamCode: String { get set }
+    var teamName: String { get set }
+    
     func getUserID() -> String
     
     func saveUserID(_ inputID: String)
@@ -17,6 +22,13 @@ protocol LocalRepositoryProtocol {
     
     func saveTeamCode(_ inputTeamCode: String)
     
+    func saveTeamName(_ inputTeamName: String)
+    
     func getTeamCode() -> String
     
+    func getTeamName() -> String
+    
+    func resetTeamCode()
+    
+    func resetTeamName()
 }

@@ -10,12 +10,12 @@ import AppKit
 
 final class AppTrackingUseCase: ObservableObject {
     
-    private let firebaseRepository: FirebaseRepository
-    private let localRepository: LocalRepository
+    private let firebaseRepository: FirebaseRepositoryProtocol
+    private let localRepository: LocalRepositoryProtocol
     @Published var teamMemberAppTrackings: [String: [String]] = [:]
     private var currentApp: NSRunningApplication? = nil
     
-    init(localRepo: LocalRepository, firebaseRepo: FirebaseRepository) {
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
     }
@@ -55,13 +55,17 @@ final class AppTrackingUseCase: ObservableObject {
         let id = getUserIDFromLocal()
         let epochSeconds = Int(Date().timeIntervalSince1970)
         firebaseRepository.setUserAppData(id: id, appName: appName, epochSeconds: epochSeconds)
+        
+        DispatchQueue.main.async {
+            self.teamMemberAppTrackings[id] = [appName]
+        }
     }
     
     private func getUserIDFromLocal() -> String {
         return localRepository.getUserID()
     }
     
-    func setupAppTracking(fbRepository: FirebaseRepository, teamMemberIDs: [String]) {
+    func setupAppTracking(fbRepository: FirebaseRepositoryProtocol, teamMemberIDs: [String]) {
         let userID = getUserIDFromLocal()
         fbRepository.setUpListenersForUserAppData(userIDToIgnore: userID, userIDsToTrack: teamMemberIDs) { result in
             switch result {
