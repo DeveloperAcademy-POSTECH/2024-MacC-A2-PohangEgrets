@@ -15,11 +15,25 @@ class MainStatusViewModel: ObservableObject {
     var cancellables = Set<AnyCancellable>()
     
     @Published var appTrackings: [String: [String]] = [:]
+    @Published var hostName: String = ""
     
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
         self.startShowingAppTracking()
+    }
+    
+    func updateHostName(teamCode: String) {
+        teamManagingUseCase.getTeamNameAndHostName(for: teamCode) { [weak self] result in
+            switch result {
+            case .success(_, let hostName):
+                DispatchQueue.main.async {
+                    self?.hostName = hostName
+                }
+            case .failure(let error):
+                print("Failed to fetch host name: \(error)")
+            }
+        }
     }
     
     func getTeamName() -> String {
