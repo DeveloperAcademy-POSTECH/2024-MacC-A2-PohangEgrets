@@ -78,6 +78,6 @@ struct JoinTeamView: View {
                 }.padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
             }
         }
-        .fixedSize(horizontal: false, vertical: true)
+        .frame(width: 270, height: 200)
     }
 }
