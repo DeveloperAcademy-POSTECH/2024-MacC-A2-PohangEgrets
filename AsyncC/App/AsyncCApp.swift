@@ -19,9 +19,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Firebase configure
         FirebaseApp.configure()
         setUpContentViewWindow()
+        
         setUpStatusBarItem()
         setUpHUDWindow()
         router.appDelegate = self
+        
     }
 }
 
@@ -31,7 +33,9 @@ struct AsyncCApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(delegate.router)
+            ContentView()
+                .environmentObject(delegate.router)
+                .preferredColorScheme(.light)
         }
     }
 }

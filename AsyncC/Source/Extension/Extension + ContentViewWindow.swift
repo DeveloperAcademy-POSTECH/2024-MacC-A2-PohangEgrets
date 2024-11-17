@@ -22,6 +22,7 @@ extension AppDelegate {
     func setUpContentViewWindow() {
         makeContentViewWindow()
         
+        contentViewWindow?.appearance = NSAppearance(named: .aqua)
         contentViewWindow?.level = .floating
         contentViewWindow?.center()
         contentViewWindow?.title = "AsyncC"

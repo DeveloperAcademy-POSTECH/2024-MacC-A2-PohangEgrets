@@ -13,34 +13,33 @@ struct CreateTeamView: View {
     @State var viewModel: CreateTeamViewModel
     
     var body: some View {
-        VStack {
-            Button {
-                router.pop()
-            } label: {
-                HStack {
-                    Image(systemName: "chevron.left")
-                    Text("팀 생성하기")
-                    Spacer()
-                }
-            }
-            .buttonStyle(.plain)
-            .padding(EdgeInsets(top: 0, leading: 12, bottom: 8, trailing: 0))
-            Divider()
-                .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
+        VStack(alignment: .center) {
+            Text("팀 생성하기")
+                .font(Font.system(size: 16, weight: .semibold))
+                .padding(EdgeInsets(top: 30, leading: 12, bottom: 0, trailing: 0))
             TextField("팀 이름을 입력하세요", text:  $teamName)
                 .textFieldStyle(.roundedBorder)
-                .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
-            Button("생성하기") {
-                let dispatchGroup = DispatchGroup()
-                DispatchQueue.global(qos: .userInitiated).async(group: dispatchGroup) {
-                    print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
+                .padding(EdgeInsets(top: 16, leading: 24, bottom: 31, trailing: 24))
+            HStack {
+                Spacer()
+                Button("취소") {
+                    router.pop()
                 }
-                dispatchGroup.wait()
-                NSApplication.shared.keyWindow?.close()
-                router.showHUDWindow()
+                Button("생성") {
+                    let dispatchGroup = DispatchGroup()
+                    DispatchQueue.global(qos: .userInitiated).async(group: dispatchGroup) {
+                        print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
+                    }
+                    dispatchGroup.wait()
+                    NSApplication.shared.keyWindow?.close()
+                    router.showHUDWindow()
+                }
+                .disabled(teamName.isEmpty)
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12))
+                
             }
-            .disabled(teamName.isEmpty)
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
+            .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12))
+            Spacer()
         }
         .frame(width: 270, height: 200)
     }

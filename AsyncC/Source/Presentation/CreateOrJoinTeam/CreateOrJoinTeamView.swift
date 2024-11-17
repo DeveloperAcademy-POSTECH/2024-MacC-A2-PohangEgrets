@@ -16,51 +16,14 @@ struct CreateOrJoinTeamView: View {
     
     
     var body: some View {
-            VStack {
-                HStack {
-                    Button {
-                        router.push(view: .CreateTeamView)
-                        print("Create Team")
-                    } label: {
-                        ZStack {
-                            Rectangle()
-                                .frame(width: widthOfButton, height: heightOfButton)
-                                .foregroundStyle(.clear)
-                            VStack(spacing: 0) {
-                                Image("CreateTeamIcon")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 80, height: 80)
-                                Text("팀 생성하기")
-                                    .foregroundStyle(.black)
-                            }
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.white)
-                    Button {
-                        router.push(view: .JoinTeamView)
-                        print("Join Team")
-                    } label: {
-                        ZStack {
-                            Rectangle()
-                                .frame(width: widthOfButton, height: heightOfButton)
-                                .foregroundStyle(.clear)
-                            VStack(spacing: 0) {
-                                Image("JoinTeamIcon")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 80, height: 80)
-                                Text("팀 참가하기")
-                                    .foregroundStyle(.black)
-                            }
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.white)
-                    
-                }.padding()
-            }
-            .frame(width: 270, height: 200)
+        VStack {
+            HStack {
+                CreateOrJoinTeamButton(actionType: .create)
+                Spacer()
+                CreateOrJoinTeamButton(actionType: .join)
+                
+            }.padding(25)
+        }
+        .frame(width: 270, height: 200)
     }
 }
