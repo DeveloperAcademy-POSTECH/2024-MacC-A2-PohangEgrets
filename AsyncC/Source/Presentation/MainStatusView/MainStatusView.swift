@@ -16,43 +16,32 @@ import SwiftUI
 struct MainStatusView: View {
     @EnvironmentObject var router: Router
     
-    @StateObject var viewModel: MainStatusViewModel
+    @ObservedObject var viewModel: MainStatusViewModel
     
     var body: some View {
         ZStack {
             Color.lightGray1
-            
-            VStack(alignment: .leading, spacing: 0){
-                TeamCodeView(viewModel: viewModel)
-                
-                Divider()
-                    .padding(.horizontal, 12)
-                
-                ForEach(viewModel.appTrackings.keys.sorted(), id: \.self) { key in
-                    Text(key)
-                        .font(.system(size: 12, weight: .medium))
-                        .padding(.horizontal, 16)
-
-                    HStack {
-                        ForEach(viewModel.appTrackings[key] ?? [], id:\.self) { appName in
-                            Text("\(appName)")
-                            
-                        }
+                VStack(spacing: 0){
+                    HStack(spacing: 0) {
+                        TeamCodeView(viewModel: viewModel)
+                        Spacer()
                     }
-                    .padding(.horizontal, 16)
-
-                    if key == viewModel.getUserName() {
-                        Divider()
-                            .padding(.horizontal, 12)
+                    
+                    Divider()
+                        .padding(.horizontal, 12)
+                    
+                    HStack(spacing: 0) {
+                        AppTrackingBoxView(viewModel: viewModel)
+                        Spacer()
                     }
                 }
-                Spacer()
+            .frame(width: 270)
+            .onAppear {
+                print("App Tracking: \(viewModel.appTrackings)")
+                viewModel.startShowingAppTracking()
+                viewModel.getTeamData(teamCode: viewModel.getTeamCode())
+                viewModel.checkHost()
             }
-        }
-        .frame(width: 270)
-        .onAppear {
-            print("App Tracking: \(viewModel.appTrackings)")
-            viewModel.startShowingAppTracking()
         }
     }
 }

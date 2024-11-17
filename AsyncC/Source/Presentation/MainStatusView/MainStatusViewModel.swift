@@ -108,4 +108,13 @@ class MainStatusViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
+    
+    func getOpacity(appName: String, apps: [String]) -> Double {
+        guard let index = apps.firstIndex(of: appName) else { return 1.0 }
+        return index == 0 ? 1.0 : (index <= 2 ? 0.3 : 1.0)
+    }
+    
+    func containsXcode(apps: [String]) -> Bool {
+        return apps.contains("Xcode")
+    }
 }
