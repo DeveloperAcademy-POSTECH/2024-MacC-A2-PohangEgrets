@@ -20,7 +20,7 @@ struct MainStatusView: View {
     
     var body: some View {
         ZStack {
-            Color.pannelBackground
+            Color.lightGray1
             
             VStack(alignment: .leading, spacing: 0){
                 TeamCodeView(viewModel: viewModel)

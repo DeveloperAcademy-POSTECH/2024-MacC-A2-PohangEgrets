@@ -21,7 +21,14 @@ struct LoginView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.top, 48)
             
-            SignInWithAppleButton(.signIn, onRequest: viewModel.accountManagingUseCase.signInRequest, onCompletion: viewModel.accountManagingUseCase.handleAuthorization)
+            SignInWithAppleButton(.signIn,
+                onRequest: viewModel.accountManagingUseCase.signInRequest,
+                onCompletion: { result in
+                    viewModel.accountManagingUseCase.handleAuthorization(result) {
+                        router.push(view: .CreateOrJoinTeamView)
+                    }
+                }
+            )
                 .frame(width: 120, height: 28)
                 .padding(.top, 28)
             Spacer()
