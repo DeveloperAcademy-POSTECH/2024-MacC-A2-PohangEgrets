@@ -16,14 +16,32 @@ struct CreateOrJoinTeamView: View {
     
     
     var body: some View {
-        VStack {
-            HStack {
-                CreateOrJoinTeamButton(actionType: .create)
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                Text("이완재")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.darkGray2)
                 Spacer()
+                Text("로그아웃")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(.logOutGray)
+                    .onTapGesture {
+                        router.accountManagingUseCase.signOut()
+                        router.push(view: .LoginView)
+                    }
+            }
+            .padding(.top, 12)
+            .padding(.horizontal, 8)
+            Divider()
+                .padding(.top, 13)
+            HStack(spacing: 14) {
+                CreateOrJoinTeamButton(actionType: .create)
                 CreateOrJoinTeamButton(actionType: .join)
-                
-            }.padding(25)
+            }
+            .padding(.top, 15)
+            Spacer()
         }
+        .padding(EdgeInsets(top: 12, leading: 12, bottom: 19, trailing: 12))
         .frame(width: 270, height: 200)
     }
 }

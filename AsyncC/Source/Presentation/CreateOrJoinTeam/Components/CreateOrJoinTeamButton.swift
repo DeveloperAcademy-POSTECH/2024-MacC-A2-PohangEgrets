@@ -10,7 +10,7 @@ import SwiftUI
 struct CreateOrJoinTeamButton: View {
     @EnvironmentObject var router: Router
     
-    var widthOfButton: CGFloat = 100
+    var widthOfButton: CGFloat = 85
     var heightOfButton: CGFloat = 120
     
     var actionType: ActionToGetTeam
@@ -23,20 +23,17 @@ struct CreateOrJoinTeamButton: View {
                 Rectangle()
                     .frame(width: widthOfButton, height: heightOfButton)
                     .foregroundStyle(.clear)
-                VStack (alignment: .center){
+                VStack (spacing: 0){
                     Image(actionType.imageName())
                         .resizable()
                         .scaledToFit()
                         .frame(width: 80, height: 80)
                     Text(actionType.buttonText())
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
+                    Spacer()
                 }
             }
         }
-        .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
-        .frame(maxWidth: widthOfButton, minHeight: heightOfButton)
-        .shadow(color: .gray, radius: 3, x: 1, y: 1)
     }
 }
 
