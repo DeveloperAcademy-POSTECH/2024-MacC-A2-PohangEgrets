@@ -19,7 +19,7 @@ struct HostView: View {
                 .overlay {
                     Text("Host")
                         .font(.system(size: 8, weight: .medium))
-                        .foregroundStyle(.hostText)
+                        .foregroundStyle(.lightGray1)
                 }
                 .padding(.top, 8)
                 .padding(.bottom, 4)

@@ -46,26 +46,28 @@ final class AccountManagingUseCase {
         request.requestedScopes = [.fullName, .email]
     }
     
-    func handleAuthorization(_ result: Result<ASAuthorization, Error>) {
+    func handleAuthorization(_ result: Result<ASAuthorization, Error>, completion: (() -> Void)? = nil) {
         switch result {
         case .success(let auth):
-            handleAuthorizationSuccess(auth)
+            handleAuthorizationSuccess(auth) {
+                completion?()
+            }
         case .failure(let error):
             handleAuthorizationFail(with: error)
         }
     }
     
-    private func handleAuthorizationSuccess(_ authResults: ASAuthorization) {
+    private func handleAuthorizationSuccess(_ authResults: ASAuthorization, completion: (() -> Void)? = nil) {
         switch authResults.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             let userID = appleIDCredential.user
             let email = appleIDCredential.email
             let fullName = [
-                appleIDCredential.fullName?.givenName,  // 이름
-                appleIDCredential.fullName?.familyName  // 성
-            ].compactMap { $0 } // nil을 제거
-             .joined(separator: " ") // 공백으로 연결
-                        
+                appleIDCredential.fullName?.givenName,
+                appleIDCredential.fullName?.familyName
+            ].compactMap { $0 }
+             .joined(separator: " ")
+                            
             firebaseRepository.checkExistUserBy(userID: userID) { exists, name in
                 if exists {
                     if let name = name {
@@ -79,12 +81,15 @@ final class AccountManagingUseCase {
                     self.saveUserIDToFirebase(id: userID, email: email ?? "N/A", name: "\(fullName.isEmpty ? "N/A" : fullName)")
                     print("Not exists in Firebase, so i save \(fullName) to Firebase")
                 }
+                                
+                completion?()
             }
             
         default:
             break
         }
     }
+
     
     private func handleAuthorizationFail(with error: Error) {
         print("인증 실패: \(error.localizedDescription)")

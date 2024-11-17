@@ -36,7 +36,7 @@ struct TeamCodeView: View {
                 }
                 .buttonStyle(.plain)
             }
-            .foregroundStyle(.teamCodeText)
+            .foregroundStyle(.darkGray2)
             .padding(.vertical, 8)
             .padding(.horizontal, 16)
         }
