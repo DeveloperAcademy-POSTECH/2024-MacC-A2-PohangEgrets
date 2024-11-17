@@ -10,8 +10,8 @@ import AuthenticationServices
 
 final class AccountManagingUseCase {
     
-    private let localRepository: LocalRepository
-    private let firebaseRepository: FirebaseRepository
+    private let localRepository: LocalRepositoryProtocol
+    private let firebaseRepository: FirebaseRepositoryProtocol
     
     init(localRepo: LocalRepository, firebaseRepo: FirebaseRepository) {
         self.localRepository = localRepo
@@ -39,7 +39,7 @@ final class AccountManagingUseCase {
     }
     
     private func changeUserNameToFirebase(name: String) {
-        firebaseRepository.updateUsers(id: localRepository.userID, name: name)
+        firebaseRepository.updateUsers(id: localRepository.userID, email: nil, name: name)
     }
     
     func signInRequest(request: ASAuthorizationAppleIDRequest) {

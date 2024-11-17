@@ -53,4 +53,15 @@ class MainStatusViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    
+    func addAppTracking(for user: String, appName: String) {
+        var apps = appTrackings[user] ?? []
+        apps.append(appName)
+        
+        if apps.count > 3 {
+            apps.removeFirst()
+        }
+        
+        appTrackings[user] = apps
+    }
 }

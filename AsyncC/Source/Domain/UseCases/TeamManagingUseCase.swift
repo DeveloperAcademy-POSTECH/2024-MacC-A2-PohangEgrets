@@ -9,11 +9,11 @@ import Foundation
 
 final class TeamManagingUseCase {
     
-    private let firebaseRepository: FirebaseRepository
-    private let localRepository: LocalRepository
+    private let firebaseRepository: FirebaseRepositoryProtocol
+    private let localRepository: LocalRepositoryProtocol
     private let appTrackingUseCase: AppTrackingUseCase
     
-    init(localRepo: LocalRepository, firebaseRepo: FirebaseRepository, appTrackingUseCase: AppTrackingUseCase) {
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
         self.appTrackingUseCase = appTrackingUseCase
