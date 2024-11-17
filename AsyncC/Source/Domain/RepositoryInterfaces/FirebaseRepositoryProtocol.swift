@@ -23,6 +23,12 @@ protocol FirebaseRepositoryProtocol {
     
     func getTeamData(teamCode: String, handler: @escaping ((Result<TeamMetaData, Error>) -> Void))
     
+    func getUsersForMembersIDs(memberIDs: [String], handler: @escaping (Result<[String], Error>) -> Void)
+    
+    func getAllUsers(handler: @escaping (Result<[User], Error>) -> Void)
+    
+    func getUserName(userID: String, handler: @escaping (Result<String, Error>) -> Void)
+
     func getHostName(hostID: String, handler: @escaping ((Result<String, Error>) -> Void))
     
     func removeUser(userID: String, teamCode: String)

@@ -26,9 +26,6 @@ struct HostView: View {
             
             Text(viewModel.hostName)
                 .font(.system(size: 12, weight: .medium))
-                .onAppear {
-                    viewModel.updateHostName(teamCode: viewModel.getTeamCode())
-                }
                 .padding(.bottom, 8)
         }
         .padding(.horizontal, 16)

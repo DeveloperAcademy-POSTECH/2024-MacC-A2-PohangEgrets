@@ -28,15 +28,24 @@ struct MainStatusView: View {
                 Divider()
                     .padding(.horizontal, 12)
                 
-                HostView(viewModel: viewModel)
-                
                 ForEach(viewModel.appTrackings.keys.sorted(), id: \.self) { key in
-                    ForEach(viewModel.appTrackings[key] ?? [], id:\.self) { appName in
-                        Text(appName)
+                    Text(key)
+                        .font(.system(size: 12, weight: .medium))
+                        .padding(.horizontal, 16)
+
+                    HStack {
+                        ForEach(viewModel.appTrackings[key] ?? [], id:\.self) { appName in
+                            Text("\(appName)")
+                            
+                        }
+                    }
+                    .padding(.horizontal, 16)
+
+                    if key == viewModel.getUserName() {
+                        Divider()
+                            .padding(.horizontal, 12)
                     }
                 }
-                .padding(.horizontal, 16)
-
                 Spacer()
             }
         }
