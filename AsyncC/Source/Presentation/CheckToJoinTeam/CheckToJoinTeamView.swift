@@ -17,15 +17,18 @@ struct CheckToJoinTeamView: View {
     var hostName: String
     
     var body: some View {
-        VStack(alignment: .center) {
-            Text("팀명")
-                .font(Font.system(size: 16, weight: .semibold))
-                .padding(EdgeInsets(top: 22, leading: 0, bottom: 0, trailing: 0))
-            Text(teamName)
-            Text("호스트")
-                .font(Font.system(size: 16, weight: .semibold))
-                .padding(EdgeInsets(top: 22, leading: 0, bottom: 0, trailing: 0))
-            Text(hostName)
+        VStack(spacing: 16) {
+            VStack(spacing: 9) {
+                Text("팀명")
+                    .font(Font.system(size: 16, weight: .semibold))
+                Text(teamName)
+            }
+            VStack(spacing: 9) {
+                Text("호스트")
+                    .font(Font.system(size: 16, weight: .semibold))
+                Text(hostName)
+            }
+            Spacer()
             HStack {
                 Spacer()
                 Button("취소") {
@@ -38,11 +41,9 @@ struct CheckToJoinTeamView: View {
                     NSApplication.shared.keyWindow?.close()
                     router.showHUDWindow()
                 }
-                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12))
             }
-            .padding(EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 12))
-            Spacer()
         }
+        .padding(EdgeInsets(top: 32, leading: 12, bottom: 16, trailing: 12))
         .frame(width: 270, height: 200)
     }
 }

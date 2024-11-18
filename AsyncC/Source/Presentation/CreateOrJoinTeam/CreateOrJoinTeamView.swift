@@ -25,12 +25,10 @@ struct CreateOrJoinTeamView: View {
                 Text("로그아웃")
                     .font(.system(size: 10, weight: .medium))
                     .foregroundStyle(.logOutGray)
-                    .onTapGesture {
-                        router.accountManagingUseCase.signOut()
-                        router.push(view: .LoginView)
+                    .onTapGesture {                        
+                        router.push(view: .LogoutView)
                     }
             }
-            .padding(.top, 12)
             .padding(.horizontal, 8)
             Divider()
                 .padding(.top, 13)
@@ -41,7 +39,7 @@ struct CreateOrJoinTeamView: View {
             .padding(.top, 15)
             Spacer()
         }
-        .padding(EdgeInsets(top: 12, leading: 12, bottom: 19, trailing: 12))
+        .padding(EdgeInsets(top: 24, leading: 12, bottom: 19, trailing: 12))
         .frame(width: 270, height: 200)
     }
 }
