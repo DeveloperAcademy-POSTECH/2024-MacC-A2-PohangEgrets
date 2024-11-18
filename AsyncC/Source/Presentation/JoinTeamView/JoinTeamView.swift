@@ -33,7 +33,8 @@ struct JoinTeamView: View {
                 Button("취소") {
                     router.pop()
                 }
-                Button("참여하기") {
+                .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
+                Button("확인") {
                     viewModel.getDetailsOfTeam(teamCode) { result in
                         switch result {
                         case .success(let team):
@@ -46,6 +47,7 @@ struct JoinTeamView: View {
                         }
                     }
                 }
+                .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
                 .disabled(teamCode.isEmpty)
             }
         }

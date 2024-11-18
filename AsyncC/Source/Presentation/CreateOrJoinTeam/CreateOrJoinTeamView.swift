@@ -24,8 +24,8 @@ struct CreateOrJoinTeamView: View {
                 Spacer()
                 Text("로그아웃")
                     .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(.logOutGray)
-                    .onTapGesture {                        
+                    .foregroundStyle(.logOutTextGray)
+                    .onTapGesture {
                         router.push(view: .LogoutView)
                     }
             }

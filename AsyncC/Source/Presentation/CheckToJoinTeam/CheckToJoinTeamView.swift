@@ -34,6 +34,7 @@ struct CheckToJoinTeamView: View {
                 Button("취소") {
                     router.pop()
                 }
+                .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
                 Button("참여") {
                     Task {
                         await viewModel.addMemberToTeam(teamCode)
@@ -41,6 +42,7 @@ struct CheckToJoinTeamView: View {
                     NSApplication.shared.keyWindow?.close()
                     router.showHUDWindow()
                 }
+                .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
             }
         }
         .padding(EdgeInsets(top: 32, leading: 12, bottom: 16, trailing: 12))

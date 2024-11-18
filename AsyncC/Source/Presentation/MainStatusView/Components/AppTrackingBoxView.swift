@@ -33,12 +33,12 @@ struct AppTrackingBoxView: View {
                         .stroke(
                             viewModel.containsXcode(
                                 apps: viewModel.appTrackings[key] ?? []) ?
-                            Color("LightBlue") : Color("LightGray2"),
+                            Color("SystemBlue") : Color("LightGray2"),
                             lineWidth: 0.5
                         )
                         .shadow(color:  viewModel.containsXcode(
                             apps: viewModel.appTrackings[key] ?? []) ?
-                                Color("LightBlue") : .black.opacity(0.2), radius: 4, x: 0, y: 0)
+                                Color("SystemBlue") : .black.opacity(0.2), radius: 4, x: 0, y: 0)
                         .frame(width: 130, height: 40)
                         .overlay {
                             HStack(spacing: 0) {

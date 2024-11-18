@@ -25,6 +25,7 @@ struct LogoutView: View {
                     } label: {
                         Text("취소")
                     }
+                    .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
                     Button {
                         router.accountManagingUseCase.signOut()
                         router.push(view: .LoginView)
@@ -32,10 +33,10 @@ struct LogoutView: View {
                         Text("로그아웃")
                             .foregroundStyle(.red)
                     }
+                    .customButtonStyle(backgroundColor: .white, foregroundColor: .systemRed)
                 }
             }
         }
-        .foregroundStyle(.darkGray2)
         .padding(EdgeInsets(top: 50, leading: 12, bottom: 16, trailing: 12))
         .frame(width: 270, height: 200)
     }

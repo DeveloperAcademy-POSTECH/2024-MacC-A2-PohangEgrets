@@ -10,7 +10,7 @@ import SwiftUI
 struct CreateOrJoinTeamButton: View {
     @EnvironmentObject var router: Router
     
-    var widthOfButton: CGFloat = 85
+    var widthOfButton: CGFloat = 100
     var heightOfButton: CGFloat = 120
     
     var actionType: ActionToGetTeam
@@ -33,7 +33,10 @@ struct CreateOrJoinTeamButton: View {
                 }
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .buttonStyle(PlainButtonStyle())
+        .background(.defaultGray)
+        .cornerRadius(10)
+        .shadow(color: .black.opacity(0.2), radius: 4, x: 1, y: 1)
     }
 }
 
