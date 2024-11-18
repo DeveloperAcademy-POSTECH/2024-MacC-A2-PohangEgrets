@@ -12,7 +12,7 @@ struct JoinTeamView: View {
     @State var teamCode: String = ""
     @State var viewModel: JoinTeamViewModel
     
-    @State var isPresented: Bool = false
+    @State var isAlertPresented: Bool = false
     @State var teamDetails: (teamName: String, hostName: String) = ("", "")
     
     var body: some View {
@@ -24,7 +24,6 @@ struct JoinTeamView: View {
                 TextField("팀 코드를 입력하세요", text:  $teamCode)
                     .textFieldStyle(.roundedBorder)
                     .padding(EdgeInsets(top: 16, leading: 24, bottom: 31, trailing: 24))
-                    .disabled(isPresented)
                 HStack {
                     Spacer()
                     Button("취소") {
@@ -34,12 +33,13 @@ struct JoinTeamView: View {
                         viewModel.getDetailsOfTeam(teamCode) { result in
                             switch result {
                             case .success(let team):
-                                teamDetails = (team.teamName, team.hostName)
-                                isPresented = true
+                                self.router.push(view: .CheckToJoinTeamView(teamCode: teamCode,
+                                                                            teamName: team.teamName,
+                                                                            hostName: team.hostName))
                             case .failure(let error):
                                 print(error.localizedDescription)
+                                isAlertPresented = true
                             }
-                            
                         }
                     }
                     .disabled(teamCode.isEmpty)
@@ -49,34 +49,12 @@ struct JoinTeamView: View {
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12))
                 Spacer()
             }
-            .frame(width: 270, height: 200)
-            if isPresented {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                    VStack {
-                        Text("팀명")
-                            .foregroundStyle(.black)
-                        Text(teamDetails.teamName)
-                            .foregroundStyle(.black)
-                        Text("호스트")
-                            .foregroundStyle(.black)
-                        Text(teamDetails.hostName)
-                            .foregroundStyle(.black)
-                        Button {
-                            isPresented = false
-                            Task {
-                                await viewModel.addMemberToTeam(teamCode)
-                            }
-                            NSApplication.shared.keyWindow?.close()
-                            router.showHUDWindow()
-                            
-                        } label: {
-                            Text("팀 참여하기")
-                                .foregroundStyle(.black)
-                        }
-                    }
-                }.padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
+            .alert(isPresented: $isAlertPresented) {
+                Alert(title: Text("팀이 존재하지 않습니다"),
+                      message: Text("팀 코드를 다시 확인해 보세요"),
+                      dismissButton: .default(Text("OK")))
             }
+            .frame(width: 270, height: 200)
         }
         .frame(width: 270, height: 200)
     }
