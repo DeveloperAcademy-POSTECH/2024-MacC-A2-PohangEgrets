@@ -24,7 +24,6 @@ struct TeamCodeView: View {
                     Button {
                         viewModel.isMenuVisible.toggle()
                         viewModel.leaveTeam()
-                        router.push(view: .CreateOrJoinTeamView)
                     } label: {
                         Image(systemName: "chevron.right")
                             .resizable()
