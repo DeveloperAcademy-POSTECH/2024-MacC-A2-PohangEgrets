@@ -115,6 +115,19 @@ class MainStatusViewModel: ObservableObject {
     }
     
     func containsXcode(apps: [String]) -> Bool {
-        return apps.contains("Xcode")
+        if apps.firstIndex(of: "Xcode") == 0 {
+            return true
+        }
+        return false
+    }
+    
+    func customSort(lhs: String, rhs: String) -> Bool {
+        if lhs == self.getUserName() { return true }
+        if rhs == self.getUserName() { return false }
+        
+        if lhs == self.hostName { return true }
+        if rhs == self.hostName { return false }
+        
+        return lhs < rhs
     }
 }
