@@ -16,34 +16,32 @@ import SwiftUI
 struct MainStatusView: View {
     @EnvironmentObject var router: Router
     
-    @StateObject var viewModel: MainStatusViewModel
+    @ObservedObject var viewModel: MainStatusViewModel
     
     var body: some View {
         ZStack {
             Color.lightGray1
-            
-            VStack(alignment: .leading, spacing: 0){
-                TeamCodeView(viewModel: viewModel)
-                
-                Divider()
-                    .padding(.horizontal, 12)
-                
-                HostView(viewModel: viewModel)
-                
-                ForEach(viewModel.appTrackings.keys.sorted(), id: \.self) { key in
-                    ForEach(viewModel.appTrackings[key] ?? [], id:\.self) { appName in
-                        Text(appName)
+                VStack(spacing: 0){
+                    HStack(spacing: 0) {
+                        TeamCodeView(viewModel: viewModel)
+                        Spacer()
+                    }
+                    
+                    Divider()
+                        .padding(.horizontal, 12)
+                    
+                    HStack(spacing: 0) {
+                        AppTrackingBoxView(viewModel: viewModel)
+                        Spacer()
                     }
                 }
-                .padding(.horizontal, 16)
-
-                Spacer()
+            .frame(width: 270)
+            .onAppear {
+                print("App Tracking: \(viewModel.appTrackings)")
+                viewModel.startShowingAppTracking()
+                viewModel.getTeamData(teamCode: viewModel.getTeamCode())
+                viewModel.checkHost()
             }
-        }
-        .frame(width: 270)
-        .onAppear {
-            print("App Tracking: \(viewModel.appTrackings)")
-            viewModel.startShowingAppTracking()
         }
     }
 }
