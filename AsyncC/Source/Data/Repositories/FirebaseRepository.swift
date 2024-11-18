@@ -176,7 +176,6 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void) {
         let db = Firestore.firestore()
         for userID in userIDsToTrack {
-            if userID == userIDToIgnore { continue }
             let docRef = db.collection("userAppData").document(userID)
             
             let listener = docRef
