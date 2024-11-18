@@ -91,6 +91,11 @@ final class TeamManagingUseCase {
         appTrackingUseCase.setupAppTracking(fbRepository: firebaseRepository, teamMemberIDs: updatedMemberIDs)
     }
     
+    func getUserNameConvert(userID: String, handler: @escaping (Result<String, Error>) -> Void) {
+        firebaseRepository.getUserName(userID: userID) { result in
+            handler(result)
+        }
+    }
     // MARK: - Team 정보 갖고오기
     func getTeamNameAndHostName(for teamInviteCode: String,
                                 handler: @escaping ((Result<(teamName: String, hostName: String), Error>)) -> Void) {
@@ -114,6 +119,60 @@ final class TeamManagingUseCase {
         }
     }
     
+    func getTeamMembers(
+        teamCode: String,
+        handler: @escaping (Result<[String], Error>) -> Void
+    ) {
+        firebaseRepository.getTeamData(teamCode: teamCode) { [weak self] result in
+            switch result {
+            case .success(let teamData):
+                self?.firebaseRepository.getUsersForMembersIDs(memberIDs: teamData.memberIDs) { membersResult in
+                    switch membersResult {
+                    case .success(let teamMembers):
+                        handler(.success(teamMembers))
+                    case .failure(let error):
+                        handler(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                handler(.failure(error))
+            }
+        }
+    }
+    
+    func getTeamDetails(
+        teamCode: String,
+        handler: @escaping (Result<(teamName: String, hostName: String), Error>) -> Void
+    ) {
+        firebaseRepository.getTeamData(teamCode: teamCode) { [weak self] result in
+            switch result {
+            case .success(let teamData):
+                self?.firebaseRepository.getHostName(hostID: teamData.hostID) { hostNameResult in
+                    switch hostNameResult {
+                    case .success(let hostName):
+                        handler(.success((teamName: teamData.teamName, hostName: hostName)))
+                    case .failure(let error):
+                        handler(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                handler(.failure(error))
+            }
+        }
+    }
+    
+    func checkHost(userID: String, teamID: String, completion: @escaping (Bool) -> Void) {
+        firebaseRepository.getTeamData(teamCode: teamID) { result in
+            switch result {
+            case .success(let teamData):
+                completion(teamData.hostID == userID)
+            case .failure:
+                completion(false)
+            }
+        }
+    }
+    
+    
     func getTeamName() -> String {
         return localRepository.getTeamName()
     }
@@ -122,7 +181,15 @@ final class TeamManagingUseCase {
         return localRepository.getTeamCode()
     }
     
-    // MARK: - Team 나가기 및 지우기 
+    func getUserID() -> String {
+        return localRepository.getUserID()
+    }
+    
+    func getUserName() -> String {
+        return localRepository.getUserName()
+    }
+    
+    // MARK: - Team 나가기 및 지우기
     func leaveTeam() {
         let userID = localRepository.getUserID()
         let teamCode = localRepository.getTeamCode()

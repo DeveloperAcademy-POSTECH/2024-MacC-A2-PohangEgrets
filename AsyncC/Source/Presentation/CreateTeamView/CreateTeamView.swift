@@ -39,6 +39,7 @@ struct CreateTeamView: View {
                     NSApplication.shared.keyWindow?.close()
                     router.showHUDWindow()
                 }
+                .background(Color.blue)
                 .disabled(teamName.isEmpty)
             }
         }

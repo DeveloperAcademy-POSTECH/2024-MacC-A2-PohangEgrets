@@ -16,10 +16,12 @@ struct TeamCodeView: View {
                 .font(.system(size: 20, weight: .medium))
                 .padding(.horizontal, 16)
                 .padding(.top, 20)
+                .foregroundStyle(.darkGray2)
             
             HStack(alignment: .bottom, spacing: 0){
                 Text("팀 코드:")
                     .font(.system(size: 12, weight: .medium))
+                    .padding(.trailing, 8)
                 
                 Text(viewModel.getTeamCode())
                     .font(.system(size: 12, weight: .semibold))
@@ -36,7 +38,7 @@ struct TeamCodeView: View {
                 }
                 .buttonStyle(.plain)
             }
-            .foregroundStyle(.darkGray2)
+            .foregroundStyle(.gray1)
             .padding(.vertical, 8)
             .padding(.horizontal, 16)
         }

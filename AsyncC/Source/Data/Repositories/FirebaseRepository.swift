@@ -225,6 +225,45 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     // MARK: - TeamMetaData 통신 및 관리
     var teamMetaDataListener: ListenerRegistration? = nil
     
+    func getUsersForMembersIDs(memberIDs: [String], handler: @escaping (Result<[String], Error>) -> Void) {
+            getAllUsers { result in
+                switch result {
+                case .success(let allUsers):
+                    let filteredUsers = allUsers.filter { memberIDs.contains($0.id) }
+                    handler(.success(filteredUsers.map({ $0.name })))
+                case .failure(let error):
+                    handler(.failure(error))
+                }
+            }
+        }
+    
+    func getAllUsers(handler: @escaping (Result<[User], Error>) -> Void) {
+            let db = Firestore.firestore()
+            let collectionRef = db.collection("users")
+            
+            collectionRef.getDocuments { querySnapshot, error in
+                if let error = error {
+                    handler(.failure(error))
+                    return
+                }
+                
+                guard let documents = querySnapshot?.documents else {
+                    handler(.failure(FirebaseError(errorMessage: "No users found")))
+                    return
+                }
+                
+                let users: [User] = documents.compactMap { document in
+                    let data = document.data()
+                    return User(
+                        id: document.documentID,
+                        email: data["email"] as? String ?? "Unknown",
+                        name: data["name"] as? String ?? "Unknown"
+                    )
+                }
+                handler(.success(users))
+            }
+        }
+    
     func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("teamMetaData").document(teamData.inviteCode)
@@ -314,6 +353,27 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 return
             }
             handler(.failure(FirebaseError(errorMessage: "No team data found")))
+        }
+    }
+    
+    func getUserName(userID: String, handler: @escaping (Result<String, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("users").document(userID)
+        
+        docRef.getDocument { document, error in
+            if let error = error {
+                handler(.failure(error))
+                return
+            }
+            
+            guard let document = document, document.exists,
+                  let data = document.data(),
+                  let userName = data["name"] as? String else {
+                handler(.failure(FirebaseError(errorMessage: "User not found or no name field")))
+                return
+            }
+            
+            handler(.success(userName))
         }
     }
     
