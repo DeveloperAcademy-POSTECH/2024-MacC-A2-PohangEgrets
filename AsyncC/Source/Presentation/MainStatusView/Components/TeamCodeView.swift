@@ -28,8 +28,7 @@ struct TeamCodeView: View {
                     .padding(.trailing, 2)
                 
                 Button {
-                    let pasteboard = NSPasteboard.general
-                    pasteboard.setString(viewModel.getTeamCode(), forType: .string)
+                    viewModel.copyTeamCode()
                 } label: {
                     Image(systemName: "document.on.document")
                         .resizable()

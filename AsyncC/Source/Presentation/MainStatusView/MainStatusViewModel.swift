@@ -130,4 +130,11 @@ class MainStatusViewModel: ObservableObject {
         
         return lhs < rhs
     }
+    
+    func copyTeamCode() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(self.getTeamCode(), forType: .string)
+        print("팀 코드 복사")
+    }
 }
