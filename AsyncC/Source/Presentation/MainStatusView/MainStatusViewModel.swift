@@ -26,7 +26,8 @@ class MainStatusViewModel: ObservableObject {
     @Published var hostName: String = ""
     @Published var teamMembers: [String] = []
     @Published var isTeamHost: Bool = false
-    
+    @Published var isMenuVisible: Bool = false
+
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase

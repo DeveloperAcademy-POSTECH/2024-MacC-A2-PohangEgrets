@@ -39,7 +39,8 @@ struct MainStatusView: View {
             .onAppear {
                 print("App Tracking: \(viewModel.appTrackings)")
                 viewModel.startShowingAppTracking()
-                viewModel.getTeamData(teamCode: viewModel.getTeamCode())
+//                viewModel.getTeamData(teamCode: viewModel.getTeamCode())
+                viewModel.getTeamData(teamCode: "pacmio")
                 viewModel.checkHost()
             }
         }
