@@ -32,7 +32,7 @@ struct AsyncCApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
-        WindowGroup {
+        Settings {
             ContentView()
                 .environmentObject(delegate.router)
                 .preferredColorScheme(.light)
