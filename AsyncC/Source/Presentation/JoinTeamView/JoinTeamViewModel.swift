@@ -14,15 +14,6 @@ class JoinTeamViewModel: ObservableObject {
         self.teamManagingUseCase = teamManagingUseCase
     }
     
-    func addMemberToTeam(_ code: String) async {
-        await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                self.teamManagingUseCase.addNewMemberToTeam(teamCode: code)
-                continuation.resume()
-            }
-        }
-    }
-    
     func getDetailsOfTeam(_ code: String, handler: @escaping (Result<(teamName: String, hostName: String), Error>) -> Void)  {
         teamManagingUseCase.getTeamNameAndHostName(for: code) { result in
             handler(result)
