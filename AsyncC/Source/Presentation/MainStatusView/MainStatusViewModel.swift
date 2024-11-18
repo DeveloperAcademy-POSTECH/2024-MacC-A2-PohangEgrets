@@ -93,7 +93,7 @@ class MainStatusViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             switch result {
                             case .success(let userName):
-                                updatedTrackings[userName] = appTrackings[userID]
+                                updatedTrackings[userName] = appTrackings[userID]?.reversed()
                             case .failure(let error):
                                 print("Failed to get user name for userID \(userID): \(error)")
                                 updatedTrackings[userID] = appTrackings[userID]
