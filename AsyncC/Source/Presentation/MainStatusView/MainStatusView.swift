@@ -20,21 +20,22 @@ struct MainStatusView: View {
     
     var body: some View {
         ZStack {
-            Color.lightGray1
-                VStack(spacing: 0){
-                    HStack(spacing: 0) {
-                        TeamCodeView(viewModel: viewModel)
-                        Spacer()
-                    }
-                    
-                    Divider()
-                        .padding(.horizontal, 12)
-                    
-                    HStack(spacing: 0) {
-                        AppTrackingBoxView(viewModel: viewModel)
-                        Spacer()
-                    }
+            RoundedRectangle(cornerRadius: 5)
+                .fill(.regularMaterial)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            VStack(spacing: 0){
+                HStack(spacing: 0) {
+                    TeamCodeView(viewModel: viewModel)
+                    Spacer()
                 }
+                
+                Divider()
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                
+                AppTrackingBoxView(viewModel: viewModel)
+            }
             .frame(width: 270)
             .onAppear {
                 print("App Tracking: \(viewModel.appTrackings)")
