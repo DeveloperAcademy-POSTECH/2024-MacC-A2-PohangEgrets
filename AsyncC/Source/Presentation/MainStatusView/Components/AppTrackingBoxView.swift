@@ -23,7 +23,7 @@ struct AppTrackingBoxView: View {
                                 HStack(spacing: 0) {
                                     Text(key)
                                         .font(.system(size: 12, weight: .medium))
-                                        .foregroundStyle(.darkGray1)
+                                        .foregroundStyle(.black)
                                         .padding(.trailing, 4)
                                     
                                     if key == viewModel.hostName {
