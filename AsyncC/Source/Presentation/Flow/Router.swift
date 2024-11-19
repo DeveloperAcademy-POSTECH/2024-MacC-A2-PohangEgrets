@@ -74,4 +74,10 @@ class Router: ObservableObject{
             delegate.showHUDWindow()
         }
     }
+    
+    func hideStatusBarAndShowContentView() {
+        appDelegate?.hideStatusBarItem()
+        appDelegate?.hudWindow?.orderOut(nil)
+        appDelegate?.showContentViewWindow()
+    }
 }

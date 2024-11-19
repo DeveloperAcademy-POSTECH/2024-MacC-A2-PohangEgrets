@@ -30,4 +30,8 @@ extension AppDelegate {
         contentViewWindow?.contentView = NSHostingView(rootView: ContentView().environmentObject(self.router))
         contentViewWindow?.makeKeyAndOrderFront(nil)
     }
+    
+    func showContentViewWindow() {
+        contentViewWindow?.makeKeyAndOrderFront(nil)
+    }
 }

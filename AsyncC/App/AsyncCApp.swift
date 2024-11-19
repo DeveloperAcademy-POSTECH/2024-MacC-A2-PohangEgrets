@@ -18,6 +18,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Firebase configure
         FirebaseApp.configure()
+        
+        NSApplication.shared.setActivationPolicy(.accessory)
+        
         setUpContentViewWindow()
         
         setUpStatusBarItem()

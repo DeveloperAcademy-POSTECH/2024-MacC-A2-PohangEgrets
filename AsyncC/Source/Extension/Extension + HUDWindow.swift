@@ -28,7 +28,7 @@ extension AppDelegate {
         hudWindow?.isMovable = false
         hudWindow?.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
         hudWindow?.level = .floating
-        hudWindow?.contentViewController = NSHostingController(rootView: MainStatusView(viewModel: MainStatusViewModel(teamManagingUseCase: self.router.teamManagingUseCase, appTrackingUseCase: self.router.appTrackingUseCase)))
+        hudWindow?.contentViewController = NSHostingController(rootView: MainStatusView(viewModel: MainStatusViewModel(teamManagingUseCase: self.router.teamManagingUseCase, appTrackingUseCase: self.router.appTrackingUseCase)).environmentObject(self.router))
         
         // Set the CornerRadius for the View inside the NSPanel
         hudWindow?.contentView?.wantsLayer = true
@@ -38,7 +38,6 @@ extension AppDelegate {
     
     func showHUDWindow() {
         if let hudWindow = self.hudWindow, let button = statusBarItem?.button {
-            print("hi")
             if hudWindow.isVisible {
                 hudWindow.orderOut(nil)
             } else {

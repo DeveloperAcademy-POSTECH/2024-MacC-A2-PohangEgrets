@@ -35,4 +35,9 @@ extension AppDelegate {
             }
         }
     }
+    
+    func hideStatusBarItem() {
+        guard statusBarItem == nil else { return }
+        setUpStatusBarItem()
+    }
 }

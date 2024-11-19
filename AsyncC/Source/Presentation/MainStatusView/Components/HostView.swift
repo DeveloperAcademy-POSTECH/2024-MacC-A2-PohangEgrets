@@ -19,7 +19,5 @@ struct HostTagView: View {
                     .font(.system(size: 8, weight: .medium))
                     .foregroundStyle(.lightGray2)
             }
-            .padding(.top, 8)
-            .padding(.bottom, 4)
     }
 }

@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-// TODO: 팀코드 복사 기능
-// TODO: 팀원들의 앱 데이터를 갖고오는지 확인
-// TODO: 본인 앱 데이터 가지고 오는지 확인
-// TODO: 현재 실행 프로그램 트래킹
-// TODO: View
-
 struct MainStatusView: View {
     @EnvironmentObject var router: Router
     
@@ -20,7 +14,10 @@ struct MainStatusView: View {
     
     var body: some View {
         ZStack {
-            Color.lightGray1
+            RoundedRectangle(cornerRadius: 5)
+                .fill(.regularMaterial)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
                 VStack(spacing: 0){
                     HStack(spacing: 0) {
                         TeamCodeView(viewModel: viewModel)
