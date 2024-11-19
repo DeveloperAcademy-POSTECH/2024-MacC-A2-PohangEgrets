@@ -30,6 +30,7 @@ struct CreateTeamView: View {
                 Button("취소") {
                     router.pop()
                 }
+                .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
                 Button("생성") {
                     let dispatchGroup = DispatchGroup()
                     DispatchQueue.global(qos: .userInitiated).async(group: dispatchGroup) {
@@ -39,7 +40,7 @@ struct CreateTeamView: View {
                     NSApplication.shared.keyWindow?.close()
                     router.showHUDWindow()
                 }
-                .background(Color.blue)
+                .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
                 .disabled(teamName.isEmpty)
             }
         }
