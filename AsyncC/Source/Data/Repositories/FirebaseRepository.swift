@@ -117,61 +117,71 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
-    func sendEmoticon(
-        sender: String,
-        emoticon: String,
-        receiver: String
-    ) {
+    func sendEmoticon(emoticon: Emoticon)
+    {
         let db = Firestore.firestore()
-        let docRef = db.collection("emoticons").document(receiver)
-        docRef.getDocument { (document, error) in
-            if let document = document {
-                db.collection("emoticons").document(receiver).setData([
-                    "sender": sender,
-                    "emoticon": emoticon,
-                    "receiver": receiver
-                ])
+            let docRef = db.collection("emoticons").document(emoticon.receiver)
+            docRef.setData([
+                "sender": emoticon.sender,
+                "receiver": emoticon.receiver,
+                "emoticon": emoticon.emoticon.rawValue,
+                "timestamp": Timestamp(date: emoticon.timestamp), // Store the timestamp
+                "isAcknowledged": emoticon.isAcknowledged // Default to false
+            ]) { error in
+                if let error = error {
+                    print("Failed to send emoticon: \(error.localizedDescription)")
+                } else {
+                    print("Emoticon successfully sent!")
+                }
+            }
+    }
+    
+    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("emoticons").document(userID)
+        
+        docRef.addSnapshotListener { (documentSnapshot, error) in
+            guard let data = documentSnapshot?.data() else {
+                handler(.failure(error ?? NSError(domain: "No data", code: -1, userInfo: nil)))
+                return
+            }
+            
+            if let sender = data["sender"] as? String,
+               let receiver = data["receiver"] as? String,
+               let emoticonRawValue = data["emoticon"] as? String,
+               let emoticonOption = Emoticon.emoticonOption(rawValue: emoticonRawValue),
+               let timestamp = (data["timestamp"] as? Timestamp)?.dateValue(),
+               let isAcknowledged = data["isAcknowledged"] as? Bool {
+                
+                let emoticon = Emoticon(
+                    sender: sender,
+                    receiver: receiver,
+                    emoticon: emoticonOption,
+                    timestamp: timestamp,
+                    isAcknowledged: isAcknowledged
+                )
+                handler(.success(emoticon))
             } else {
-                print("Error: \(error?.localizedDescription ?? "No error description")")
+                handler(.failure(NSError(domain: "MappingError", code: -1, userInfo: nil)))
             }
         }
     }
     
-    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, any Error>) -> Void) {
+    func updateAcknowledgment(for receiverID: String) {
         let db = Firestore.firestore()
-        let docRef = db.collection("emoticons").document(userID)
+        let docRef = db.collection("emoticons").document(receiverID)
         
-        docRef
-            .addSnapshotListener { (documentSnapshot, error) in
-                guard let document = documentSnapshot else {
-                    if let error {
-                        handler(.failure(error))
-                    } else {
-                        print("Error fetching document")
-                    }
-                    return
-                }
-                
-                guard let data = document.data() else {
-                    if let error {
-                        handler(.failure(error))
-                    } else {
-                        print("Document data was empty.")
-                    }
-                    return
-                }
-                
-                guard let sender = data["sender"] as? String,
-                      let receiver = data["receiver"] as? String,
-                      let emoticonRawValue = data["emoticon"] as? String,
-                      let emoticonOption = Emoticon.emoticonOption(rawValue: emoticonRawValue) else {
-                    let mappingError = NSError(domain: "MappingError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid data format"])
-                    handler(.failure(mappingError))
-                    return
-                }
-                handler(.success(Emoticon(receiver: receiver, emoticon: emoticonOption, sender: sender)))
+        docRef.updateData([
+            "isAcknowledged": true
+        ]) { error in
+            if let error = error {
+                print("Failed to update acknowledgment: \(error.localizedDescription)")
+            } else {
+                print("Acknowledgment successfully updated!")
             }
+        }
     }
+
     
     func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void) {
         let db = Firestore.firestore()
