@@ -9,7 +9,7 @@ protocol LocalRepositoryProtocol {
     
     var userID: String { get set }
     var userName: String { get set }
-    var teamCode: String { get set }
+    var teamCode: String? { get set }
     var teamName: String { get set }
     
     func getUserID() -> String

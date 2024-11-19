@@ -10,8 +10,17 @@ import SwiftUI
 final class LocalRepository: LocalRepositoryProtocol {
     @AppStorage("userID") var userID: String = ""
     @AppStorage("userName") var userName: String = ""
-    @AppStorage("teamCode") var teamCode: String = ""
     @AppStorage("teamName") var teamName: String = ""
+    @AppStorage("teamCode") private var _teamCode: String = ""
+
+    var teamCode: String? {
+        get {
+            _teamCode.isEmpty ? nil : _teamCode
+        }
+        set {
+            _teamCode = newValue ?? ""
+        }
+    }
     
     func getUserID() -> String {
         return userID
@@ -34,7 +43,7 @@ final class LocalRepository: LocalRepositoryProtocol {
     }
     
     func getTeamCode() -> String {
-        return teamCode
+        return teamCode ?? "pocmio"
     }
     
     func resetTeamCode() {

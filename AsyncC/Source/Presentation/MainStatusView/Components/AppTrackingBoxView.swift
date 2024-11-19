@@ -12,7 +12,7 @@ struct AppTrackingBoxView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ForEach(viewModel.appTrackings.keys.sorted(), id: \.self) { key in
+            ForEach(viewModel.appTrackings.keys.sorted(by: viewModel.customSort), id: \.self) { key in
                 HStack(spacing: 0) {
                     VStack(spacing: 0) {
                         if key == viewModel.hostName {
@@ -42,25 +42,33 @@ struct AppTrackingBoxView: View {
                         .frame(width: 130, height: 40)
                         .overlay {
                             HStack(spacing: 0) {
+                                Spacer()
+                                    .frame(width: 5)
                                 ForEach(viewModel.appTrackings[key] ?? [], id:\.self) { appName in
                                     Image("\(appName)")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 25, height: 25)
+                                        .frame(width: 32, height: 32)
                                         .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
-                                        .padding(.leading, 12)
+                                        .padding(.leading, 5)
                                 }
                                 Spacer()
                             }
                         }
                         .padding(.trailing, 6)
+                        .padding(.bottom, 8)
                     
                     if viewModel.getUserName() == key {
                         createButton(title: "손 들기", width: 100, height: 40, size: 16, action: {})
+                            .padding(.bottom, 8)
+
                     } else {
                         createButton(title: "콕 찌르기", width: 48, height: 40, size: 12, action: {})
                             .padding(.trailing, 4)
+                            .padding(.bottom, 8)
                         createButton(title: "손 든 거에 반응하기", width: 48, height: 40, size: 12, action: {})
+                            .padding(.bottom, 8)
+
                     }
                 }
                 

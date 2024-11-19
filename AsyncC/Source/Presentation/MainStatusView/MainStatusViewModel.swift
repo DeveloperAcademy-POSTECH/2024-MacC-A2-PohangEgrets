@@ -26,7 +26,8 @@ class MainStatusViewModel: ObservableObject {
     @Published var hostName: String = ""
     @Published var teamMembers: [String] = []
     @Published var isTeamHost: Bool = false
-    
+    @Published var isMenuVisible: Bool = false
+
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
@@ -115,6 +116,26 @@ class MainStatusViewModel: ObservableObject {
     }
     
     func containsXcode(apps: [String]) -> Bool {
-        return apps.contains("Xcode")
+        if apps.firstIndex(of: "Xcode") == 0 {
+            return true
+        }
+        return false
+    }
+    
+    func customSort(lhs: String, rhs: String) -> Bool {
+        if lhs == self.getUserName() { return true }
+        if rhs == self.getUserName() { return false }
+        
+        if lhs == self.hostName { return true }
+        if rhs == self.hostName { return false }
+        
+        return lhs < rhs
+    }
+    
+    func copyTeamCode() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(self.getTeamCode(), forType: .string)
+        print("팀 코드 복사")
     }
 }

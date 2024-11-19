@@ -9,14 +9,32 @@ import SwiftUI
 
 struct TeamCodeView: View {
     @ObservedObject var viewModel: MainStatusViewModel
+    @EnvironmentObject var router: Router
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(viewModel.getTeamName())
-                .font(.system(size: 20, weight: .medium))
-                .padding(.horizontal, 16)
-                .padding(.top, 20)
-                .foregroundStyle(.darkGray2)
+            HStack {
+                Text(viewModel.getTeamName())
+                    .font(.system(size: 20, weight: .medium))
+                    .padding(.horizontal, 16)
+                    .foregroundStyle(.darkGray2)
+                
+                Spacer()
+                
+                    Button {
+                        viewModel.isMenuVisible.toggle()
+                        viewModel.leaveTeam()
+                    } label: {
+                        Image(systemName: "chevron.right")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(.darkGray1)
+                            .frame(width: 5, height: 10)
+                    }
+                    .buttonStyle(.plain)
+            }
+            .padding(.top, 20)
+
             
             HStack(alignment: .bottom, spacing: 0){
                 Text("팀 코드:")
@@ -28,8 +46,7 @@ struct TeamCodeView: View {
                     .padding(.trailing, 2)
                 
                 Button {
-                    let pasteboard = NSPasteboard.general
-                    pasteboard.setString(viewModel.getTeamCode(), forType: .string)
+                    viewModel.copyTeamCode()
                 } label: {
                     Image(systemName: "document.on.document")
                         .resizable()
