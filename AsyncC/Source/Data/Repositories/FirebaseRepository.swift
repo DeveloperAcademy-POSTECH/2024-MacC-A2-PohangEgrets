@@ -117,25 +117,27 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
-    func sendEmoticon(emoticon: Emoticon)
-    {
+    // MARK: - Send Emoticon
+    func sendEmoticon(sender: String, emoticon: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
         let db = Firestore.firestore()
-            let docRef = db.collection("emoticons").document(emoticon.receiver)
-            docRef.setData([
-                "sender": emoticon.sender,
-                "receiver": emoticon.receiver,
-                "emoticon": emoticon.emoticon.rawValue,
-                "timestamp": Timestamp(date: emoticon.timestamp), // Store the timestamp
-                "isAcknowledged": emoticon.isAcknowledged // Default to false
-            ]) { error in
-                if let error = error {
-                    print("Failed to send emoticon: \(error.localizedDescription)")
-                } else {
-                    print("Emoticon successfully sent!")
-                }
+        let docRef = db.collection("emoticons").document(receiver)
+        
+        docRef.setData([
+            "sender": sender,
+            "receiver": receiver,
+            "emoticon": emoticon,
+            "timestamp": Timestamp(date: timestamp),
+            "isAcknowledged": isAcknowledged
+        ]) { error in
+            if let error = error {
+                print("Failed to send emoticon: \(error.localizedDescription)")
+            } else {
+                print("Emoticon successfully sent!")
             }
+        }
     }
     
+    // MARK: - Listener for Emoticons
     func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("emoticons").document(userID)
@@ -167,6 +169,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
+    // MARK: - Update Acknowledgment
     func updateAcknowledgment(for receiverID: String) {
         let db = Firestore.firestore()
         let docRef = db.collection("emoticons").document(receiverID)
@@ -181,7 +184,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             }
         }
     }
-
+    
     
     func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void) {
         let db = Firestore.firestore()
@@ -235,43 +238,43 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     var teamMetaDataListener: ListenerRegistration? = nil
     
     func getUsersForMembersIDs(memberIDs: [String], handler: @escaping (Result<[String], Error>) -> Void) {
-            getAllUsers { result in
-                switch result {
-                case .success(let allUsers):
-                    let filteredUsers = allUsers.filter { memberIDs.contains($0.id) }
-                    handler(.success(filteredUsers.map({ $0.name })))
-                case .failure(let error):
-                    handler(.failure(error))
-                }
+        getAllUsers { result in
+            switch result {
+            case .success(let allUsers):
+                let filteredUsers = allUsers.filter { memberIDs.contains($0.id) }
+                handler(.success(filteredUsers.map({ $0.name })))
+            case .failure(let error):
+                handler(.failure(error))
             }
         }
+    }
     
     func getAllUsers(handler: @escaping (Result<[User], Error>) -> Void) {
-            let db = Firestore.firestore()
-            let collectionRef = db.collection("users")
-            
-            collectionRef.getDocuments { querySnapshot, error in
-                if let error = error {
-                    handler(.failure(error))
-                    return
-                }
-                
-                guard let documents = querySnapshot?.documents else {
-                    handler(.failure(FirebaseError(errorMessage: "No users found")))
-                    return
-                }
-                
-                let users: [User] = documents.compactMap { document in
-                    let data = document.data()
-                    return User(
-                        id: document.documentID,
-                        email: data["email"] as? String ?? "Unknown",
-                        name: data["name"] as? String ?? "Unknown"
-                    )
-                }
-                handler(.success(users))
+        let db = Firestore.firestore()
+        let collectionRef = db.collection("users")
+        
+        collectionRef.getDocuments { querySnapshot, error in
+            if let error = error {
+                handler(.failure(error))
+                return
             }
+            
+            guard let documents = querySnapshot?.documents else {
+                handler(.failure(FirebaseError(errorMessage: "No users found")))
+                return
+            }
+            
+            let users: [User] = documents.compactMap { document in
+                let data = document.data()
+                return User(
+                    id: document.documentID,
+                    email: data["email"] as? String ?? "Unknown",
+                    name: data["name"] as? String ?? "Unknown"
+                )
+            }
+            handler(.success(users))
         }
+    }
     
     func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void) {
         let db = Firestore.firestore()
@@ -431,8 +434,6 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             }
         }
     }
-    
-    
 }
 
 

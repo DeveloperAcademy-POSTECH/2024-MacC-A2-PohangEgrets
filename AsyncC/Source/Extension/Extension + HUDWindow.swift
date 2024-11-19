@@ -28,7 +28,15 @@ extension AppDelegate {
         hudWindow?.isMovable = false
         hudWindow?.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
         hudWindow?.level = .floating
-        hudWindow?.contentViewController = NSHostingController(rootView: MainStatusView(viewModel: MainStatusViewModel(teamManagingUseCase: self.router.teamManagingUseCase, appTrackingUseCase: self.router.appTrackingUseCase)))
+        
+        // Default Content (MainStatusView)
+        hudWindow?.contentViewController = NSHostingController(
+            rootView: MainStatusView(
+                viewModel: MainStatusViewModel(
+                    teamManagingUseCase: self.router.teamManagingUseCase,
+                    appTrackingUseCase: self.router.appTrackingUseCase)
+            )
+        )
         
         // Set the CornerRadius for the View inside the NSPanel
         hudWindow?.contentView?.wantsLayer = true
@@ -36,21 +44,49 @@ extension AppDelegate {
         hudWindow?.contentView?.layer?.masksToBounds = true
     }
     
-    func showHUDWindow() {
-        if let hudWindow = self.hudWindow, let button = statusBarItem?.button {
-            print("hi")
-            if hudWindow.isVisible {
-                hudWindow.orderOut(nil)
-            } else {
-                if let screen = button.window?.screen {
-                    let statusBarFrame = button.window?.frame ?? NSRect(x: 0, y: 0, width: 0, height: 0)
-                    let xPosition = statusBarFrame.origin.x
-                    let yPosition = screen.frame.maxY - statusBarFrame.height
-                    
-                    hudWindow.setFrameOrigin(NSPoint(x: xPosition, y: yPosition))
+    // MARK: - Show Emoticon Notification
+    func showEmoticonNotification(sender: String, emoticon: String) {
+        if let hudWindow = hudWindow {
+            // Set up the emoticon notification view
+            let contentView = EmoticonNotificationView(
+                sender: sender,
+                emoticon: emoticon,
+                onAcknowledge: { [weak self] in
+                    self?.showAcknowledgmentNotification(sender: sender)
+                },
+                onDismiss: { [weak self] in
+                    self?.hudWindow?.orderOut(nil)
                 }
-                
-                hudWindow.makeKeyAndOrderFront(nil)
+            )
+            
+            // Update HUD Content
+            hudWindow.contentViewController = NSHostingController(rootView: contentView)
+            hudWindow.makeKeyAndOrderFront(nil)
+            
+            // Auto-dismiss after 5 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                if hudWindow.isVisible {
+                    hudWindow.orderOut(nil)
+                }
+            }
+        }
+    }
+    
+    // MARK: - Show Acknowledgment Notification
+    func showAcknowledgmentNotification(sender: String) {
+        if let hudWindow = hudWindow {
+            // Set up the acknowledgment notification view
+            let contentView = AcknowledgmentNotificationView(sender: sender)
+            
+            // Update HUD Content
+            hudWindow.contentViewController = NSHostingController(rootView: contentView)
+            hudWindow.makeKeyAndOrderFront(nil)
+            
+            // Auto-dismiss after 5 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                if hudWindow.isVisible {
+                    hudWindow.orderOut(nil)
+                }
             }
         }
     }
