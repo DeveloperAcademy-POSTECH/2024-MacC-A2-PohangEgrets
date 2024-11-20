@@ -26,6 +26,21 @@ struct JoinTeamView: View {
                 TextField("팀 코드를 입력하세요", text:  $teamCode)
                     .textFieldStyle(.plain)
                     .padding()
+                    .onSubmit {
+                        if teamCode != "" {
+                            viewModel.getDetailsOfTeam(teamCode) { result in
+                                switch result {
+                                case .success(let team):
+                                    self.router.push(view: .CheckToJoinTeamView(teamCode: teamCode,
+                                                                                teamName: team.teamName,
+                                                                                hostName: team.hostName))
+                                case .failure(let error):
+                                    print(error.localizedDescription)
+                                    isAlertPresented = true
+                                }
+                            }
+                        }
+                    }
             }
             Spacer()
             HStack {
