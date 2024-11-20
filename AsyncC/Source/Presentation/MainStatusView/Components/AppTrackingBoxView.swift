@@ -64,7 +64,7 @@ struct AppTrackingBoxView: View {
                                 }
                             }
                         }
-                        .padding(.trailing, viewModel.checkUser(key: key) ? 0 : 6)
+                        .padding(.trailing, viewModel.checkUser(key: key) ? 0 : 4)
                     
                     if viewModel.getUserName() != key {
                         createButton(key: "\(key)-sos", symbol: "sos", width: 27, height: 12, text: "도움요청", action: {})
