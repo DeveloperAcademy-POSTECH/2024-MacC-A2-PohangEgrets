@@ -57,10 +57,9 @@ struct AppTrackingBoxView: View {
                                             .scaledToFit()
                                             .frame(width: 32, height: 32)
                                             .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
-                                            .padding(.horizontal, 8)
-                                            .padding(.top, 4)
-                                            .padding(.bottom, 8)
                                     }
+                                    .padding(.horizontal, 8)
+                                    .padding(.bottom, 8)
                                     Spacer()
                                 }
                             }
@@ -77,7 +76,7 @@ struct AppTrackingBoxView: View {
                 
                 if key == viewModel.getUserName() {
                     Divider()
-                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
                 }
             }
             .padding(.horizontal, 16)
