@@ -37,8 +37,13 @@ struct CreateTeamView: View {
                         print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
                     }
                     dispatchGroup.wait()
+                    
                     NSApplication.shared.keyWindow?.close()
-                    router.showHUDWindow()
+                    router.setUpStatusBarItem()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        router.setUpHUDWindow()
+                        router.showHUDWindow()
+                    }
                 }
                 .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
                 .disabled(teamName.isEmpty)

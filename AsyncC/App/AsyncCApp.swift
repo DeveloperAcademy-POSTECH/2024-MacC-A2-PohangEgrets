@@ -19,9 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Firebase configure
         FirebaseApp.configure()
         setUpContentViewWindow()
-        
-        setUpStatusBarItem()
-        setUpHUDWindow()
+
         router.appDelegate = self
         
     }
