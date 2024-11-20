@@ -40,7 +40,11 @@ struct CheckToJoinTeamView: View {
                         await viewModel.addMemberToTeam(teamCode)
                     }
                     NSApplication.shared.keyWindow?.close()
-                    router.showHUDWindow()
+                    router.setUpStatusBarItem()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        router.setUpHUDWindow()
+                        router.showHUDWindow()
+                    }
                 }
                 .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
             }

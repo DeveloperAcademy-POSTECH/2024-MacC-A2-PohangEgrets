@@ -68,10 +68,39 @@ class Router: ObservableObject{
         path.removeLast()
     }
     
+    func setUpStatusBarItem() {
+        if let delegate = appDelegate {
+            delegate.setUpStatusBarItem()
+        }
+    }
+    
+    func removeStatusBarItem() {
+        if let delegate = appDelegate {
+            delegate.removeStatusBarItem()
+        }
+    }
+    
+    func setUpHUDWindow() {
+        if let delegate = appDelegate {
+            delegate.setUpHUDWindow()
+        }
+    }
+    
     func showHUDWindow() {
         if let delegate = appDelegate {
-            print("here")
             delegate.showHUDWindow()
+        }
+    }
+    
+    func closeHUDWindow() {
+        if let delegate = appDelegate {
+            delegate.closeHUDWindow()
+        }
+    }
+    
+    func setUpContentViewWindow() {
+        if let delegate = appDelegate {
+            delegate.setUpContentViewWindow()
         }
     }
 }
