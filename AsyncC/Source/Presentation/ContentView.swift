@@ -26,7 +26,7 @@ struct ContentView: View {
                 router.view(for: destination)
             }
             .navigationBarBackButtonHidden(true)
-        }        
+        }
     }
 }
 
