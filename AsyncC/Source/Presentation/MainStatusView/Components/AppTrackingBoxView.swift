@@ -15,9 +15,10 @@ struct AppTrackingBoxView: View {
             ForEach(viewModel.appTrackings.keys.sorted(by: viewModel.customSort), id: \.self) { key in
                 HStack(spacing: 0) {
                     RoundedRectangle(cornerRadius: 6)
-                        .fill(.regularMaterial)
+                        .fill(.ultraThinMaterial)
+                        .strokeBorder(.buttonStroke, lineWidth: 0.5)
                         .frame(width: viewModel.checkUser(key: key) ? 243 : 140, height: 68)
-                        .shadow(color: .black.opacity(0.25), radius: 6, x: 1, y: 1)
+//                        .shadow(color: .black.opacity(0.25), radius: 6, x: 1, y: 1)
                         .overlay {
                             VStack(spacing: 0) {
                                 HStack(spacing: 0) {
@@ -32,10 +33,8 @@ struct AppTrackingBoxView: View {
                                     Spacer()
                                     
                                     if viewModel.checkUser(key: key) {
-                                        Toggle(isOn: $viewModel.isToggled) {
-                                            Text("")
-                                        }
-                                        .toggleStyle(SwitchToggleStyle(tint: .accent)) // 토글색 안바뀜
+                                        Toggle("", isOn: $viewModel.isToggled)
+                                        .toggleStyle(SwitchToggleStyle(tint: .blue)) // 토글색 안바뀜
                                         .padding(.trailing, 8)
                                         .onChange(of: viewModel.isToggled) { old, new in
                                             if new {
@@ -99,9 +98,9 @@ extension AppTrackingBoxView {
                 viewModel.isSelectedButton.toggle()
             } label: {
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(.regularMaterial)
+                    .fill(.ultraThinMaterial)
                     .frame(width: 48, height: 68)
-                    .shadow(color: .black.opacity(0.25), radius: 6, x: 1, y: 1)
+                    .shadow(color: .black.opacity(0.25), radius: 3, x: 1, y: 1)
                     .overlay {
                         VStack(spacing: 0) {
                             Spacer()

@@ -34,6 +34,8 @@ extension AppDelegate {
         hudWindow?.contentView?.wantsLayer = true
         hudWindow?.contentView?.layer?.cornerRadius = 5.0
         hudWindow?.contentView?.layer?.masksToBounds = true
+        
+        hudWindow?.appearance = NSAppearance(named: .aqua)
     }
     
     func showHUDWindow() {
