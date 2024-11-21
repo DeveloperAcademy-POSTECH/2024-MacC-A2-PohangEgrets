@@ -10,7 +10,7 @@ import SwiftUI
 struct TeamCodeView: View {
     @ObservedObject var viewModel: MainStatusViewModel
     @EnvironmentObject var router: Router
-    @State var isExitAlertPresented: Bool = false
+    @State var isExitConfirmaionOn: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -23,12 +23,13 @@ struct TeamCodeView: View {
                 Spacer()
                 
                     Button {
-                        viewModel.isMenuVisible.toggle()
-                        viewModel.leaveTeam()
-                        router.closeHUDWindow()
-                        router.removeStatusBarItem()
-                        router.setUpContentViewWindow()
-                        isExitAlertPresented = true
+                        isExitConfirmaionOn.toggle()
+                        if isExitConfirmaionOn {
+                            router.setUpmakeExitConfirmation()
+                            router.showExitConfirmation()
+                        } else {
+                            router.closeExitConfirmation()
+                        }
                     } label: {
                         Image(systemName: "chevron.right")
                             .resizable()

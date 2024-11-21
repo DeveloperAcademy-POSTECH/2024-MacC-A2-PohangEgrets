@@ -103,4 +103,22 @@ class Router: ObservableObject{
             delegate.setUpContentViewWindow()
         }
     }
+    
+    func setUpmakeExitConfirmation() {
+        if let delegate = appDelegate {
+            delegate.setUpmakeExitConfirmation()
+        }
+    }
+    
+    func showExitConfirmation() {
+        if let delegate = appDelegate {
+            delegate.showExitConfirmation()
+        }
+    }
+    
+    func closeExitConfirmation() {
+        if let delegate = appDelegate {
+            delegate.closeExitConfirmation()
+        }
+    }
 }
