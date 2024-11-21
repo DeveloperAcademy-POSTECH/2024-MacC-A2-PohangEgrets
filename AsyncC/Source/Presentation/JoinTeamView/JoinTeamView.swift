@@ -42,6 +42,16 @@ struct JoinTeamView: View {
                         }
                     }
             }
+            .frame(width: 222, height: 32)
+            if isAlertPresented {
+                HStack {
+                    Text("존재하지 않는 팀입니다. 다시 확인해보세요")
+                        .font(Font.system(size: 8))
+                        .foregroundStyle(.red)
+                    Spacer()
+                }
+                .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
+            }
             Spacer()
             HStack {
                 Spacer()
@@ -53,6 +63,7 @@ struct JoinTeamView: View {
                     viewModel.getDetailsOfTeam(teamCode) { result in
                         switch result {
                         case .success(let team):
+                            isAlertPresented = false
                             self.router.push(view: .CheckToJoinTeamView(teamCode: teamCode,
                                                                         teamName: team.teamName,
                                                                         hostName: team.hostName))
@@ -65,13 +76,9 @@ struct JoinTeamView: View {
                 .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
                 .disabled(teamCode.isEmpty)
             }
+            .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
         }
         .padding(EdgeInsets(top: 50, leading: 12, bottom: 16, trailing: 12))
         .frame(width: 270, height: 200)
-        .alert(isPresented: $isAlertPresented) {
-            Alert(title: Text("팀이 존재하지 않습니다"),
-                  message: Text("팀 코드를 다시 확인해 보세요"),
-                  dismissButton: .default(Text("OK")))
-        }
     }
 }
