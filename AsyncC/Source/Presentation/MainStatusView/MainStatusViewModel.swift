@@ -26,7 +26,7 @@ class MainStatusViewModel: ObservableObject {
     @Published var hostName: String = ""
     @Published var teamMembers: [String] = []
     @Published var isTeamHost: Bool = false
-    @Published var isToggled: Bool = false
+    @Published var isToggled: Bool = true
     @Published var isMenuVisible: Bool = false
     @Published var isSelectedButton: Bool = false
     @Published var buttonStates: [String: Bool] = [:]
