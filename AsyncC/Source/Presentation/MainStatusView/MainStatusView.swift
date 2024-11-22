@@ -35,6 +35,9 @@ struct MainStatusView: View {
                 viewModel.getTeamData(teamCode: viewModel.getTeamCode())
                 viewModel.startShowingAppTracking()
             }
+            .onDisappear {
+                viewModel.teamManagingUseCase.deleteTeam()
+            }
         }
     }
 }

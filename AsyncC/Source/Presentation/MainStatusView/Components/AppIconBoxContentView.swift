@@ -12,16 +12,16 @@ struct AppIconBoxContentView: View {
     var key: String
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 4) {
             ForEach(viewModel.appTrackings[key] ?? [], id:\.self) { appName in
                 Image("\(appName)")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 32, height: 32)
+                    .frame(width: 36, height: 36)
                     .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
             }
         }
-        .padding(.leading, 8)
+        .padding(.leading, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
