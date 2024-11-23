@@ -34,7 +34,9 @@ extension AppDelegate {
             rootView: MainStatusView(
                 viewModel: MainStatusViewModel(
                     teamManagingUseCase: self.router.teamManagingUseCase,
-                    appTrackingUseCase: self.router.appTrackingUseCase)
+                    appTrackingUseCase: self.router.appTrackingUseCase,
+                    emoticonUseCase: self.router.emoticonUseCase
+                )
             )
         )
         
@@ -43,6 +45,26 @@ extension AppDelegate {
         hudWindow?.contentView?.layer?.cornerRadius = 5.0
         hudWindow?.contentView?.layer?.masksToBounds = true
     }
+    
+    func showHUDWindow() {
+        if let hudWindow = self.hudWindow, let button = statusBarItem?.button {
+            print("hi")
+            if hudWindow.isVisible {
+                hudWindow.orderOut(nil)
+            } else {
+                if let screen = button.window?.screen {
+                    let statusBarFrame = button.window?.frame ?? NSRect(x: 0, y: 0, width: 0, height: 0)
+                    let xPosition = statusBarFrame.origin.x
+                    let yPosition = screen.frame.maxY - statusBarFrame.height
+                    
+                    hudWindow.setFrameOrigin(NSPoint(x: xPosition, y: yPosition))
+                }
+                
+                hudWindow.makeKeyAndOrderFront(nil)
+            }
+        }
+    }
+    
     
     // MARK: - Show Emoticon Notification
     func showEmoticonNotification(sender: String, emoticon: String) {

@@ -18,14 +18,15 @@ class Router: ObservableObject{
     
     var accountManagingUseCase: AccountManagingUseCase
     var appTrackingUseCase: AppTrackingUseCase
-    var emoticonUseCase: EmoticonUseCase
     var teamManagingUseCase: TeamManagingUseCase
+    var emoticonUseCase: EmoticonUseCase
+
     
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         emoticonUseCase = EmoticonUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase)
+        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, emoticonUseCase: emoticonUseCase)
     }
     
     enum AsyncCViews: Hashable {
@@ -47,7 +48,10 @@ class Router: ObservableObject{
         case .JoinTeamView:
             JoinTeamView(viewModel: JoinTeamViewModel(teamManagingUseCase: teamManagingUseCase))
         case .MainStatusView:
-            MainStatusView(viewModel: MainStatusViewModel(teamManagingUseCase: self.teamManagingUseCase, appTrackingUseCase: self.appTrackingUseCase))
+            MainStatusView(viewModel: MainStatusViewModel(
+                teamManagingUseCase: self.teamManagingUseCase,
+                appTrackingUseCase: self.appTrackingUseCase,
+                emoticonUseCase: self.emoticonUseCase))
         case .LoginView:
             LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .LogoutView:

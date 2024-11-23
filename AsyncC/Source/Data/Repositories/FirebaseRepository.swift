@@ -141,6 +141,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("emoticons").document(userID)
+        print("created listener for emoticons")
         
         docRef.addSnapshotListener { (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {

@@ -6,17 +6,20 @@
 //
 
 import Foundation
+import AppKit
 
 final class TeamManagingUseCase {
     
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
     private let appTrackingUseCase: AppTrackingUseCase
+    private let emoticonUseCase: EmoticonUseCase
     
-    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase) {
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: EmoticonUseCase) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
         self.appTrackingUseCase = appTrackingUseCase
+        self.emoticonUseCase = emoticonUseCase
     }
     
     // MARK: - 새로운 Team 생성
@@ -83,6 +86,27 @@ final class TeamManagingUseCase {
                 print(error.localizedDescription)
             }
         }
+        
+        self.firebaseRepository.setUpListenerForEmoticons(userID: localRepository.getUserID()) { result in
+            print("received emoticon")
+            switch result {
+            case .success(let emoticon):
+                DispatchQueue.main.async {
+                    // If the emoticon is not acknowledged, trigger the notification
+                    if !emoticon.isAcknowledged {
+                        let appDelegate = NSApplication.shared.delegate as? AppDelegate
+                        appDelegate?.showEmoticonNotification(
+                            sender: emoticon.sender,
+                            emoticon: emoticon.emoticon.rawValue
+                        )
+                    }
+                }
+            case .failure(let error):
+                // Log error if something goes wrong in the listener
+                print("Error in Emoticon Listener: \(error.localizedDescription)")
+            }
+        }
+        
     }
     
     private func refreshUserAppDataListeners(for updatedMemberIDs: [String]) {

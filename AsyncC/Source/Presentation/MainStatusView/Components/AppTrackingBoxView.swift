@@ -59,16 +59,28 @@ struct AppTrackingBoxView: View {
                         .padding(.bottom, 8)
                     
                     if viewModel.getUserName() == key {
-                        createButton(title: "손 들기", width: 100, height: 40, size: 16, action: {})
-                            .padding(.bottom, 8)
-
+                        createButton(title: "손 들기", width: 100, height: 40, size: 16, action: {
+                            viewModel.emoticonUseCase.send(emoticon: Emoticon.emoticonOption.getHelp, receiver: key)
+                        })
+                        .padding(.bottom, 8)
+                        
                     } else {
-                        createButton(title: "콕 찌르기", width: 48, height: 40, size: 12, action: {})
-                            .padding(.trailing, 4)
-                            .padding(.bottom, 8)
-                        createButton(title: "손 든 거에 반응하기", width: 48, height: 40, size: 12, action: {})
-                            .padding(.bottom, 8)
-
+                        createButton(title: "도움요청", width: 48, height: 40, size: 12, action: {
+                            if let userID = viewModel.userNameAndID[key] {
+                                viewModel.emoticonUseCase.send(emoticon: Emoticon.emoticonOption.getHelp, receiver: userID)
+                            }
+                            
+                        })
+                        .padding(.trailing, 4)
+                        .padding(.bottom, 8)
+                        
+                        createButton(title: "도움제안", width: 48, height: 40, size: 12, action: {
+                            if let userID = viewModel.userNameAndID[key] {
+                                viewModel.emoticonUseCase.send(emoticon: Emoticon.emoticonOption.giveHelp, receiver: userID)
+                            }
+                        })
+                        .padding(.bottom, 8)
+                        
                     }
                 }
                 

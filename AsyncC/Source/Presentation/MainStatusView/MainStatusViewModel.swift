@@ -18,6 +18,7 @@ import Combine
 class MainStatusViewModel: ObservableObject {
     var teamManagingUseCase: TeamManagingUseCase
     var appTrackingUseCase: AppTrackingUseCase
+    var emoticonUseCase: EmoticonUseCase
     
     var cancellables = Set<AnyCancellable>()
     
@@ -27,10 +28,12 @@ class MainStatusViewModel: ObservableObject {
     @Published var teamMembers: [String] = []
     @Published var isTeamHost: Bool = false
     @Published var isMenuVisible: Bool = false
-
-    init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase) {
+    @Published var userNameAndID: [String: String] = [:] // [userName: userID]
+    
+    init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: EmoticonUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
+        self.emoticonUseCase =  emoticonUseCase
     }
     
     func getTeamData(teamCode: String) {
@@ -91,9 +94,11 @@ class MainStatusViewModel: ObservableObject {
                 
                 for userID in userIDs {
                     self.teamManagingUseCase.getUserNameConvert(userID: userID) { result in
+                        // [userID: userName]
                         DispatchQueue.main.async {
                             switch result {
                             case .success(let userName):
+                                self.userNameAndID[userName] = userID
                                 updatedTrackings[userName] = appTrackings[userID]?.reversed()
                             case .failure(let error):
                                 print("Failed to get user name for userID \(userID): \(error)")
