@@ -27,6 +27,7 @@ class Router: ObservableObject{
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         emoticonUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, emoticonUseCase: emoticonUseCase)
+        emoticonUseCase.router = self
     }
     
     enum AsyncCViews: Hashable {
@@ -105,6 +106,12 @@ class Router: ObservableObject{
     func setUpContentViewWindow() {
         if let delegate = appDelegate {
             delegate.setUpContentViewWindow()
+        }
+    }
+    
+    func showSyncRequest(senderName: String) {
+        if let delegate = appDelegate {
+            delegate.showSyncRequestNotification(sender: senderName)
         }
     }
 }

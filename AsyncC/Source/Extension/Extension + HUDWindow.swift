@@ -63,31 +63,20 @@ extension AppDelegate {
         }
     }
     
-    // MARK: - Show Emoticon Notification
-    func showEmoticonNotification(sender: String, emoticon: String) {
+    // MARK: - Show SyncRequest Notification to recipient
+    func showSyncRequestNotification(sender: String) {
         if let hudWindow = hudWindow {
-            // Set up the emoticon notification view
-            let contentView = EmoticonNotificationView(
-                sender: sender,
-                emoticon: emoticon,
-                onAcknowledge: { [weak self] in
-                    self?.showAcknowledgmentNotification(sender: sender)
-                },
-                onDismiss: { [weak self] in
-                    self?.hudWindow?.orderOut(nil)
-                }
-            )
+            let contentView = SyncRequestNotificationView(sender: sender)
             
-            // Update HUD Content
             hudWindow.contentViewController = NSHostingController(rootView: contentView)
             hudWindow.makeKeyAndOrderFront(nil)
             
-            // Auto-dismiss after 5 seconds
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
                 if hudWindow.isVisible {
                     hudWindow.orderOut(nil)
                 }
             }
+            setUpHUDWindow()
         }
     }
     

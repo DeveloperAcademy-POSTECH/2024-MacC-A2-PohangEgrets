@@ -11,6 +11,7 @@ import AppKit
 final class SyncUseCase {
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
+    var router: Router?
     
     init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol) {
         self.localRepository = localRepo
@@ -27,11 +28,13 @@ final class SyncUseCase {
     func setUpListenerForEmoticons(userID: String) {
         firebaseRepository.setupListenerForSyncRequest(userID: userID) { result in
             switch result {
-            case .success(let emoticon):
+            case .success(let syncRequest):
                 DispatchQueue.main.async {
-                    // Notify HUD to display the emoticon
-//                    let appDelegate = NSApplication.shared.delegate as? AppDelegate
-//                    appDelegate?.showEmoticonNotification(sender: emoticon.sender, emoticon: emoticon.syncMessage.rawValue)
+                    if syncRequest.syncMessage == .syncRequest {
+                        self.showSyncRequest(from: syncRequest.senderName)
+                    } else if syncRequest.syncMessage == .acceptedSyncRequest {
+                        self.setUpSyncWith(syncRequest.senderID)
+                    }
                 }
             case .failure(let error):
                 print("Error receiving emoticon: \(error.localizedDescription)")
@@ -39,16 +42,13 @@ final class SyncUseCase {
         }
     }
     
-    private func showSyncRequest(from senderID: String) {
-        let appDelegate = NSApplication.shared.delegate as? AppDelegate
-//        appDelegate?.showEmoticonNotification(sender: emoticon.sender, emoticon: emoticon.syncMessage.rawValue)
+    private func showSyncRequest(from senderName: String) {
+        guard let router else {return print("Router not found")}
+        router.showSyncRequest(senderName: senderName)
     }
     
     private func setUpSyncWith(_ senderID: String) {
         
     }
     
-//    func acknowledgeEmoticon(receiver: String) {
-//        firebaseRepository.updateAcknowledgment(for: receiver)
-//    }
 }
