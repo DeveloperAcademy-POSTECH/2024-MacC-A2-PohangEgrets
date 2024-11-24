@@ -35,4 +35,11 @@ extension AppDelegate {
             }
         }
     }
+    
+    func removeStatusBarItem() {
+        if let item = statusBarItem {
+            NSStatusBar.system.removeStatusItem(item)
+            statusBarItem = nil
+        }
+    }
 }

@@ -10,6 +10,7 @@ import SwiftUI
 struct TeamCodeView: View {
     @ObservedObject var viewModel: MainStatusViewModel
     @EnvironmentObject var router: Router
+    @State var isExitAlertPresented: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -24,12 +25,16 @@ struct TeamCodeView: View {
                     Button {
                         viewModel.isMenuVisible.toggle()
                         viewModel.leaveTeam()
+                        router.closeHUDWindow()
+                        router.removeStatusBarItem()
+                        router.setUpContentViewWindow()
+                        isExitAlertPresented = true
                     } label: {
                         Image(systemName: "chevron.right")
                             .resizable()
                             .scaledToFit()
                             .foregroundStyle(.darkGray1)
-                            .frame(width: 5, height: 10)
+                            .frame(height: 16)
                     }
                     .buttonStyle(.plain)
             }
@@ -56,7 +61,7 @@ struct TeamCodeView: View {
                 .buttonStyle(.plain)
             }
             .foregroundStyle(.gray1)
-            .padding(.vertical, 8)
+            .padding(.top, 12)
             .padding(.horizontal, 16)
         }
     }

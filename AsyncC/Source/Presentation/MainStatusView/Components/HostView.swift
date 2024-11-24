@@ -10,16 +10,14 @@ import SwiftUI
 struct HostTagView: View {
     
     var body: some View {
-        RoundedRectangle(cornerRadius: 3)
-            .fill(.hostBackground)
-            .stroke(.hostStroke, style: .init(lineWidth: 1))
-            .frame(width: 32, height: 12)
+        RoundedRectangle(cornerRadius: 10)
+            .fill(.clear)
+            .stroke(.buttonStroke, lineWidth: 1)
+            .frame(width: 32, height: 14)
             .overlay {
                 Text("Host")
                     .font(.system(size: 8, weight: .medium))
-                    .foregroundStyle(.lightGray2)
+                    .foregroundStyle(.hostBackground)
             }
-            .padding(.top, 8)
-            .padding(.bottom, 4)
     }
 }

@@ -12,107 +12,42 @@ struct AppTrackingBoxView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ForEach(viewModel.appTrackings.keys.sorted(by: viewModel.customSort), id: \.self) { key in
+            ForEach(viewModel.appTrackings.keys.sorted(by: viewModel.customSort), id: \.self) { (key: String) in
                 HStack(spacing: 0) {
-                    VStack(spacing: 0) {
-                        if key == viewModel.hostName {
-                            HostTagView()
-                        }
-                        
-                        Text(key)
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundStyle(.darkGray1)
-                            .padding(.bottom, 8)
-                    }
-                    Spacer()
-                }
-                
-                HStack(spacing: 0) {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.lightGray1)
-                        .stroke(
-                            viewModel.containsXcode(
-                                apps: viewModel.appTrackings[key] ?? []) ?
-                            Color("SystemBlue") : Color("LightGray2"),
-                            lineWidth: 0.5
-                        )
-                        .shadow(color:  viewModel.containsXcode(
-                            apps: viewModel.appTrackings[key] ?? []) ?
-                                Color("SystemBlue") : .black.opacity(0.2), radius: 4, x: 0, y: 0)
-                        .frame(width: 130, height: 40)
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(.ultraThinMaterial)
+                        .strokeBorder(.buttonStroke, lineWidth: 0.5)
+                        .frame(width: viewModel.checkUser(key: key) ? 243 : 140, height: 68)
                         .overlay {
-                            HStack(spacing: 0) {
-                                Spacer()
-                                    .frame(width: 5)
-                                ForEach(viewModel.appTrackings[key] ?? [], id:\.self) { appName in
-                                    Image("\(appName)")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 32, height: 32)
-                                        .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
-                                        .padding(.leading, 5)
-                                }
-                                Spacer()
+                            VStack(spacing: 0) {
+                                AppIconBoxHeaderView(viewModel: viewModel, key: key)
+                                AppIconBoxContentView(viewModel: viewModel, key: key)
                             }
                         }
-                        .padding(.trailing, 6)
-                        .padding(.bottom, 8)
+                        .padding(.trailing, 4)
                     
-                    if viewModel.getUserName() == key {
-                        createButton(title: "손 들기", width: 100, height: 40, size: 16, action: {
-                            viewModel.emoticonUseCase.send(emoticon: Emoticon.emoticonOption.getHelp, receiver: key)
-                        })
-                        .padding(.bottom, 8)
-                        
-                    } else {
-                        createButton(title: "도움요청", width: 48, height: 40, size: 12, action: {
-                            if let userID = viewModel.userNameAndID[key] {
+                    if viewModel.getUserName() != key {
+                        SyncButton(viewModel: viewModel, key: key, action: {
+                        if let userID = viewModel.userNameAndID[key] {
                                 viewModel.emoticonUseCase.send(emoticon: Emoticon.emoticonOption.getHelp, receiver: userID)
                             }
-                            
                         })
-                        .padding(.trailing, 4)
-                        .padding(.bottom, 8)
-                        
-                        createButton(title: "도움제안", width: 48, height: 40, size: 12, action: {
-                            if let userID = viewModel.userNameAndID[key] {
-                                viewModel.emoticonUseCase.send(emoticon: Emoticon.emoticonOption.giveHelp, receiver: userID)
-                            }
-                        })
-                        .padding(.bottom, 8)
-                        
+
                     }
                 }
+                .padding(.vertical, 4.5)
+                .padding(.horizontal, 16)
                 
                 if key == viewModel.getUserName() {
-                    Divider()
-                        .padding(12)
+                    Rectangle()
+                        .overlay {
+                            Divider()
+                        }
+                        .padding(.vertical, 12)
                 }
             }
             .padding(.horizontal, 16)
             Spacer()
-        }
-    }
-}
-
-extension AppTrackingBoxView {
-    private func createButton(title: String, width: CGFloat, height: CGFloat, size:CGFloat, action: @escaping () -> Void) -> some View {
-        return VStack {
-            Button {
-                action()
-            } label: {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(.lightGray1)
-                    .stroke(.lightGray2, lineWidth: 0.5)
-                    .frame(width: width, height: height)
-                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
-                    .overlay {
-                        Text(title)
-                            .font(.system(size: size, weight: .medium))
-                            .lineLimit(0)
-                    }
-            }
-            .buttonStyle(.plain)
         }
     }
 }

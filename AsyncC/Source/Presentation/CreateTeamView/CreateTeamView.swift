@@ -23,6 +23,22 @@ struct CreateTeamView: View {
                 TextField("팀 이름을 입력하세요", text:  $teamName)
                     .textFieldStyle(.plain)
                     .padding()
+                    .onSubmit {
+                        if teamName != "" {
+                            let dispatchGroup = DispatchGroup()
+                            DispatchQueue.global(qos: .userInitiated).async(group: dispatchGroup) {
+                                print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
+                            }
+                            dispatchGroup.wait()
+                            
+                            NSApplication.shared.keyWindow?.close()
+                            router.setUpStatusBarItem()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                router.setUpHUDWindow()
+                                router.showHUDWindow()
+                            }
+                        }
+                    }
             }
             Spacer()
             HStack {
@@ -37,8 +53,13 @@ struct CreateTeamView: View {
                         print(viewModel.createNewTeamAndGetTeamCode(name: teamName))
                     }
                     dispatchGroup.wait()
+                    
                     NSApplication.shared.keyWindow?.close()
-                    router.showHUDWindow()
+                    router.setUpStatusBarItem()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        router.setUpHUDWindow()
+                        router.showHUDWindow()
+                    }
                 }
                 .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
                 .disabled(teamName.isEmpty)

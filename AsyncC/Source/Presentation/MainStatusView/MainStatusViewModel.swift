@@ -27,8 +27,11 @@ class MainStatusViewModel: ObservableObject {
     @Published var hostName: String = ""
     @Published var teamMembers: [String] = []
     @Published var isTeamHost: Bool = false
+    @Published var isToggled: Bool = true
     @Published var isMenuVisible: Bool = false
-    @Published var userNameAndID: [String: String] = [:] // [userName: userID]
+   @Published var userNameAndID: [String: String] = [:] // [userName: userID]
+      @Published var isSelectedButton: Bool = false
+    @Published var buttonStates: [String: Bool] = [:]
     
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: EmoticonUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
@@ -63,6 +66,10 @@ class MainStatusViewModel: ObservableObject {
         }
     }
     
+    func checkUser(key: String) -> Bool {
+        return getUserName() == key
+    }
+    
     func getTeamName() -> String {
         teamManagingUseCase.getTeamName()
     }
@@ -81,6 +88,10 @@ class MainStatusViewModel: ObservableObject {
     
     func leaveTeam() {
         teamManagingUseCase.leaveTeam()
+    }
+    
+    func stopAppTracking() {
+        appTrackingUseCase.stopAppTracking()
     }
     
     func startShowingAppTracking() {
@@ -142,5 +153,13 @@ class MainStatusViewModel: ObservableObject {
         pasteboard.clearContents()
         pasteboard.setString(self.getTeamCode(), forType: .string)
         print("팀 코드 복사")
+    }
+    
+    func isButtonSelected(for key: String) -> Bool {
+        return buttonStates[key] ?? false
+    }
+    
+    func toggleButtonSelection(for key: String) {
+        buttonStates[key] = !(buttonStates[key] ?? false)
     }
 }
