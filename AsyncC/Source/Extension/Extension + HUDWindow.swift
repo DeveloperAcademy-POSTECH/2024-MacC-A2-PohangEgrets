@@ -30,11 +30,11 @@ extension AppDelegate {
         hudWindow?.level = .floating
 
         hudWindow?.contentViewController = NSHostingController(
-          rootView: MainStatusView(
-            viewModel: MainStatusViewModel(
-              teamManagingUseCase: self.router.teamManagingUseCase, 
-              appTrackingUseCase: self.router.appTrackingUseCase,
-            emoticonUseCase: self.router.emoticonUseCase)).environmentObject(self.router))
+            rootView: MainStatusView(
+                viewModel: MainStatusViewModel(
+                    teamManagingUseCase: self.router.teamManagingUseCase,
+                    appTrackingUseCase: self.router.appTrackingUseCase,
+                    emoticonUseCase: self.router.emoticonUseCase)).environmentObject(self.router))
         
         // Set the CornerRadius for the View inside the NSPanel
         hudWindow?.contentView?.wantsLayer = true
@@ -107,12 +107,14 @@ extension AppDelegate {
                     hudWindow.orderOut(nil)
                 }
             }
-
+        }
+    }
+    
     func closeHUDWindow() {
         if let hudWindow = self.hudWindow {
             hudWindow.close()
             self.hudWindow = nil
-
+            
         }
     }
 }

@@ -13,9 +13,9 @@ final class TeamManagingUseCase {
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
     private let appTrackingUseCase: AppTrackingUseCase
-    private let emoticonUseCase: EmoticonUseCase
+    private let emoticonUseCase: SyncUseCase
     
-    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: EmoticonUseCase) {
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: SyncUseCase) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
         self.appTrackingUseCase = appTrackingUseCase

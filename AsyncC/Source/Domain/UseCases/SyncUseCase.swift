@@ -8,7 +8,7 @@
 import Foundation
 import AppKit
 
-final class EmoticonUseCase {
+final class SyncUseCase {
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
     
@@ -18,9 +18,9 @@ final class EmoticonUseCase {
     }
     
     // MARK: - Send Emoticon
-    func send(emoticon: Emoticon.emoticonOption, receiver: String) {
+    func send(emoticon: SyncRequest.SyncMessageOption, receiver: String) {
         let sender = localRepository.getUserID()
-        firebaseRepository.sendEmoticon(sender: sender, emoticon: emoticon.rawValue, receiver: receiver, timestamp: Date.now, isAcknowledged: false)
+        firebaseRepository.sendSyncRequest(sender: sender, syncRequestType: emoticon.rawValue, receiver: receiver, timestamp: Date.now, isAcknowledged: false)
     }
     
 //    func setUpListenerForEmoticons(userID: String) {
@@ -38,7 +38,7 @@ final class EmoticonUseCase {
 //        }
 //    }
     
-    func acknowledgeEmoticon(receiver: String) {
-        firebaseRepository.updateAcknowledgment(for: receiver)
-    }
+//    func acknowledgeEmoticon(receiver: String) {
+//        firebaseRepository.updateAcknowledgment(for: receiver)
+//    }
 }

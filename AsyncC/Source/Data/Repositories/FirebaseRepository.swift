@@ -117,30 +117,29 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
-    // MARK: - Send Emoticon
-    func sendEmoticon(sender: String, emoticon: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
+    // MARK: - Send SyncRequest
+    func sendSyncRequest(sender: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
         let db = Firestore.firestore()
-        let docRef = db.collection("emoticons").document(receiver)
+        let docRef = db.collection("syncRequests").document(receiver)
         
         docRef.setData([
             "sender": sender,
             "receiver": receiver,
-            "emoticon": emoticon,
-            "timestamp": Timestamp(date: timestamp),
-            "isAcknowledged": isAcknowledged
+            "syncMessage": syncRequestType,
+            "timestamp": Timestamp(date: timestamp)
         ]) { error in
             if let error = error {
-                print("Failed to send emoticon: \(error.localizedDescription)")
+                print("Failed to send syncRequest: \(error.localizedDescription)")
             } else {
                 print("Emoticon successfully sent!")
             }
         }
     }
     
-    // MARK: - Listener for Emoticons
-    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, Error>) -> Void) {
+    // MARK: - Listener for SyncRequests
+    func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void) {
         let db = Firestore.firestore()
-        let docRef = db.collection("emoticons").document(userID)
+        let docRef = db.collection("syncRequests").document(userID)
         print("created listener for emoticons")
         
         docRef.addSnapshotListener { (documentSnapshot, error) in
@@ -151,17 +150,16 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             
             if let sender = data["sender"] as? String,
                let receiver = data["receiver"] as? String,
-               let emoticonRawValue = data["emoticon"] as? String,
-               let emoticonOption = Emoticon.emoticonOption(rawValue: emoticonRawValue),
-               let timestamp = (data["timestamp"] as? Timestamp)?.dateValue(),
-               let isAcknowledged = data["isAcknowledged"] as? Bool {
+               let syncMessage = data["syncMessage"] as? String,
+               let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
+               let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
+            {
                 
-                let emoticon = Emoticon(
+                let emoticon = SyncRequest(
                     sender: sender,
                     receiver: receiver,
-                    emoticon: emoticonOption,
-                    timestamp: timestamp,
-                    isAcknowledged: isAcknowledged
+                    syncMessage: syncMessageOption,
+                    timestamp: timestamp
                 )
                 handler(.success(emoticon))
             } else {

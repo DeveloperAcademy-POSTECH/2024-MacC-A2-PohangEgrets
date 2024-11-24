@@ -18,7 +18,7 @@ import Combine
 class MainStatusViewModel: ObservableObject {
     var teamManagingUseCase: TeamManagingUseCase
     var appTrackingUseCase: AppTrackingUseCase
-    var emoticonUseCase: EmoticonUseCase
+    var emoticonUseCase: SyncUseCase
     
     var cancellables = Set<AnyCancellable>()
     
@@ -33,7 +33,7 @@ class MainStatusViewModel: ObservableObject {
       @Published var isSelectedButton: Bool = false
     @Published var buttonStates: [String: Bool] = [:]
     
-    init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: EmoticonUseCase) {
+    init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: SyncUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
         self.emoticonUseCase =  emoticonUseCase

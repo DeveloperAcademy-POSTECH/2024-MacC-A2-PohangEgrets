@@ -49,9 +49,9 @@ protocol FirebaseRepositoryProtocol {
     
     func checkExistUserBy(userID: String, completion: @escaping (Bool, String?) -> Void)
     
-    func sendEmoticon(sender: String, emoticon: String, receiver: String, timestamp: Date, isAcknowledged: Bool) 
+    func sendSyncRequest(sender: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) 
     
-    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, Error>) -> Void)
+    func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void)
     
     func updateAcknowledgment(for receiverID: String)
     

@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct Emoticon {
+struct SyncRequest {
     var sender: String //보낸이 UUID
     var receiver: String // 받는이 UUID
-    var emoticon: emoticonOption
+    var syncMessage: SyncMessageOption
     let timestamp: Date
     var isAcknowledged: Bool = false
     
-    enum emoticonOption: String {
-        case getHelp = "도움요청"
-        case giveHelp = "도움제안"
+    enum SyncMessageOption: String {
+        case syncRequest
+        case acceptedSyncRequest
     }
 }
 

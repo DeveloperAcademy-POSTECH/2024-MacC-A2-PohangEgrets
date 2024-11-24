@@ -19,13 +19,13 @@ class Router: ObservableObject{
     var accountManagingUseCase: AccountManagingUseCase
     var appTrackingUseCase: AppTrackingUseCase
     var teamManagingUseCase: TeamManagingUseCase
-    var emoticonUseCase: EmoticonUseCase
+    var emoticonUseCase: SyncUseCase
 
     
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        emoticonUseCase = EmoticonUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
+        emoticonUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, emoticonUseCase: emoticonUseCase)
     }
     
