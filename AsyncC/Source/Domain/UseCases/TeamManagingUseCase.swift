@@ -87,7 +87,7 @@ final class TeamManagingUseCase {
             }
         }
         
-        self.firebaseRepository.setUpListenerForEmoticons(userID: localRepository.getUserID()) { result in
+        self.firebaseRepository.setupListenerForSyncRequest(userID: localRepository.getUserID()) { result in
             print("received emoticon")
             switch result {
             case .success(let emoticon):
@@ -97,7 +97,7 @@ final class TeamManagingUseCase {
                         let appDelegate = NSApplication.shared.delegate as? AppDelegate
                         appDelegate?.showEmoticonNotification(
                             sender: emoticon.sender,
-                            emoticon: emoticon.emoticon.rawValue
+                            emoticon: emoticon.syncMessage.rawValue
                         )
                     }
                 }
