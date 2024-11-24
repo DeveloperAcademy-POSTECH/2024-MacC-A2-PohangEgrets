@@ -21,7 +21,11 @@ class MainStatusViewModel: ObservableObject {
     
     var cancellables = Set<AnyCancellable>()
     
-    @Published var appTrackings: [String: [String]] = [:]
+    @Published var appTrackings: [String: [String]] = [:] {
+        didSet {
+            print("viewModel.appTrackings: \(appTrackings)")
+        }
+    }
     @Published var teamName: String = ""
     @Published var hostName: String = ""
     @Published var teamMembers: [String] = []
@@ -87,8 +91,12 @@ class MainStatusViewModel: ObservableObject {
         teamManagingUseCase.leaveTeam()
     }
     
-    func stopAppTracking() {
+    func stopAppTracking() { // 본인
         appTrackingUseCase.stopAppTracking()
+    }
+    
+    func stopOtherUserAppTracking() { // 다른 사람 앱 추적 리스너 삭제
+        appTrackingUseCase.stopListeningToOtherUsers()
     }
     
     func startShowingAppTracking() {
@@ -119,6 +127,31 @@ class MainStatusViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    func startAppTracking() {
+        appTrackingUseCase.startAppTracking()
+    }
+    
+    func removeUserFromTracking(userID: String) {
+        DispatchQueue.main.async {
+            self.appTrackings[userID] = nil
+        }
+    }
+    
+    func setUpAllListener() {
+        let teamCode = self.getTeamCode()
+        
+        teamManagingUseCase.getTeamMetaData(for: teamCode) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let teamMetaData):
+                self.teamManagingUseCase.setUpAllListeners(using: teamMetaData)
+            case .failure(let error):
+                print("Failed to fetch team metadata: \(error.localizedDescription)")
+            }
+        }
     }
     
     func getOpacity(appName: String, apps: [String]) -> Double {

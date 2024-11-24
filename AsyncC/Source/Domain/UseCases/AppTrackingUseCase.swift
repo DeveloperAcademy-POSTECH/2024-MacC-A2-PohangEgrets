@@ -12,26 +12,29 @@ final class AppTrackingUseCase: ObservableObject {
     
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
-    @Published var teamMemberAppTrackings: [String: [String]] = [:]
     private var currentApp: NSRunningApplication? = nil
+    private var appTrackingObserver: NSObjectProtocol?
+    @Published var teamMemberAppTrackings: [String: [String]] = [:]
     
     init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
     }
-    
+
     func startAppTracking() {
-        NSWorkspace.shared.notificationCenter.addObserver(
+        guard appTrackingObserver == nil else { return } // 이미 등록된 경우 중복 방지
+        appTrackingObserver = NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didActivateApplicationNotification,
             object: nil,
-            queue: .main) { [weak self] notification in
-                guard let self = self else { return }
-                if let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
-                    self.handleAppChangedIfNeeded(app: app)
-                }
+            queue: .main
+        ) { [weak self] notification in
+            guard let self = self else { return }
+            if let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
+                self.handleAppChangedIfNeeded(app: app)
+            }
         }
     }
-
+    
     private func handleAppChangedIfNeeded(app: NSRunningApplication) {
         if self.currentApp != app {
             self.currentApp = app
@@ -48,7 +51,14 @@ final class AppTrackingUseCase: ObservableObject {
     }
     
     func stopAppTracking() {
-        NSWorkspace.shared.notificationCenter.removeObserver(self)
+        if let observer = appTrackingObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(observer)
+            appTrackingObserver = nil
+        }
+    }
+    
+    func stopListeningToOtherUsers() { // 다른 사람 앱 리스너 삭제
+        firebaseRepository.removeListenersForUserAppData()
     }
     
     private func updateAppTracking(appName: String) {
@@ -65,9 +75,9 @@ final class AppTrackingUseCase: ObservableObject {
         return localRepository.getUserID()
     }
     
-    func setupAppTracking(fbRepository: FirebaseRepositoryProtocol, teamMemberIDs: [String]) {
+    func setupAppTracking(teamMemberIDs: [String]) {
         let userID = getUserIDFromLocal()
-        fbRepository.setUpListenersForUserAppData(userIDToIgnore: userID, userIDsToTrack: teamMemberIDs) { result in
+        firebaseRepository.setUpListenersForUserAppData(userIDToIgnore: userID, userIDsToTrack: teamMemberIDs) { result in
             switch result {
             case .success(let appData):
                 self.updateAppTracking(with: appData)
@@ -98,7 +108,5 @@ final class AppTrackingUseCase: ObservableObject {
         }
         arrayOfLatestApps.removeAll(where: {$0 == ""})
         teamMemberAppTrackings[userID] = arrayOfLatestApps
-        print(teamMemberAppTrackings)
     }
-    
 }

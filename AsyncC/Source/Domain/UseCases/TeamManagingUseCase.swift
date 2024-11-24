@@ -67,7 +67,7 @@ final class TeamManagingUseCase {
     }
     
     // MARK: - Listener 생성 및 업데이트
-    private func setUpAllListeners(using teamData: TeamMetaData) {
+    func setUpAllListeners(using teamData: TeamMetaData) {
         let teamInviteCode = teamData.inviteCode
         
         self.firebaseRepository.setUpListenerForTeamData(teamCode: teamInviteCode) { result in
@@ -88,7 +88,7 @@ final class TeamManagingUseCase {
     private func refreshUserAppDataListeners(for updatedMemberIDs: [String]) {
         firebaseRepository.removeListenersForUserAppData()
         appTrackingUseCase.resetAppTrackings()
-        appTrackingUseCase.setupAppTracking(fbRepository: firebaseRepository, teamMemberIDs: updatedMemberIDs)
+        appTrackingUseCase.setupAppTracking(teamMemberIDs: updatedMemberIDs) //  새롭게 업데이트된 멤버 ID를 기반으로 사용자 앱 데이터를 추적하는 리스너를 추가합니다.
     }
     
     func getUserNameConvert(userID: String, handler: @escaping (Result<String, Error>) -> Void) {
@@ -97,6 +97,18 @@ final class TeamManagingUseCase {
         }
     }
     // MARK: - Team 정보 갖고오기
+    
+    func getTeamMetaData(for teamCode: String, handler: @escaping (Result<TeamMetaData, Error>) -> Void) {
+        firebaseRepository.getTeamData(teamCode: teamCode) { result in
+            switch result {
+            case .success(let teamData):
+                handler(.success(teamData))
+            case .failure(let error):
+                handler(.failure(error))
+            }
+        }
+    }
+    
     func getTeamNameAndHostName(for teamInviteCode: String,
                                 handler: @escaping ((Result<(teamName: String, hostName: String), Error>)) -> Void) {
         firebaseRepository.getTeamData(teamCode: teamInviteCode) { result in

@@ -31,9 +31,9 @@ struct MainStatusView: View {
             }
             .frame(width: 270)
             .onAppear {
-                print("App Tracking: \(viewModel.appTrackings)")
                 viewModel.getTeamData(teamCode: viewModel.getTeamCode())
                 viewModel.startShowingAppTracking()
+                viewModel.setUpAllListener()
             }
         }
     }

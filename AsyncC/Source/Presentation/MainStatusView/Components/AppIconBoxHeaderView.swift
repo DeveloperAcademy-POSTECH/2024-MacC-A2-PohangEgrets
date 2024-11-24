@@ -32,11 +32,14 @@ struct AppIconBoxHeaderView: View {
                     .padding(.trailing, 8)
                     .onChange(of: viewModel.isToggled) { old, new in
                         if old {
-                            viewModel.startShowingAppTracking()
-                            print("Started tracking")
-                        } else {
                             viewModel.stopAppTracking()
-                            print("S")
+                            viewModel.stopOtherUserAppTracking()
+                            print("Stop tracking")
+                        } else {
+                            viewModel.startShowingAppTracking()
+                            viewModel.startAppTracking()
+                            viewModel.setUpAllListener()
+                            print("Start tracking")
                         }
                     }
             }
