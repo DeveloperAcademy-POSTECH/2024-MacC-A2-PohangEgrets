@@ -39,7 +39,12 @@ struct AppIconBoxHeaderView: View {
                             viewModel.startShowingAppTracking()
                             viewModel.startAppTracking()
                             viewModel.setUpAllListener()
+                            
                             print("Start tracking")
+                        }
+                        
+                        DispatchQueue.main.async {
+                            viewModel.objectWillChange.send()
                         }
                     }
             }

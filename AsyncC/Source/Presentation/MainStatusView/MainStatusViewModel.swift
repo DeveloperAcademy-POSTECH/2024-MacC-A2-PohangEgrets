@@ -24,6 +24,7 @@ class MainStatusViewModel: ObservableObject {
     @Published var appTrackings: [String: [String]] = [:] {
         didSet {
             print("viewModel.appTrackings: \(appTrackings)")
+            objectWillChange.send()
         }
     }
     @Published var teamName: String = ""
@@ -133,12 +134,6 @@ class MainStatusViewModel: ObservableObject {
         appTrackingUseCase.startAppTracking()
     }
     
-    func removeUserFromTracking(userID: String) {
-        DispatchQueue.main.async {
-            self.appTrackings[userID] = nil
-        }
-    }
-    
     func setUpAllListener() {
         let teamCode = self.getTeamCode()
         
@@ -189,5 +184,10 @@ class MainStatusViewModel: ObservableObject {
     
     func toggleButtonSelection(for key: String) {
         buttonStates[key] = !(buttonStates[key] ?? false)
+    }
+    
+    func myDataChanged() {
+        appTrackings.removeAll()
+        appTrackings[self.getUserName()] = []
     }
 }
