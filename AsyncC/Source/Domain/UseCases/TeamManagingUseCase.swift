@@ -87,25 +87,7 @@ final class TeamManagingUseCase {
             }
         }
         
-        self.firebaseRepository.setupListenerForSyncRequest(userID: localRepository.getUserID()) { result in
-            print("received emoticon")
-            switch result {
-            case .success(let emoticon):
-                DispatchQueue.main.async {
-                    // If the emoticon is not acknowledged, trigger the notification
-                    if !emoticon.isAcknowledged {
-                        let appDelegate = NSApplication.shared.delegate as? AppDelegate
-                        appDelegate?.showEmoticonNotification(
-                            sender: emoticon.sender,
-                            emoticon: emoticon.syncMessage.rawValue
-                        )
-                    }
-                }
-            case .failure(let error):
-                // Log error if something goes wrong in the listener
-                print("Error in Emoticon Listener: \(error.localizedDescription)")
-            }
-        }
+        emoticonUseCase.setUpListenerForEmoticons(userID: localRepository.getUserID())
         
     }
     

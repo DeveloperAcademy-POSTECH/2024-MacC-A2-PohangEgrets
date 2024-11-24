@@ -118,13 +118,14 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     }
     
     // MARK: - Send SyncRequest
-    func sendSyncRequest(sender: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
+    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
         let db = Firestore.firestore()
         let docRef = db.collection("syncRequests").document(receiver)
         
         docRef.setData([
-            "sender": sender,
-            "receiver": receiver,
+            "senderID": senderID,
+            "senderName": "",
+            "receiverID": receiver,
             "syncMessage": syncRequestType,
             "timestamp": Timestamp(date: timestamp)
         ]) { error in
@@ -148,16 +149,18 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 return
             }
             
-            if let sender = data["sender"] as? String,
-               let receiver = data["receiver"] as? String,
+            if let senderID = data["senderID"] as? String,
+               let senderName = data["senderName"] as? String,
+               let receiverID = data["receiverID"] as? String,
                let syncMessage = data["syncMessage"] as? String,
                let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
                let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
             {
                 
                 let emoticon = SyncRequest(
-                    sender: sender,
-                    receiver: receiver,
+                    senderID: senderID,
+                    senderName: senderName,
+                    receiverID: receiverID,
                     syncMessage: syncMessageOption,
                     timestamp: timestamp
                 )

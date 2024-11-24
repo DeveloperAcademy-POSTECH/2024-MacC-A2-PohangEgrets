@@ -8,8 +8,9 @@
 import Foundation
 
 struct SyncRequest {
-    var sender: String //보낸이 UUID
-    var receiver: String // 받는이 UUID
+    var senderID: String //보낸이 UUID
+    var senderName: String
+    var receiverID: String // 받는이 UUID
     var syncMessage: SyncMessageOption
     let timestamp: Date
     var isAcknowledged: Bool = false
