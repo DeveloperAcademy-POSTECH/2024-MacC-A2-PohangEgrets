@@ -178,12 +178,16 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     }
     
     // MARK: - Listener for SyncRequests
+    var syncRequestListener: ListenerRegistration? = nil
+    
     func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("syncRequests").document(userID)
         print("created listener for emoticons")
         
-        docRef.addSnapshotListener { (documentSnapshot, error) in
+        if syncRequestListener != nil {return}
+        
+        syncRequestListener = docRef.addSnapshotListener { (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {
                 handler(.failure(error ?? NSError(domain: "No data", code: -1, userInfo: nil)))
                 return

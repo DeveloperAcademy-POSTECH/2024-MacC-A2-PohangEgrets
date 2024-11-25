@@ -15,15 +15,19 @@ struct PendingSyncRequestView: View {
     
     @EnvironmentObject var router: Router
     
-    let viewModel = SyncRequestNotificationViewModel()
+    @ObservedObject var viewModel = SyncRequestNotificationViewModel()
     
     var body: some View {
         VStack(spacing: 10) {
             if amSender {
-                Text("Waiting for acknowledgement")
+                Text("수락을 기다리는 중")
+                Text("10초 안에 수락을 안하면 자동으로 취소됩니다")
+                Text("\(viewModel.secondsLeft)")
             } else {
-                Text("\(senderName) sent a request")
+                Text("\(senderName)의 도움요청")
                     .font(.headline)
+                Text("5초 안에 수락을 안하면 자동으로 거절됩니다")
+                Text("\(viewModel.secondsLeft)")
                 HStack {
                     Button("Acknowledge") {
                         viewModel.acceptSyncRequest(to: senderID)
@@ -38,6 +42,9 @@ struct PendingSyncRequestView: View {
         .frame(minWidth: 173, minHeight: 130)
         .onAppear {
             viewModel.router = router
+            viewModel.startTimer(){
+                router.closePendingSyncWindow()
+            }
         }
     }
 }

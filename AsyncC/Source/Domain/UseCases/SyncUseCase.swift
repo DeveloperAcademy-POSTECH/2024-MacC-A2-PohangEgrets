@@ -58,16 +58,11 @@ final class SyncUseCase {
         guard let router else {return print("Router not found")}
         router.hideHUDWindow()
         router.showPendingSyncRequest(senderName: senderName, senderID: senderID, isSender: isSender)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            router.closePendingSyncWindow()
-        }
     }
     
     private func showSyncRequestAccepted() {
-        router?.showSyncingLoadingView()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.router?.closeSyncingLoadingWindow()
-        }
+        print("showing sync request accepted")
+//        router?.showSyncingLoadingView()
     }
     
     func setUpSyncWith(_ senderID: String) {

@@ -35,7 +35,11 @@ extension AppTrackingBoxView {
                                 .padding(.trailing, 4)
                             
                             if viewModel.getUserName() != key {
-                                SyncButton(viewModel: viewModel, key: key, action: {})
+                                SyncButton(viewModel: viewModel, key: key, action: {
+                                    if let userID = viewModel.userNameAndID[key] {
+                                        viewModel.emoticonUseCase.requestForSync(receiver: userID)
+                                    }
+                                })
                             }
                         }
                         .padding(.vertical, 4.5)
