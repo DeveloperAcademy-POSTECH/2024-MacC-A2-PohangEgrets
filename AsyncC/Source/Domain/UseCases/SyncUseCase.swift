@@ -24,7 +24,7 @@ final class SyncUseCase {
         let senderName = localRepository.getUserName()
         let senderID = localRepository.getUserID()
         send(emoticon: .syncRequest, receiver: receiver)
-        router?.showWaitingForSyncAccept(senderName: senderName, senderID: senderID)
+        showSyncRequest(senderName: senderName, senderID: senderID, isSender: true)
     }
     
     func send(emoticon: SyncRequest.SyncMessageOption, receiver: String) {
@@ -39,11 +39,13 @@ final class SyncUseCase {
             case .success(let syncRequest):
                 DispatchQueue.main.async {
                     if syncRequest.syncMessage == .syncRequest {
+                        print("setting up listener")
                         self.showSyncRequest(senderName: syncRequest.senderName,
-                                             senderID: syncRequest.senderID)
+                                             senderID: syncRequest.senderID,
+                                             isSender: false)
                     } else if syncRequest.syncMessage == .acceptedSyncRequest {
                         print("\(syncRequest.senderName) accepted your sync request")
-                        self.showSyncRequestAccepted()
+//                        self.showSyncRequestAccepted()
                     }
                 }
             case .failure(let error):
@@ -52,12 +54,13 @@ final class SyncUseCase {
         }
     }
     
-    private func showSyncRequest(senderName: String, senderID: String) {
+    func showSyncRequest(senderName: String, senderID: String, isSender: Bool) {
         guard let router else {return print("Router not found")}
-        router.showSyncRequest(senderName: senderName, senderID: senderID)
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-//            router.disappearHUDWindow()
-//        }
+        router.hideHUDWindow()
+        router.showPendingSyncRequest(senderName: senderName, senderID: senderID, isSender: isSender)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            router.closePendingSyncWindow()
+        }
     }
     
     private func showSyncRequestAccepted() {

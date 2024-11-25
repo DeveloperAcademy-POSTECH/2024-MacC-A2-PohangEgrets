@@ -103,23 +103,31 @@ class Router: ObservableObject{
         }
     }
     
+    func hideHUDWindow() {
+        if let delegate = appDelegate {
+            delegate.hideHUDWindow()
+        }
+    }
+    
     func setUpContentViewWindow() {
         if let delegate = appDelegate {
             delegate.setUpContentViewWindow()
         }
     }
     
-    func showSyncRequest(senderName: String, senderID: String) {
+    func showPendingSyncRequest(senderName: String, senderID: String, isSender: Bool) {
         if let delegate = appDelegate {
-            delegate.showSyncRequestNotification(senderName: senderName, senderID: senderID, isSender: false)
+            delegate.setUpPendingSyncWindow(senderName: senderName, senderID: senderID, isSender: isSender)
+            delegate.showPendingSyncWindow()
         }
     }
     
-    func showWaitingForSyncAccept(senderName: String, senderID: String) {
-        if let delegate = appDelegate {
-            delegate.showSyncRequestNotification(senderName: senderName, senderID: senderID, isSender: true)
-        }
-    }
+//    func showWaitingForSyncAccept(senderName: String, senderID: String) {
+//        if let delegate = appDelegate {
+//            delegate.setUpPendingSyncWindow(senderName: senderName, senderID: senderID, isSender: true)
+//            delegate.showPendingSyncWindow()
+//        }
+//    }
     
     func showSyncingView() {
         if let delegate = appDelegate {
@@ -127,9 +135,16 @@ class Router: ObservableObject{
         }
     }
     
-    func disappearHUDWindow() {
+    func closePendingSyncWindow() {
         if let delegate = appDelegate {
-            delegate.orderOutWindow()
+            delegate.closePendingSyncWindow()
         }
     }
+    
+    
+//    func disappearHUDWindow() {
+//        if let delegate = appDelegate {
+//            delegate.orderOutWindow()
+//        }
+//    }
 }

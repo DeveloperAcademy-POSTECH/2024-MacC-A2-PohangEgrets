@@ -65,24 +65,24 @@ extension AppDelegate {
     }
     
     // MARK: - Show SyncRequest Notification
-    func showSyncRequestNotification(senderName: String, senderID: String, isSender: Bool) {
-        if let hudWindow = hudWindow {
-            let contentView = PendingSyncRequestView(senderName: senderName,
-                                                     senderID: senderID,
-                                                     amSender: isSender)
-                .environmentObject(self.router)
-            
-            hudWindow.contentViewController = NSHostingController(rootView: contentView)
-            hudWindow.makeKeyAndOrderFront(nil)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-                if hudWindow.isVisible {
-                    hudWindow.orderOut(nil)
-                }
-            }
-            setUpHUDWindow()
-        }
-    }
+//    func showSyncRequestNotification(senderName: String, senderID: String, isSender: Bool) {
+//        if let hudWindow = hudWindow {
+//            let contentView = PendingSyncRequestView(senderName: senderName,
+//                                                     senderID: senderID,
+//                                                     amSender: isSender)
+//                .environmentObject(self.router)
+//            
+//            hudWindow.contentViewController = NSHostingController(rootView: contentView)
+//            hudWindow.makeKeyAndOrderFront(nil)
+//            
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+//                if hudWindow.isVisible {
+//                    hudWindow.orderOut(nil)
+//                }
+//            }
+//            setUpHUDWindow()
+//        }
+//    }
     
     // MARK: - Show Syncing Notification
     func showSyncingNotification() {
@@ -104,7 +104,7 @@ extension AppDelegate {
         }
     }
     
-    func orderOutWindow() {
+    func hideHUDWindow() {
         guard let hudWindow else { return }
         if hudWindow.isVisible {
             hudWindow.orderOut(nil)
