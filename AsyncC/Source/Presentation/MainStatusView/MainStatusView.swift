@@ -16,6 +16,7 @@ struct MainStatusView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 5)
                 .fill(.regularMaterial)
+                .frame(maxWidth: 270)
 
             VStack(spacing: 0){
                 HStack(spacing: 0) {
@@ -31,11 +32,12 @@ struct MainStatusView: View {
             }
             .frame(width: 270)
             .onAppear {
-                print("App Tracking: \(viewModel.appTrackings)")
                 viewModel.getTeamData(teamCode: viewModel.getTeamCode())
                 viewModel.startShowingAppTracking()
+                viewModel.setUpAllListener()
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
