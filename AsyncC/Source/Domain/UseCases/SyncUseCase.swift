@@ -35,6 +35,7 @@ final class SyncUseCase {
                                              senderID: syncRequest.senderID)
                     } else if syncRequest.syncMessage == .acceptedSyncRequest {
                         print("\(syncRequest.senderName) accepted your sync request")
+                        self.showSyncRequestAccepted()
                     }
                 }
             case .failure(let error):
@@ -49,6 +50,10 @@ final class SyncUseCase {
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
 //            router.disappearHUDWindow()
 //        }
+    }
+    
+    private func showSyncRequestAccepted() {
+        router?.showSyncingView()
     }
     
     func setUpSyncWith(_ senderID: String) {
