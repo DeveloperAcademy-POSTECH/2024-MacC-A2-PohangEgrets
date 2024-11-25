@@ -34,6 +34,8 @@ protocol FirebaseRepositoryProtocol {
     
     func getUserName(userID: String, handler: @escaping (Result<String, Error>) -> Void)
     
+    func getUserEmail(userID: String, handler: @escaping (Result<String, Error>) -> Void)
+    
     func getHostName(hostID: String, handler: @escaping ((Result<String, Error>) -> Void))
     
     func removeUser(userID: String, teamCode: String)

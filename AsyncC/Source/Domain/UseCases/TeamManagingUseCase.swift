@@ -102,6 +102,13 @@ final class TeamManagingUseCase {
             handler(result)
         }
     }
+    
+    func getUserEmailConvert(userID: String, handler: @escaping (Result<String, Error>) -> Void) {
+        firebaseRepository.getUserEmail(userID: userID) { result in
+            handler(result)
+        }
+    }
+
     // MARK: - Team 정보 갖고오기
     
     func getTeamMetaData(for teamCode: String, handler: @escaping (Result<TeamMetaData, Error>) -> Void) {

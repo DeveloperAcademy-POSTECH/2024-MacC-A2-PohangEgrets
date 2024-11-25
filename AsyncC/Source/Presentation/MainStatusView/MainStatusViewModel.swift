@@ -35,8 +35,9 @@ class MainStatusViewModel: ObservableObject {
     @Published var isTeamHost: Bool = false
     @Published var isToggled: Bool = true
     @Published var isMenuVisible: Bool = false
-   @Published var userNameAndID: [String: String] = [:] // [userName: userID]
-      @Published var isSelectedButton: Bool = false
+    @Published var userNameAndID: [String: String] = [:] // [userName: userID]
+    @Published var emailToUserId: [String: String] = [:] // Email-to-ID mapping
+    @Published var isSelectedButton: Bool = false
     @Published var buttonStates: [String: Bool] = [:]
     
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: SyncUseCase) {
@@ -55,7 +56,7 @@ class MainStatusViewModel: ObservableObject {
     func updateUserTrackingStatus(userID: String, isActive: Bool) {
         trackingActive[userID] = isActive
         appTrackingUseCase.updateTrackingStatus(for: userID, isActive: isActive)
-       }
+    }
     
     func startTrackingStatuses(for teamMemberIDs: [String]) {
         appTrackingUseCase.startTrackingStatus(for: teamMemberIDs)
@@ -140,6 +141,16 @@ class MainStatusViewModel: ObservableObject {
                                 self.userNameAndID[userName] = userID
                                 updatedTrackings[userName] = appTrackings[userID]?.reversed()
                                 self.nameToUserId[userName] = userID // 이름-유저 ID 매핑 저장
+                                
+                                // Fetch email and map it to user ID
+                                self.teamManagingUseCase.getUserEmailConvert(userID: userID) { emailResult in
+                                    switch emailResult {
+                                    case .success(let email):
+                                        self.emailToUserId[email] = userID
+                                    case .failure(let error):
+                                        print("Failed to fetch email for userID \(userID): \(error)")
+                                    }
+                                }
                             case .failure(let error):
                                 print("Failed to get user name for userID \(userID): \(error)")
                                 updatedTrackings[userID] = appTrackings[userID]

@@ -435,6 +435,27 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
+    func getUserEmail(userID: String, handler: @escaping (Result<String, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("users").document(userID)
+
+        docRef.getDocument { document, error in
+            if let error = error {
+                handler(.failure(error))
+                return
+            }
+
+            guard let document = document, document.exists,
+                  let data = document.data(),
+                  let userEmail = data["email"] as? String else {
+                handler(.failure(FirebaseError(errorMessage: "User not found or no email field")))
+                return
+            }
+
+            handler(.success(userEmail))
+        }
+    }
+    
     func getHostName(hostID: String, handler: @escaping ((Result<String, Error>) -> Void)) {
         let db = Firestore.firestore()
         let docRef = db.collection("users").document(hostID)
