@@ -20,26 +20,43 @@ struct PendingSyncRequestView: View {
     var body: some View {
         VStack(spacing: 10) {
             if amSender {
-                Text("수락을 기다리는 중")
-                Text("10초 안에 수락을 안하면 자동으로 취소됩니다")
-                Text("\(viewModel.secondsLeft)")
+                Text("의 수락을 기다리는 중")
+                    .font(Font.system(size: 16, weight: .medium))
+                    .padding(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 0))
             } else {
                 Text("\(senderName)의 도움요청")
-                    .font(.headline)
-                Text("5초 안에 수락을 안하면 자동으로 거절됩니다")
-                Text("\(viewModel.secondsLeft)")
+                    .font(Font.system(size: 16, weight: .medium))
+                    .padding(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 0))
+            }
+            Text("10초 안에 수락을 안하면 자동으로 거절됩니다")
+                .font(Font.system(size: 12, weight: .light))
+                .padding(EdgeInsets(top: 0, leading: 12, bottom: 12, trailing: 12))
+            Text("\(viewModel.secondsLeft)")
+                .font(Font.system(size: 24, weight: .heavy))
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
+            if !amSender {
                 HStack {
-                    Button("Acknowledge") {
-                        viewModel.acceptSyncRequest(to: senderID)
+                    Button {
+                        
+                    } label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 4)
+                                .frame(height: 24)
+                                .foregroundStyle(Color.white)
+                            Text("도움 수락하기")
+                                .font(Font.system(size: 12, weight: .medium))
+                        }
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
-                .padding(.top, 10)
+                .padding(12)
             }
         }
         .padding()
         .background(Color.gray.opacity(0.9))
         .cornerRadius(10)
-        .frame(minWidth: 173, minHeight: 130)
+//        .frame(minWidth: 300, minHeight: 130)
+        .fixedSize(horizontal: true, vertical: true)
         .onAppear {
             viewModel.router = router
             viewModel.startTimer(){

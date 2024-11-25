@@ -37,7 +37,7 @@ extension AppDelegate {
         
         // Set the CornerRadius for the View inside the NSPanel
         pendingSyncWindow?.contentView?.wantsLayer = true
-        pendingSyncWindow?.contentView?.layer?.cornerRadius = 5.0
+        pendingSyncWindow?.contentView?.layer?.cornerRadius = 8.0
         pendingSyncWindow?.contentView?.layer?.masksToBounds = true
         
         pendingSyncWindow?.appearance = NSAppearance(named: .aqua)
