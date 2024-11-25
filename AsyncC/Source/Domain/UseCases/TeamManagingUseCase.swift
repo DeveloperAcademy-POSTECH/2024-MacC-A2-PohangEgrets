@@ -154,7 +154,7 @@ final class TeamManagingUseCase {
     
     func getTeamDetails(
         teamCode: String,
-        handler: @escaping (Result<(teamName: String, hostName: String), Error>) -> Void
+        handler: @escaping (Result<(teamMemberIDs: [String], teamName: String, hostName: String), Error>) -> Void
     ) {
         firebaseRepository.getTeamData(teamCode: teamCode) { [weak self] result in
             switch result {
@@ -162,7 +162,7 @@ final class TeamManagingUseCase {
                 self?.firebaseRepository.getHostName(hostID: teamData.hostID) { hostNameResult in
                     switch hostNameResult {
                     case .success(let hostName):
-                        handler(.success((teamName: teamData.teamName, hostName: hostName)))
+                        handler(.success((teamMemberIDs:teamData.memberIDs, teamName: teamData.teamName, hostName: hostName)))
                     case .failure(let error):
                         handler(.failure(error))
                     }

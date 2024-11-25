@@ -6,6 +6,9 @@
 //
 
 protocol FirebaseRepositoryProtocol {
+    func setTrackingActive(id: String, isActive: Bool)
+    
+    func setUpListenerForTrackingActive(for userID: String, completion: @escaping (Result<Bool, Error>) -> Void)
     
     func setUserAppData(id: String,
                      appName: String,

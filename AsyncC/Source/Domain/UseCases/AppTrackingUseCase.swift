@@ -15,12 +15,44 @@ final class AppTrackingUseCase: ObservableObject {
     private var currentApp: NSRunningApplication? = nil
     private var appTrackingObserver: NSObjectProtocol?
     @Published var teamMemberAppTrackings: [String: [String]] = [:]
-    
+    @Published var teamTrackingStatus: [String: Bool] = [:]
+
     init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
     }
 
+    func startTrackingStatus(for teamMemberIDs: [String]) {
+        for userID in teamMemberIDs {
+            firebaseRepository.setUpListenerForTrackingActive(for: userID) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let isActive):
+                        self.teamTrackingStatus[userID] = isActive
+                    case .failure:
+                        self.teamTrackingStatus[userID] = true
+                    }
+                }
+            }
+        }
+    }
+    
+    func toggleCurrentUserTrackingStatus() { // 자신의 TrackingActive 상태를 변경하는 메서드:
+        let currentUserID = getUserIDFromLocal()
+        let currentStatus = teamTrackingStatus[currentUserID] ?? true
+        let newStatus = !currentStatus
+        updateTrackingStatus(for: currentUserID, isActive: newStatus)
+    }
+    
+    func updateTrackingStatus(for userID: String, isActive: Bool) { // 특정 사용자의 TrackingActive 상태를 업데이트하는 메서드:
+        firebaseRepository.setTrackingActive(id: userID, isActive: isActive)
+    }
+    
+    func isUserTrackingActive(userID: String) -> Bool { // 특정 사용자의 상태가 true인지 확인하는 메서드
+        return teamTrackingStatus[userID] ?? true // 기본값 true
+    }
+    
     func startAppTracking() {
         guard appTrackingObserver == nil else { return } // 이미 등록된 경우 중복 방지
         appTrackingObserver = NSWorkspace.shared.notificationCenter.addObserver(

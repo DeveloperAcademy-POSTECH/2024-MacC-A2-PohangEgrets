@@ -20,7 +20,8 @@ class MainStatusViewModel: ObservableObject {
     var appTrackingUseCase: AppTrackingUseCase
     
     var cancellables = Set<AnyCancellable>()
-    
+    @Published var nameToUserId: [String: String] = [:]
+    @Published var trackingActive: [String: Bool] = [:] // 유저별 TrackingActive 상태
     @Published var appTrackings: [String: [String]] = [:] {
         didSet {
             print("viewModel.appTrackings: \(appTrackings)")
@@ -39,6 +40,22 @@ class MainStatusViewModel: ObservableObject {
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
+        
+        appTrackingUseCase.$teamTrackingStatus
+            .receive(on: RunLoop.main)
+            .sink { [weak self] newStatus in
+                self?.trackingActive = newStatus
+            }
+            .store(in: &cancellables)
+    }
+    
+    func updateUserTrackingStatus(userID: String, isActive: Bool) {
+        trackingActive[userID] = isActive
+        appTrackingUseCase.updateTrackingStatus(for: userID, isActive: isActive)
+       }
+    
+    func startTrackingStatuses(for teamMemberIDs: [String]) {
+        appTrackingUseCase.startTrackingStatus(for: teamMemberIDs)
     }
     
     func getTeamData(teamCode: String) {
@@ -48,6 +65,8 @@ class MainStatusViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self?.teamName = details.teamName
                     self?.hostName = details.hostName
+                    self?.teamMembers = details.teamMemberIDs
+                    self?.startTrackingStatuses(for: self?.teamMembers ?? [])
                 }
                 self?.checkHost()
                 
@@ -115,6 +134,7 @@ class MainStatusViewModel: ObservableObject {
                             switch result {
                             case .success(let userName):
                                 updatedTrackings[userName] = appTrackings[userID]?.reversed()
+                                self.nameToUserId[userName] = userID // 이름-유저 ID 매핑 저장
                             case .failure(let error):
                                 print("Failed to get user name for userID \(userID): \(error)")
                                 updatedTrackings[userID] = appTrackings[userID]

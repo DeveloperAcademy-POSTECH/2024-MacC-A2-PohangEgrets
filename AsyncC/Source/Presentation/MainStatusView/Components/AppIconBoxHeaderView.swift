@@ -26,8 +26,18 @@ struct AppIconBoxHeaderView: View {
             
             Spacer()
             
-            if viewModel.checkUser(key: key) {
-                Toggle("", isOn: $viewModel.isToggled)
+            if let userID = viewModel.nameToUserId[key] {
+                if key == viewModel.getUserName() {
+                    Toggle("", isOn: Binding(
+                        get: { viewModel.trackingActive[userID] ?? true },
+                        set: { newValue in
+                            viewModel.updateUserTrackingStatus(userID: userID, isActive: newValue)
+                            
+                            if viewModel.checkUser(key: key) {
+                                viewModel.isToggled = newValue
+                            }
+                        }
+                    ))
                     .toggleStyle(SwitchToggleStyle(tint: .blue))
                     .padding(.trailing, 8)
                     .onChange(of: viewModel.isToggled) { old, new in
@@ -42,11 +52,8 @@ struct AppIconBoxHeaderView: View {
                             
                             print("Start tracking")
                         }
-                        
-                        DispatchQueue.main.async {
-                            viewModel.objectWillChange.send()
-                        }
                     }
+                }
             }
         }
         .padding(.top, 8)
