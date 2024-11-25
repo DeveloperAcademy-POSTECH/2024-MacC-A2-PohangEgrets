@@ -8,6 +8,9 @@
 import Foundation
 
 protocol FirebaseRepositoryProtocol {
+    func setTrackingActive(id: String, isActive: Bool)
+    
+    func setUpListenerForTrackingActive(for userID: String, completion: @escaping (Result<Bool, Error>) -> Void)
     
     func setUserAppData(id: String,
                         appName: String,
@@ -55,4 +58,7 @@ protocol FirebaseRepositoryProtocol {
     
     func updateAcknowledgment(for receiverID: String)
     
+    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, any Error>) -> Void)
+
+    func changeDisbandStatus(teamCode: String)
 }

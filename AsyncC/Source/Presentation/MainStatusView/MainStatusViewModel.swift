@@ -21,8 +21,14 @@ class MainStatusViewModel: ObservableObject {
     var emoticonUseCase: SyncUseCase
     
     var cancellables = Set<AnyCancellable>()
-    
-    @Published var appTrackings: [String: [String]] = [:]
+    @Published var nameToUserId: [String: String] = [:]
+    @Published var trackingActive: [String: Bool] = [:] // 유저별 TrackingActive 상태
+    @Published var appTrackings: [String: [String]] = [:] {
+        didSet {
+            print("viewModel.appTrackings: \(appTrackings)")
+            objectWillChange.send()
+        }
+    }
     @Published var teamName: String = ""
     @Published var hostName: String = ""
     @Published var teamMembers: [String] = []
@@ -37,6 +43,22 @@ class MainStatusViewModel: ObservableObject {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
         self.emoticonUseCase =  emoticonUseCase
+        
+        appTrackingUseCase.$teamTrackingStatus
+            .receive(on: RunLoop.main)
+            .sink { [weak self] newStatus in
+                self?.trackingActive = newStatus
+            }
+            .store(in: &cancellables)
+    }
+    
+    func updateUserTrackingStatus(userID: String, isActive: Bool) {
+        trackingActive[userID] = isActive
+        appTrackingUseCase.updateTrackingStatus(for: userID, isActive: isActive)
+       }
+    
+    func startTrackingStatuses(for teamMemberIDs: [String]) {
+        appTrackingUseCase.startTrackingStatus(for: teamMemberIDs)
     }
     
     func getTeamData(teamCode: String) {
@@ -46,6 +68,8 @@ class MainStatusViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self?.teamName = details.teamName
                     self?.hostName = details.hostName
+                    self?.teamMembers = details.teamMemberIDs
+                    self?.startTrackingStatuses(for: self?.teamMembers ?? [])
                 }
                 self?.checkHost()
                 
@@ -90,8 +114,12 @@ class MainStatusViewModel: ObservableObject {
         teamManagingUseCase.leaveTeam()
     }
     
-    func stopAppTracking() {
+    func stopAppTracking() { // 본인
         appTrackingUseCase.stopAppTracking()
+    }
+    
+    func stopOtherUserAppTracking() { // 다른 사람 앱 추적 리스너 삭제
+        appTrackingUseCase.stopListeningToOtherUsers()
     }
     
     func startShowingAppTracking() {
@@ -111,6 +139,7 @@ class MainStatusViewModel: ObservableObject {
                             case .success(let userName):
                                 self.userNameAndID[userName] = userID
                                 updatedTrackings[userName] = appTrackings[userID]?.reversed()
+                                self.nameToUserId[userName] = userID // 이름-유저 ID 매핑 저장
                             case .failure(let error):
                                 print("Failed to get user name for userID \(userID): \(error)")
                                 updatedTrackings[userID] = appTrackings[userID]
@@ -124,6 +153,25 @@ class MainStatusViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    func startAppTracking() {
+        appTrackingUseCase.startAppTracking()
+    }
+    
+    func setUpAllListener() {
+        let teamCode = self.getTeamCode()
+        
+        teamManagingUseCase.getTeamMetaData(for: teamCode) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let teamMetaData):
+                self.teamManagingUseCase.setUpAllListeners(using: teamMetaData)
+            case .failure(let error):
+                print("Failed to fetch team metadata: \(error.localizedDescription)")
+            }
+        }
     }
     
     func getOpacity(appName: String, apps: [String]) -> Double {
@@ -161,5 +209,13 @@ class MainStatusViewModel: ObservableObject {
     
     func toggleButtonSelection(for key: String) {
         buttonStates[key] = !(buttonStates[key] ?? false)
+    }
+    
+    private func changeDisbandStatus() {
+        teamManagingUseCase.changeToDisbandStatus(teamCode: teamManagingUseCase.getTeamCode())
+    }
+    
+    func disbandTeam() {
+        teamManagingUseCase.changeToDisbandStatus(teamCode: teamManagingUseCase.getTeamCode())
     }
 }
