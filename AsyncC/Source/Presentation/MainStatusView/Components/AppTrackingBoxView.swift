@@ -29,7 +29,7 @@ struct AppTrackingBoxView: View {
                     if viewModel.getUserName() != key {
                         SyncButton(viewModel: viewModel, key: key, action: {
                         if let userID = viewModel.userNameAndID[key] {
-                            viewModel.emoticonUseCase.send(emoticon: SyncRequest.SyncMessageOption.syncRequest, receiver: userID)
+                            viewModel.emoticonUseCase.requestForSync(receiver: userID)
                             }
                         })
 

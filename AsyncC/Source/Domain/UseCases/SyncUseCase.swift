@@ -19,6 +19,14 @@ final class SyncUseCase {
     }
     
     // MARK: - Send Emoticon
+    
+    func requestForSync(receiver: String){
+        let senderName = localRepository.getUserName()
+        let senderID = localRepository.getUserID()
+        send(emoticon: .syncRequest, receiver: receiver)
+        router?.showWaitingForSyncAccept(senderName: senderName, senderID: senderID)
+    }
+    
     func send(emoticon: SyncRequest.SyncMessageOption, receiver: String) {
         let senderID = localRepository.getUserID()
         let senderName = localRepository.getUserName()

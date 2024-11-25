@@ -64,11 +64,12 @@ extension AppDelegate {
         }
     }
     
-    // MARK: - Show SyncRequest Notification to recipient
-    func showSyncRequestNotification(senderName: String, senderID: String) {
+    // MARK: - Show SyncRequest Notification
+    func showSyncRequestNotification(senderName: String, senderID: String, isSender: Bool) {
         if let hudWindow = hudWindow {
-            let contentView = SyncRequestNotificationView(senderName: senderName,
-                                                          senderID: senderID)
+            let contentView = PendingSyncRequestView(senderName: senderName,
+                                                     senderID: senderID,
+                                                     amSender: isSender)
                 .environmentObject(self.router)
             
             hudWindow.contentViewController = NSHostingController(rootView: contentView)

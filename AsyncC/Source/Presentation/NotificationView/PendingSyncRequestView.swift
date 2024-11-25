@@ -8,9 +8,10 @@
 
 import SwiftUI
 
-struct SyncRequestNotificationView: View {
+struct PendingSyncRequestView: View {
     let senderName: String
     let senderID: String
+    var amSender: Bool
     
     @EnvironmentObject var router: Router
     
@@ -18,14 +19,18 @@ struct SyncRequestNotificationView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            Text("\(senderName) sent a request")
-                .font(.headline)
-            HStack {
-                Button("Acknowledge") {
-                    viewModel.acceptSyncRequest(to: senderID)
+            if amSender {
+                Text("Waiting for acknowledgement")
+            } else {
+                Text("\(senderName) sent a request")
+                    .font(.headline)
+                HStack {
+                    Button("Acknowledge") {
+                        viewModel.acceptSyncRequest(to: senderID)
+                    }
                 }
+                .padding(.top, 10)
             }
-            .padding(.top, 10)
         }
         .padding()
         .background(Color.gray.opacity(0.9))

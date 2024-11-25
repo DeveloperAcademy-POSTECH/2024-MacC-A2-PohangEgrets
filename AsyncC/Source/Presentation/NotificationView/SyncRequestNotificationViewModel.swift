@@ -8,7 +8,6 @@
 import SwiftUI
 
 class SyncRequestNotificationViewModel {
-//    @EnvironmentObject var router: Router
     var router: Router?
     
     func acceptSyncRequest(to receiverID: String) {

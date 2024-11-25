@@ -111,7 +111,13 @@ class Router: ObservableObject{
     
     func showSyncRequest(senderName: String, senderID: String) {
         if let delegate = appDelegate {
-            delegate.showSyncRequestNotification(senderName: senderName, senderID: senderID)
+            delegate.showSyncRequestNotification(senderName: senderName, senderID: senderID, isSender: false)
+        }
+    }
+    
+    func showWaitingForSyncAccept(senderName: String, senderID: String) {
+        if let delegate = appDelegate {
+            delegate.showSyncRequestNotification(senderName: senderName, senderID: senderID, isSender: true)
         }
     }
     
