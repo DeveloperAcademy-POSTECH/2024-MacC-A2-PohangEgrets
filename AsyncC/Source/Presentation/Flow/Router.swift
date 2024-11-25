@@ -19,15 +19,15 @@ class Router: ObservableObject{
     var accountManagingUseCase: AccountManagingUseCase
     var appTrackingUseCase: AppTrackingUseCase
     var teamManagingUseCase: TeamManagingUseCase
-    var emoticonUseCase: SyncUseCase
+    var syncUseCase: SyncUseCase
 
     
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        emoticonUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, emoticonUseCase: emoticonUseCase)
-        emoticonUseCase.router = self
+        syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
+        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, emoticonUseCase: syncUseCase)
+        syncUseCase.router = self
     }
     
     enum AsyncCViews: Hashable {
@@ -52,7 +52,7 @@ class Router: ObservableObject{
             MainStatusView(viewModel: MainStatusViewModel(
                 teamManagingUseCase: self.teamManagingUseCase,
                 appTrackingUseCase: self.appTrackingUseCase,
-                emoticonUseCase: self.emoticonUseCase))
+                emoticonUseCase: self.syncUseCase))
         case .LoginView:
             LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .LogoutView:
@@ -109,9 +109,9 @@ class Router: ObservableObject{
         }
     }
     
-    func showSyncRequest(senderName: String) {
+    func showSyncRequest(senderName: String, senderID: String) {
         if let delegate = appDelegate {
-            delegate.showSyncRequestNotification(sender: senderName)
+            delegate.showSyncRequestNotification(senderName: senderName, senderID: senderID)
         }
     }
 }

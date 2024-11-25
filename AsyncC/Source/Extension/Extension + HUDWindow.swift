@@ -34,7 +34,7 @@ extension AppDelegate {
                 viewModel: MainStatusViewModel(
                     teamManagingUseCase: self.router.teamManagingUseCase,
                     appTrackingUseCase: self.router.appTrackingUseCase,
-                    emoticonUseCase: self.router.emoticonUseCase)).environmentObject(self.router))
+                    emoticonUseCase: self.router.syncUseCase)).environmentObject(self.router))
         
         // Set the CornerRadius for the View inside the NSPanel
         hudWindow?.contentView?.wantsLayer = true
@@ -64,9 +64,10 @@ extension AppDelegate {
     }
     
     // MARK: - Show SyncRequest Notification to recipient
-    func showSyncRequestNotification(sender: String) {
+    func showSyncRequestNotification(senderName: String, senderID: String) {
         if let hudWindow = hudWindow {
-            let contentView = SyncRequestNotificationView(sender: sender)
+            let contentView = SyncRequestNotificationView(senderName: senderName, senderID: senderID)
+                .environmentObject(self.router)
             
             hudWindow.contentViewController = NSHostingController(rootView: contentView)
             hudWindow.makeKeyAndOrderFront(nil)

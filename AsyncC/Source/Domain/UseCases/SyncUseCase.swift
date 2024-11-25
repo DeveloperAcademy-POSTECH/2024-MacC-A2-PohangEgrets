@@ -31,8 +31,10 @@ final class SyncUseCase {
             case .success(let syncRequest):
                 DispatchQueue.main.async {
                     if syncRequest.syncMessage == .syncRequest {
-                        self.showSyncRequest(from: syncRequest.senderName)
+                        self.showSyncRequest(senderName: syncRequest.senderName,
+                                             senderID: syncRequest.senderID)
                     } else if syncRequest.syncMessage == .acceptedSyncRequest {
+                        print("\(syncRequest.senderName) accepted your sync request")
                         self.setUpSyncWith(syncRequest.senderID)
                     }
                 }
@@ -42,9 +44,9 @@ final class SyncUseCase {
         }
     }
     
-    private func showSyncRequest(from senderName: String) {
+    private func showSyncRequest(senderName: String, senderID: String) {
         guard let router else {return print("Router not found")}
-        router.showSyncRequest(senderName: senderName)
+        router.showSyncRequest(senderName: senderName, senderID: senderID)
     }
     
     private func setUpSyncWith(_ senderID: String) {
