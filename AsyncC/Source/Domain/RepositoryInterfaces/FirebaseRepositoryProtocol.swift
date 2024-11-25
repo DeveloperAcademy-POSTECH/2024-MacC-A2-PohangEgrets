@@ -58,7 +58,5 @@ protocol FirebaseRepositoryProtocol {
     
     func updateAcknowledgment(for receiverID: String)
     
-    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, any Error>) -> Void)
-
     func changeDisbandStatus(teamCode: String)
 }
