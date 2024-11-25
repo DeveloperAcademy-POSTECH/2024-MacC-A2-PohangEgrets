@@ -10,7 +10,6 @@ import SwiftUI
 struct TeamCodeView: View {
     @ObservedObject var viewModel: MainStatusViewModel
     @EnvironmentObject var router: Router
-    @State var isExitAlertPresented: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -19,24 +18,18 @@ struct TeamCodeView: View {
                     .font(.system(size: 20, weight: .medium))
                     .padding(.horizontal, 16)
                     .foregroundStyle(.darkGray2)
-                
                 Spacer()
                 
-                    Button {
-                        viewModel.isMenuVisible.toggle()
-                        viewModel.leaveTeam()
-                        router.closeHUDWindow()
-                        router.removeStatusBarItem()
-                        router.setUpContentViewWindow()
-                        isExitAlertPresented = true
-                    } label: {
-                        Image(systemName: "chevron.right")
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundStyle(.darkGray1)
-                            .frame(height: 16)
-                    }
-                    .buttonStyle(.plain)
+                Button {
+                    performActionBasedOnRole()
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundStyle(.darkGray1)
+                        .frame(height: 16)
+                }
+                .buttonStyle(.plain)
             }
             .padding(.top, 20)
 
@@ -63,6 +56,25 @@ struct TeamCodeView: View {
             .foregroundStyle(.gray1)
             .padding(.top, 12)
             .padding(.horizontal, 16)
+        }
+    }
+    
+    // Action that behaves differently when the 'Leave' button is pressed based on whether the user is a host
+    func performActionBasedOnRole() {
+        if viewModel.isTeamHost {
+            if !((router.exitConfirmation()?.isVisible) != nil) {
+                router.setUpDisbandConfirmation()
+                router.showDisbandConfirmation()
+            } else {
+                router.closeDisbandConfirmation()
+            }
+        } else {
+            if !((router.exitConfirmation()?.isVisible) != nil) {
+                router.setUpExitConfirmation()
+                router.showExitConfirmation()
+            } else {
+                router.closeExitConfirmation()
+            }
         }
     }
 }

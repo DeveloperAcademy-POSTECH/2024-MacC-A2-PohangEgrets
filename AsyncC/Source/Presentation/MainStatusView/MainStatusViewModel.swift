@@ -157,4 +157,12 @@ class MainStatusViewModel: ObservableObject {
     func toggleButtonSelection(for key: String) {
         buttonStates[key] = !(buttonStates[key] ?? false)
     }
+    
+    private func changeDisbandStatus() {
+        teamManagingUseCase.changeToDisbandStatus(teamCode: teamManagingUseCase.getTeamCode())
+    }
+    
+    func disbandTeam() {
+        teamManagingUseCase.changeToDisbandStatus(teamCode: teamManagingUseCase.getTeamCode())
+    }
 }

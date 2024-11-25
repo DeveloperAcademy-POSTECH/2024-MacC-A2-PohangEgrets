@@ -103,4 +103,47 @@ class Router: ObservableObject{
             delegate.setUpContentViewWindow()
         }
     }
+    
+    func setUpExitConfirmation() {
+            if let delegate = appDelegate {
+                delegate.setUpExitConfirmation()
+            }
+        }
+        
+    func showExitConfirmation() {
+        if let delegate = appDelegate {
+            delegate.showExitConfirmation()
+        }
+    }
+        
+    func closeExitConfirmation() {
+        if let delegate = appDelegate {
+            delegate.closeExitConfirmation()
+        }
+    }
+    
+    func setUpDisbandConfirmation() {
+        if let delegate = appDelegate {
+            delegate.setUpDisbandConfirmation()
+        }
+    }
+    
+    func showDisbandConfirmation() {
+        if let delegate = appDelegate {
+            delegate.showDisbandConfirmation()
+        }
+    }
+    
+    func closeDisbandConfirmation() {
+        if let delegate = appDelegate {
+            delegate.closeDisbandConfirmation()
+        }
+    }
+    
+    func exitConfirmation() -> NSPanel? {
+        if let delegate = appDelegate {
+            return delegate.exitConfirmation
+        }
+        return nil
+    }
 }

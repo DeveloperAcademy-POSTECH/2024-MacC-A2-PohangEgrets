@@ -12,4 +12,5 @@ struct TeamMetaData { // Write: 모든 User firebase .arrayUnion 사용하면 �
     let teamName: String
     let inviteCode: String
     let hostID: String
+    var isDisband: String
 }

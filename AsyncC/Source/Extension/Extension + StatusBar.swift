@@ -22,6 +22,11 @@ extension AppDelegate {
         if let hudWindow = self.hudWindow, let button = statusBarItem?.button {
             if hudWindow.isVisible {
                 hudWindow.orderOut(nil)
+                // If the HUD window is closed, make sure the exitConfirmation is also closed.
+                if let exitConfirmation = self.exitConfirmation {
+                    exitConfirmation.close()
+                    self.exitConfirmation = nil
+                }
             } else {
                 if let screen = button.window?.screen {
                     let statusBarFrame = button.window?.frame ?? NSRect(x: 0, y: 0, width: 0, height: 0)
