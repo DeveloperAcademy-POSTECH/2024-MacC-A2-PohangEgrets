@@ -115,23 +115,11 @@ class Router: ObservableObject{
         }
     }
     
+    // MARK: - PendingSyncRequestView
     func showPendingSyncRequest(senderName: String, senderID: String, isSender: Bool) {
         if let delegate = appDelegate {
             delegate.setUpPendingSyncWindow(senderName: senderName, senderID: senderID, isSender: isSender)
             delegate.showPendingSyncWindow()
-        }
-    }
-    
-//    func showWaitingForSyncAccept(senderName: String, senderID: String) {
-//        if let delegate = appDelegate {
-//            delegate.setUpPendingSyncWindow(senderName: senderName, senderID: senderID, isSender: true)
-//            delegate.showPendingSyncWindow()
-//        }
-//    }
-    
-    func showSyncingView() {
-        if let delegate = appDelegate {
-            delegate.showSyncingNotification()
         }
     }
     
@@ -141,10 +129,18 @@ class Router: ObservableObject{
         }
     }
     
+    // MARK: - SyncingView
+    func showSyncingLoadingView() {
+        if let delegate = appDelegate {
+            delegate.setUpSyncingLoadingWindow()
+            delegate.showSyncingLoadingWindow()
+        }
+    }
     
-//    func disappearHUDWindow() {
-//        if let delegate = appDelegate {
-//            delegate.orderOutWindow()
-//        }
-//    }
+    func closeSyncingLoadingWindow() {
+        if let delegate = appDelegate {
+            delegate.closeSyncingLoadingWindow()
+        }
+    }
+    
 }

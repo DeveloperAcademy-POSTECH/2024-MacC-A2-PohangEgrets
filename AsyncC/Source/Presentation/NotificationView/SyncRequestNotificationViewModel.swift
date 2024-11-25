@@ -12,7 +12,11 @@ class SyncRequestNotificationViewModel {
     
     func acceptSyncRequest(to receiverID: String) {
         router?.syncUseCase.send(emoticon: .acceptedSyncRequest, receiver: receiverID)
-        router?.showSyncingView()
+        router?.closePendingSyncWindow()
+        router?.showSyncingLoadingView()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.router?.closeSyncingLoadingWindow()
+        }
     }
     
 }
