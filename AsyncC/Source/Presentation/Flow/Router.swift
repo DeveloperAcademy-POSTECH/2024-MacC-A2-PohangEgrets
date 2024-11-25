@@ -116,9 +116,12 @@ class Router: ObservableObject{
     }
     
     // MARK: - PendingSyncRequestView
-    func showPendingSyncRequest(senderName: String, senderID: String, isSender: Bool) {
+    func showPendingSyncRequest(senderName: String, senderID: String, recipientName: String, isSender: Bool) {
         if let delegate = appDelegate {
-            delegate.setUpPendingSyncWindow(senderName: senderName, senderID: senderID, isSender: isSender)
+            delegate.setUpPendingSyncWindow(senderName: senderName,
+                                            senderID: senderID,
+                                            recipientName: recipientName,
+                                            isSender: isSender)
             delegate.showPendingSyncWindow()
         }
     }

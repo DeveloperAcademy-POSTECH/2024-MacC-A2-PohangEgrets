@@ -11,6 +11,7 @@ import SwiftUI
 struct PendingSyncRequestView: View {
     let senderName: String
     let senderID: String
+    let recipientName: String
     var amSender: Bool
     
     @EnvironmentObject var router: Router
@@ -20,7 +21,7 @@ struct PendingSyncRequestView: View {
     var body: some View {
         VStack(spacing: 10) {
             if amSender {
-                Text("의 수락을 기다리는 중")
+                Text("\(recipientName)의 수락을 기다리는 중")
                     .font(Font.system(size: 16, weight: .medium))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 0))
             } else {

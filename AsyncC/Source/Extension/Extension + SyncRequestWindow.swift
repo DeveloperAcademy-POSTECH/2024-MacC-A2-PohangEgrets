@@ -18,7 +18,10 @@ extension AppDelegate {
         )
     }
     
-    func setUpPendingSyncWindow(senderName: String, senderID: String, isSender: Bool) {
+    func setUpPendingSyncWindow(senderName: String,
+                                senderID: String,
+                                recipientName: String,
+                                isSender: Bool) {
         makePendingSyncWindow()
         
         // Remove the default background color of NSPanel
@@ -32,6 +35,7 @@ extension AppDelegate {
         pendingSyncWindow?.contentViewController = NSHostingController(
             rootView: PendingSyncRequestView(senderName: senderName,
                                              senderID: senderID,
+                                             recipientName: recipientName,
                                              amSender: isSender).environmentObject(self.router)
         )
         
