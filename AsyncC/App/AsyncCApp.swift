@@ -12,6 +12,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var launchWindowController: NSWindowController?
     var statusBarItem: NSStatusItem?
     var hudWindow: NSPanel?
+    
+    var pendingSyncWindow: NSPanel?
+    var syncingLoadingWindow: NSPanel?
     var contentViewWindow: NSWindow?
     let router = Router()
     var exitConfirmation: NSPanel?
@@ -20,9 +23,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Firebase configure
         FirebaseApp.configure()
         setUpContentViewWindow()
-
+        setUpStatusBarItem()
+        setUpHUDWindow()
         router.appDelegate = self
-        
     }
 }
 

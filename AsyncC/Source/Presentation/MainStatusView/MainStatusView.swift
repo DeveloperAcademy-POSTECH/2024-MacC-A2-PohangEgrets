@@ -52,7 +52,3 @@ struct MainStatusView: View {
     }
 }
 
-#Preview {
-    var router = Router()
-    MainStatusView(viewModel: MainStatusViewModel(teamManagingUseCase: router.teamManagingUseCase, appTrackingUseCase: router.appTrackingUseCase)).environmentObject(router)
-}

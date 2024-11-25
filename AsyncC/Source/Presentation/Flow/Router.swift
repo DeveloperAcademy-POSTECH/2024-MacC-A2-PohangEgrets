@@ -18,14 +18,16 @@ class Router: ObservableObject{
     
     var accountManagingUseCase: AccountManagingUseCase
     var appTrackingUseCase: AppTrackingUseCase
-    var emoticonUseCase: EmoticonUseCase
     var teamManagingUseCase: TeamManagingUseCase
+    var syncUseCase: SyncUseCase
+
     
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        emoticonUseCase = EmoticonUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase)
+        syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
+        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, emoticonUseCase: syncUseCase)
+        syncUseCase.router = self
     }
     
     enum AsyncCViews: Hashable {
@@ -47,7 +49,10 @@ class Router: ObservableObject{
         case .JoinTeamView:
             JoinTeamView(viewModel: JoinTeamViewModel(teamManagingUseCase: teamManagingUseCase))
         case .MainStatusView:
-            MainStatusView(viewModel: MainStatusViewModel(teamManagingUseCase: self.teamManagingUseCase, appTrackingUseCase: self.appTrackingUseCase))
+            MainStatusView(viewModel: MainStatusViewModel(
+                teamManagingUseCase: self.teamManagingUseCase,
+                appTrackingUseCase: self.appTrackingUseCase,
+                emoticonUseCase: self.syncUseCase))
         case .LoginView:
             LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .LogoutView:
@@ -98,12 +103,46 @@ class Router: ObservableObject{
         }
     }
     
+    func hideHUDWindow() {
+        if let delegate = appDelegate {
+            delegate.hideHUDWindow()
+        }
+    }
+    
     func setUpContentViewWindow() {
         if let delegate = appDelegate {
             delegate.setUpContentViewWindow()
         }
     }
     
+    // MARK: - PendingSyncRequestView
+    func showPendingSyncRequest(senderName: String, senderID: String, isSender: Bool) {
+        if let delegate = appDelegate {
+            delegate.setUpPendingSyncWindow(senderName: senderName, senderID: senderID, isSender: isSender)
+            delegate.showPendingSyncWindow()
+        }
+    }
+    
+    func closePendingSyncWindow() {
+        if let delegate = appDelegate {
+            delegate.closePendingSyncWindow()
+        }
+    }
+    
+    // MARK: - SyncingView
+    func showSyncingLoadingView() {
+        if let delegate = appDelegate {
+            delegate.setUpSyncingLoadingWindow()
+            delegate.showSyncingLoadingWindow()
+        }
+    }
+    
+    func closeSyncingLoadingWindow() {
+        if let delegate = appDelegate {
+            delegate.closeSyncingLoadingWindow()
+        }
+    }
+  
     func setUpExitConfirmation() {
             if let delegate = appDelegate {
                 delegate.setUpExitConfirmation()

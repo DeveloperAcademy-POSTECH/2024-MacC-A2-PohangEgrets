@@ -6,17 +6,20 @@
 //
 
 import Foundation
+import AppKit
 
 final class TeamManagingUseCase {
     
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
     private let appTrackingUseCase: AppTrackingUseCase
+    private let emoticonUseCase: SyncUseCase
     
-    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase) {
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: SyncUseCase) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
         self.appTrackingUseCase = appTrackingUseCase
+        self.emoticonUseCase = emoticonUseCase
     }
     
     // MARK: - 새로운 Team 생성
@@ -83,6 +86,9 @@ final class TeamManagingUseCase {
                 print(error.localizedDescription)
             }
         }
+        
+        emoticonUseCase.setUpListenerForEmoticons(userID: localRepository.getUserID())
+        
     }
     
     private func refreshUserAppDataListeners(for updatedMemberIDs: [String]) {
