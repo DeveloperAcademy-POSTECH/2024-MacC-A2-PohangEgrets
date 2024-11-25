@@ -206,8 +206,11 @@ class MainStatusViewModel: ObservableObject {
         buttonStates[key] = !(buttonStates[key] ?? false)
     }
     
-    func myDataChanged() {
-        appTrackings.removeAll()
-        appTrackings[self.getUserName()] = []
+    private func changeDisbandStatus() {
+        teamManagingUseCase.changeToDisbandStatus(teamCode: teamManagingUseCase.getTeamCode())
+    }
+    
+    func disbandTeam() {
+        teamManagingUseCase.changeToDisbandStatus(teamCode: teamManagingUseCase.getTeamCode())
     }
 }

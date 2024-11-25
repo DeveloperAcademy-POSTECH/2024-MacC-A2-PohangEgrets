@@ -318,7 +318,8 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             "hostID" : teamData.hostID,
             "inviteCode" : teamData.inviteCode,
             "teamName" : teamData.teamName,
-            "memberIDs": teamData.memberIDs
+            "memberIDs": teamData.memberIDs,
+            "isDisband": "false"
         ])
         handler(.success("Created new team"))
     }
@@ -337,7 +338,8 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 let teamData  = TeamMetaData(memberIDs: members,
                                              teamName: document["teamName"] as? String ?? "",
                                              inviteCode: document["inviteCode"] as? String ?? "",
-                                             hostID: document["hostID"] as? String ?? "")
+                                             hostID: document["hostID"] as? String ?? "",
+                                             isDisband: document["isDisband"] as? String ?? "")
                 handler(.success(teamData))
             } else {
                 handler(.failure(FirebaseError(errorMessage: "Team does not exist exists")))
@@ -372,7 +374,8 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 let teamData = TeamMetaData(memberIDs: data["memberIDs"] as? [String] ?? [],
                                             teamName: data["teamName"] as? String ?? "",
                                             inviteCode: data["inviteCode"] as? String ?? "",
-                                            hostID: data["hostID"] as? String ?? "")
+                                            hostID: data["hostID"] as? String ?? "",
+                                            isDisband: data["isDisband"] as? String ?? "")
                 handler(.success(teamData))
             }
     }
@@ -387,7 +390,8 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 let teamData  = TeamMetaData(memberIDs: data["memberIDs"] as? [String] ?? [],
                                              teamName: data["teamName"] as? String ?? "",
                                              inviteCode: data["inviteCode"] as? String ?? "",
-                                             hostID: data["hostID"] as? String ?? "")
+                                             hostID: data["hostID"] as? String ?? "",
+                                             isDisband: data["isDisband"] as? String ?? "")
                 handler(.success(teamData))
                 return
             }
@@ -462,7 +466,13 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
-    
+    func changeDisbandStatus(teamCode: String) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("teamMetaData").document(teamCode)
+        docRef.updateData([
+            "isDisband": "true"
+        ])
+    }
 }
 
 

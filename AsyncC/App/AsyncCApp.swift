@@ -14,6 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var hudWindow: NSPanel?
     var contentViewWindow: NSWindow?
     let router = Router()
+    var exitConfirmation: NSPanel?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Firebase configure

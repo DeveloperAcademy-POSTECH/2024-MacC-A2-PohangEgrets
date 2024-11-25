@@ -35,6 +35,17 @@ struct MainStatusView: View {
                 viewModel.getTeamData(teamCode: viewModel.getTeamCode())
                 viewModel.startShowingAppTracking()
                 viewModel.setUpAllListener()
+              
+                // Listener that checks if the room has been disbanded
+                router.teamManagingUseCase.listenToDisbandStatus(teamCode: viewModel.getTeamCode()) { isDisband in
+                    if isDisband == "true" {
+                        viewModel.leaveTeam()
+                        router.closeHUDWindow()
+                        router.removeStatusBarItem()
+                        router.setUpContentViewWindow()
+                        router.closeDisbandConfirmation()
+                    }
+                }
             }
         }
         .fixedSize(horizontal: false, vertical: true)

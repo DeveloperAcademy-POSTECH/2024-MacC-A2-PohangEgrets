@@ -23,7 +23,7 @@ final class TeamManagingUseCase {
     func createNewTeam(teamName: String) -> String {
         let teamCode = generateTeamCode()
         let hostID = localRepository.getUserID()
-        let teamMetaData = TeamMetaData(memberIDs: [hostID], teamName: teamName, inviteCode: teamCode, hostID: hostID)
+        let teamMetaData = TeamMetaData(memberIDs: [hostID], teamName: teamName, inviteCode: teamCode, hostID: hostID, isDisband: "false")
         
         firebaseRepository.createNewTeamInFirestore(teamData: teamMetaData) { result in
             switch result {
@@ -220,5 +220,20 @@ final class TeamManagingUseCase {
         let teamCode = localRepository.getTeamCode()
         firebaseRepository.removeAllUsersInTeam(teamCode: teamCode)
         appTrackingUseCase.stopAppTracking()
+    }
+    
+    func listenToDisbandStatus(teamCode: String, onDisbandStatusChange: @escaping (String) -> Void) {
+        firebaseRepository.setUpListenerForTeamData(teamCode: teamCode) { result in
+            switch result {
+            case .success(let teamData):
+                onDisbandStatusChange(teamData.isDisband)
+            case .failure(let error):
+                print("데이터 수신 중 오류 발생: \(error)")
+            }
+        }
+    }
+    
+    func changeToDisbandStatus(teamCode: String) {
+        firebaseRepository.changeDisbandStatus(teamCode: teamCode)
     }
 }
