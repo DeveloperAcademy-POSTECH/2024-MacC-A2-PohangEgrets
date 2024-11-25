@@ -185,4 +185,11 @@ class Router: ObservableObject{
         }
         return nil
     }
+    
+    func contentViewWindow() -> NSWindow? {
+        if let delegate = appDelegate {
+            return delegate.contentViewWindow
+        }
+        return nil
+    }
 }
