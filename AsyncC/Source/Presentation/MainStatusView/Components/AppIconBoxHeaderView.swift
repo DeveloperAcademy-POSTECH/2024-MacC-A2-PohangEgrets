@@ -26,19 +26,34 @@ struct AppIconBoxHeaderView: View {
             
             Spacer()
             
-            if viewModel.checkUser(key: key) {
-                Toggle("", isOn: $viewModel.isToggled)
+            if let userID = viewModel.nameToUserId[key] {
+                if key == viewModel.getUserName() {
+                    Toggle("", isOn: Binding(
+                        get: { viewModel.trackingActive[userID] ?? true },
+                        set: { newValue in
+                            viewModel.updateUserTrackingStatus(userID: userID, isActive: newValue)
+                            
+                            if viewModel.checkUser(key: key) {
+                                viewModel.isToggled = newValue
+                            }
+                        }
+                    ))
                     .toggleStyle(SwitchToggleStyle(tint: .blue))
                     .padding(.trailing, 8)
                     .onChange(of: viewModel.isToggled) { old, new in
                         if old {
-                            viewModel.startShowingAppTracking()
-                            print("Started tracking")
-                        } else {
                             viewModel.stopAppTracking()
-                            print("S")
+                            viewModel.stopOtherUserAppTracking()
+                            print("Stop tracking")
+                        } else {
+                            viewModel.startShowingAppTracking()
+                            viewModel.startAppTracking()
+                            viewModel.setUpAllListener()
+                            
+                            print("Start tracking")
                         }
                     }
+                }
             }
         }
         .padding(.top, 8)

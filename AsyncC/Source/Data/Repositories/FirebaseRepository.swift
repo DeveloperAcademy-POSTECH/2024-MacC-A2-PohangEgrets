@@ -14,6 +14,46 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     // MARK: - User, UserAppData 통신 및 관리
     var userAppDataListeners: [ListenerRegistration] = []
     
+    func setTrackingActive(id: String, isActive: Bool) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("userAppData").document(id)
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                docRef.updateData(["trackingActive": isActive]) { error in
+                    if let error = error {
+                        print("Failed to update trackingActive: \(error.localizedDescription)")
+                    }
+                }
+            } else {
+                docRef.setData([
+                    "userID": id,
+                    "trackingActive": true
+                ]) { error in
+                    if let error = error {
+                        print("Failed to initialize trackingActive: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
+    }
+    
+    func setUpListenerForTrackingActive(for userID: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("userAppData").document(userID)
+        docRef.addSnapshotListener { documentSnapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            if let document = documentSnapshot, let data = document.data() {
+                let isActive = data["trackingActive"] as? Bool ?? true
+                completion(.success(isActive))
+            } else {
+                completion(.failure(FirebaseError(errorMessage: "Document does not exist")))
+            }
+        }
+    }
+
     func setUserAppData(
         id: String,
         appName: String,
