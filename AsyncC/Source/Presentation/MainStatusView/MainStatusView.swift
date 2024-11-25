@@ -39,11 +39,15 @@ struct MainStatusView: View {
                 // Listener that checks if the room has been disbanded
                 router.teamManagingUseCase.listenToDisbandStatus(teamCode: viewModel.getTeamCode()) { isDisband in
                     if isDisband == "true" {
-                        viewModel.leaveTeam()
-                        router.closeHUDWindow()
-                        router.removeStatusBarItem()
-                        router.setUpContentViewWindow()
-                        router.closeDisbandConfirmation()
+                        if let window = router.contentViewWindow(), window.isVisible {
+                            print("이미 앱이 띄워있음")
+                        } else {
+                            viewModel.leaveTeam()
+                            router.closeHUDWindow()
+                            router.removeStatusBarItem()
+                            router.setUpContentViewWindow()
+                            router.closeDisbandConfirmation()
+                        }
                     }
                 }
             }
