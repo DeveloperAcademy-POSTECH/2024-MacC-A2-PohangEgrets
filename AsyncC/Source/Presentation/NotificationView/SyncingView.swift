@@ -8,18 +8,16 @@
 
 import SwiftUI
 
-struct AcknowledgmentNotificationView: View {
-    let sender: String
+struct SyncingView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            Text("Acknowledgment Successful!")
+            Text("Syncing")
                 .font(.headline)
-            Text("You and \(sender) are now connected.")
-                .font(.subheadline)
         }
         .padding()
         .background(Color.green.opacity(0.9))
         .cornerRadius(10)
+        .frame(minWidth: 173, minHeight: 130)
     }
 }

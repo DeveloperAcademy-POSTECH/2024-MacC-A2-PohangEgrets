@@ -34,7 +34,8 @@ extension AppDelegate {
                 viewModel: MainStatusViewModel(
                     teamManagingUseCase: self.router.teamManagingUseCase,
                     appTrackingUseCase: self.router.appTrackingUseCase,
-                    emoticonUseCase: self.router.syncUseCase)).environmentObject(self.router))
+                    emoticonUseCase: self.router.syncUseCase)
+            ).environmentObject(self.router))
         
         // Set the CornerRadius for the View inside the NSPanel
         hudWindow?.contentView?.wantsLayer = true
@@ -66,7 +67,8 @@ extension AppDelegate {
     // MARK: - Show SyncRequest Notification to recipient
     func showSyncRequestNotification(senderName: String, senderID: String) {
         if let hudWindow = hudWindow {
-            let contentView = SyncRequestNotificationView(senderName: senderName, senderID: senderID)
+            let contentView = SyncRequestNotificationView(senderName: senderName,
+                                                          senderID: senderID)
                 .environmentObject(self.router)
             
             hudWindow.contentViewController = NSHostingController(rootView: contentView)
@@ -81,15 +83,16 @@ extension AppDelegate {
         }
     }
     
-    // MARK: - Show Acknowledgment Notification
-    func showAcknowledgmentNotification(sender: String) {
+    // MARK: - Show Syncing Notification
+    func showSyncingNotification() {
         if let hudWindow = hudWindow {
-            // Set up the acknowledgment notification view
-            let contentView = AcknowledgmentNotificationView(sender: sender)
+            let contentView = SyncingView()
             
             // Update HUD Content
             hudWindow.contentViewController = NSHostingController(rootView: contentView)
             hudWindow.makeKeyAndOrderFront(nil)
+            
+            showHUDWindow()
             
             // Auto-dismiss after 5 seconds
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
@@ -97,6 +100,13 @@ extension AppDelegate {
                     hudWindow.orderOut(nil)
                 }
             }
+        }
+    }
+    
+    func orderOutWindow() {
+        guard let hudWindow else { return }
+        if hudWindow.isVisible {
+            hudWindow.orderOut(nil)
         }
     }
     

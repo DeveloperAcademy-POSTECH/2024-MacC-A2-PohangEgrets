@@ -13,6 +13,7 @@ class SyncRequestNotificationViewModel {
     
     func acceptSyncRequest(to receiverID: String) {
         router?.syncUseCase.send(emoticon: .acceptedSyncRequest, receiver: receiverID)
+        router?.showSyncingView()
     }
     
 }

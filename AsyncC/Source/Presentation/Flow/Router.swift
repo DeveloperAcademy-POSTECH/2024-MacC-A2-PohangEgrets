@@ -114,4 +114,16 @@ class Router: ObservableObject{
             delegate.showSyncRequestNotification(senderName: senderName, senderID: senderID)
         }
     }
+    
+    func showSyncingView() {
+        if let delegate = appDelegate {
+            delegate.showSyncingNotification()
+        }
+    }
+    
+    func disappearHUDWindow() {
+        if let delegate = appDelegate {
+            delegate.orderOutWindow()
+        }
+    }
 }
