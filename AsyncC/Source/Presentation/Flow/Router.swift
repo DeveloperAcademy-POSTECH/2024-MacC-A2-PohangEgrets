@@ -40,6 +40,7 @@ class Router: ObservableObject{
         case LoginView
         case CheckToJoinTeamView(teamCode: String, teamName: String, hostName: String)
         case LogoutView
+        case AccountDeleteView
     }
     
     @ViewBuilder func view(for route: AsyncCViews) -> some View {
@@ -64,6 +65,8 @@ class Router: ObservableObject{
                                 teamCode: teamCode,
                                 teamName: teamName,
                                 hostName: hostName)
+        case .AccountDeleteView:
+            AccountDeleteView()
         }
     }
     
@@ -202,6 +205,31 @@ class Router: ObservableObject{
     func contentViewWindow() -> NSWindow? {
         if let delegate = appDelegate {
             return delegate.contentViewWindow
+        }
+        return nil
+    }
+
+    func setUpAccountDeactivation() {
+        if let delegate = appDelegate {
+            delegate.setUpAccountDeactivation()
+        }
+    }
+    
+    func showAccountDeactivation() {
+        if let delegate = appDelegate {
+            delegate.showAccountDeactivation()
+        }
+    }
+    
+    func closeAccountDeactivation() {
+        if let delegate = appDelegate {
+            delegate.closeAccountDeactivation()
+        }
+    }
+    
+    func accountDeactivation() -> NSPanel? {
+        if let delegate = appDelegate {
+            return delegate.accountDeactivation
         }
         return nil
     }
