@@ -29,6 +29,7 @@ class Router: ObservableObject{
         syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, syncUseCase: syncUseCase)
         sharePlayUseCase = SharePlayUseCase()
+        syncUseCase.router = self
     }
     
     enum AsyncCViews: Hashable {
@@ -117,9 +118,12 @@ class Router: ObservableObject{
     }
     
     // MARK: - PendingSyncRequestView
-    func showPendingSyncRequest(senderName: String, senderID: String, isSender: Bool) {
+    func showPendingSyncRequest(senderName: String, senderID: String, recipientName: String, isSender: Bool) {
         if let delegate = appDelegate {
-            delegate.setUpPendingSyncWindow(senderName: senderName, senderID: senderID, isSender: isSender)
+            delegate.setUpPendingSyncWindow(senderName: senderName,
+                                            senderID: senderID,
+                                            recipientName: recipientName,
+                                            isSender: isSender)
             delegate.showPendingSyncWindow()
         }
     }
@@ -183,6 +187,13 @@ class Router: ObservableObject{
     func exitConfirmation() -> NSPanel? {
         if let delegate = appDelegate {
             return delegate.exitConfirmation
+        }
+        return nil
+    }
+    
+    func contentViewWindow() -> NSWindow? {
+        if let delegate = appDelegate {
+            return delegate.contentViewWindow
         }
         return nil
     }

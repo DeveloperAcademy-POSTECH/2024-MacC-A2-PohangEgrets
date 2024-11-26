@@ -139,12 +139,6 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         let docRef = db.collection("users").document(userID)
         
         docRef.getDocument { (document, error) in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                completion(false, nil)
-                return
-            }
-            
             if let document = document, document.exists {
                 if let name = document.data()?["name"] as? String {
                     completion(true, name)
@@ -154,6 +148,13 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             } else {
                 completion(false, nil)
             }
+//            if let error = error {
+//                print("Error: \(error.localizedDescription)")
+//                completion(false, nil)
+//                return
+//            }
+            
+            
         }
     }
     
@@ -178,12 +179,16 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     }
     
     // MARK: - Listener for SyncRequests
+    var syncRequestListener: ListenerRegistration? = nil
+    
     func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("syncRequests").document(userID)
         print("created listener for emoticons")
         
-        docRef.addSnapshotListener { (documentSnapshot, error) in
+        if syncRequestListener != nil {return}
+        
+        syncRequestListener = docRef.addSnapshotListener { (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {
                 handler(.failure(error ?? NSError(domain: "No data", code: -1, userInfo: nil)))
                 return

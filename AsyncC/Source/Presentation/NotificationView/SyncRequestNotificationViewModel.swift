@@ -12,8 +12,29 @@ class SyncRequestNotificationViewModel: ObservableObject {
     private let teamManagingUseCase: TeamManagingUseCase
     private let syncUseCase: SyncUseCase
     private let sharePlayUseCase: SharePlayUseCase
-    
+
     var router: Router?
+    @Published var secondsLeft: Int = 10
+    var timer: Timer?
+    
+    func startTimer(completion: @escaping (() -> Void)) {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            if self.secondsLeft > 0 {
+                print("timer: \(self.secondsLeft)")
+                self.secondsLeft -= 1
+            } else {
+                print("kill timer")
+                timer.invalidate()
+                completion()
+            }
+        }
+    }
+    
+    func invalidateTimer() {
+        timer?.invalidate()
+    }
+    
+
     
     @Published var senderEmail: String = "" // The sender's email
     @Published var receiverEmail: String = "" // The receiver's email

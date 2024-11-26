@@ -18,7 +18,10 @@ extension AppDelegate {
         )
     }
     
-    func setUpPendingSyncWindow(senderName: String, senderID: String, isSender: Bool) {
+    func setUpPendingSyncWindow(senderName: String,
+                                senderID: String,
+                                recipientName: String,
+                                isSender: Bool) {
         makePendingSyncWindow()
         
         // Remove the default background color of NSPanel
@@ -31,14 +34,16 @@ extension AppDelegate {
         
         pendingSyncWindow?.contentViewController = NSHostingController(
             rootView: PendingSyncRequestView(senderName: senderName,
-                                             senderID: senderID, amSender: isSender,
+                                             senderID: senderID,
+                                             recipientName: recipientName,
+                                             amSender: isSender,
                                              viewModel: SyncRequestNotificationViewModel(teamManagingUseCase: self.router.teamManagingUseCase, syncUseCase: self.router.syncUseCase, sharePlayUseCase: self.router.sharePlayUseCase)
                                             ).environmentObject(self.router)
         )
         
         // Set the CornerRadius for the View inside the NSPanel
         pendingSyncWindow?.contentView?.wantsLayer = true
-        pendingSyncWindow?.contentView?.layer?.cornerRadius = 5.0
+        pendingSyncWindow?.contentView?.layer?.cornerRadius = 8.0
         pendingSyncWindow?.contentView?.layer?.masksToBounds = true
         
         pendingSyncWindow?.appearance = NSAppearance(named: .aqua)
