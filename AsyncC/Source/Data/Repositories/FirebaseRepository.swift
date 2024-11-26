@@ -412,9 +412,9 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                                              hostID: data["hostID"] as? String ?? "",
                                              isDisband: data["isDisband"] as? String ?? "")
                 handler(.success(teamData))
-                return
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "No team data found")))
             }
-            handler(.failure(FirebaseError(errorMessage: "No team data found")))
         }
     }
     
@@ -448,10 +448,10 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 let hostName = data["name"] as? String ?? ""
                 print("data: \(hostName)")
                 handler(.success(hostName))
-                return
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "No host found")))
             }
         }
-        handler(.failure(FirebaseError(errorMessage: "No host found")))
     }
     
     func removeUser(userID: String, teamCode: String) {
