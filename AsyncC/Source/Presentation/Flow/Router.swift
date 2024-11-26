@@ -26,9 +26,9 @@ class Router: ObservableObject{
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, syncUseCase: syncUseCase)
         sharePlayUseCase = SharePlayUseCase()
+        syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, sharePlayUseCase: sharePlayUseCase)
+        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, syncUseCase: syncUseCase)
         syncUseCase.router = self
     }
     

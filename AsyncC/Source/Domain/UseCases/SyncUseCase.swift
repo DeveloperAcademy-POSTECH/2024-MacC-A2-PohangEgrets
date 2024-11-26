@@ -13,9 +13,12 @@ final class SyncUseCase {
     private let localRepository: LocalRepositoryProtocol
     var router: Router?
     
-    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol) {
+    private let sharePlayUseCase: SharePlayUseCase
+
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, sharePlayUseCase: SharePlayUseCase) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
+        self.sharePlayUseCase = sharePlayUseCase
     }
     
     // MARK: - Send Emoticon
@@ -55,7 +58,12 @@ final class SyncUseCase {
                         print("\(syncRequest.senderName) accepted your sync request")
                         self.router?.closePendingSyncWindow()
                         
-                        // shareplay use case 넣기
+                        Task {
+                            await self.sharePlayUseCase.startSharePlaySession()
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+//                                self.router?.closeSyncingLoadingWindow()
+//                            }
+                        }
 //                        self.showSyncRequestAccepted()
                     }
                 }

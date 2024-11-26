@@ -87,7 +87,7 @@ final class TeamManagingUseCase {
             }
         }
         
-        syncUseCase.setUpListenerForEmoticons(userID: localRepository.getUserID()){
+        syncUseCase.setUpListenerForEmoticons(userID: localRepository.getUserID())
         
     }
     
