@@ -20,6 +20,8 @@ class Router: ObservableObject{
     var appTrackingUseCase: AppTrackingUseCase
     var teamManagingUseCase: TeamManagingUseCase
     var syncUseCase: SyncUseCase
+    
+    private var firstSetUp: Bool = true
 
     
     init() {
@@ -113,6 +115,14 @@ class Router: ObservableObject{
         if let delegate = appDelegate {
             delegate.setUpContentViewWindow()
         }
+    }
+    
+    func isFirstTimeSetUp() -> Bool {
+        return firstSetUp
+    }
+    
+    func finishFirstSetUp() {
+        firstSetUp = false
     }
     
     // MARK: - PendingSyncRequestView
