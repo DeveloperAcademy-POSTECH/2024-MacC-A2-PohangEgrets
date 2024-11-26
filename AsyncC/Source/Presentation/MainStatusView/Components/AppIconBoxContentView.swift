@@ -16,11 +16,19 @@ struct AppIconBoxContentView: View {
             if let userID = viewModel.nameToUserId[key] {
                 if viewModel.trackingActive[userID] ?? true || viewModel.checkUser(key: key) {
                     ForEach(viewModel.appTrackings[key] ?? [], id: \.self) { appName in
-                        Image("\(appName)")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 36, height: 36)
-                            .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
+                        if let nsImage = NSImage(named: appName) {
+                            Image(nsImage: nsImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                                .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
+                        } else {
+                            Image("etc")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                                .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
+                        }
                     }
                 } else {
                     HStack() {

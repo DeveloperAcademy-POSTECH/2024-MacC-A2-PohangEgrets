@@ -13,7 +13,12 @@ extension AppDelegate {
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         
         if let button = statusBarItem?.button {
-            button.image = NSImage(systemSymbolName: "star", accessibilityDescription: "Status Bar Icon")
+            if let image = NSImage(named: "sync") {
+                let newSize = NSSize(width: 16, height: 16)
+                let resizedImage = image.resized(to: newSize)
+                
+                button.image = resizedImage
+            }
             button.action = #selector(toggleHUDWindow)
         }
     }
@@ -46,5 +51,23 @@ extension AppDelegate {
             NSStatusBar.system.removeStatusItem(item)
             statusBarItem = nil
         }
+    }
+}
+
+extension NSImage {
+    func resized(to newSize: NSSize) -> NSImage {
+        // 새로운 크기로 이미지 객체를 생성
+        let resizedImage = NSImage(size: newSize)
+        
+        // 이미지를 그리기 위해 lockFocus 호출
+        resizedImage.lockFocus()
+        
+        // 기존 이미지를 새로운 크기로 그린다
+        self.draw(in: NSRect(origin: .zero, size: newSize))
+        
+        // 그리기 완료 후 unlockFocus 호출
+        resizedImage.unlockFocus()
+        
+        return resizedImage
     }
 }
