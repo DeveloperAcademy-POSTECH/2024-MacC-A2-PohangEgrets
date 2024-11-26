@@ -18,7 +18,7 @@ struct SyncActivity: GroupActivity {
     }
 }
 
-class SharePlaySessionUseCase {
+class SharePlayUseCase {
     // Start a new SharePlay session
     func startSharePlaySession() async {
         let activity = SyncActivity()

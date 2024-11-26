@@ -45,7 +45,7 @@ final class SyncUseCase {
                                              isSender: false)
                     } else if syncRequest.syncMessage == .acceptedSyncRequest {
                         print("\(syncRequest.senderName) accepted your sync request")
-                        self.showSyncRequestAccepted()
+//                        self.showSyncRequestAccepted()
                     }
                 }
             case .failure(let error):

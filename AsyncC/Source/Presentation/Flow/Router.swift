@@ -20,14 +20,15 @@ class Router: ObservableObject{
     var appTrackingUseCase: AppTrackingUseCase
     var teamManagingUseCase: TeamManagingUseCase
     var syncUseCase: SyncUseCase
-
+    var sharePlayUseCase: SharePlayUseCase
+    
     
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, emoticonUseCase: syncUseCase)
-        syncUseCase.router = self
+        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, syncUseCase: syncUseCase)
+        sharePlayUseCase = SharePlayUseCase()
     }
     
     enum AsyncCViews: Hashable {
@@ -52,7 +53,7 @@ class Router: ObservableObject{
             MainStatusView(viewModel: MainStatusViewModel(
                 teamManagingUseCase: self.teamManagingUseCase,
                 appTrackingUseCase: self.appTrackingUseCase,
-                emoticonUseCase: self.syncUseCase))
+                syncUseCase: self.syncUseCase))
         case .LoginView:
             LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .LogoutView:
@@ -142,19 +143,19 @@ class Router: ObservableObject{
             delegate.closeSyncingLoadingWindow()
         }
     }
-  
+    
     func setUpExitConfirmation() {
-            if let delegate = appDelegate {
-                delegate.setUpExitConfirmation()
-            }
+        if let delegate = appDelegate {
+            delegate.setUpExitConfirmation()
         }
-        
+    }
+    
     func showExitConfirmation() {
         if let delegate = appDelegate {
             delegate.showExitConfirmation()
         }
     }
-        
+    
     func closeExitConfirmation() {
         if let delegate = appDelegate {
             delegate.closeExitConfirmation()

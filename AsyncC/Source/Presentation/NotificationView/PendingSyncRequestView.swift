@@ -15,8 +15,8 @@ struct PendingSyncRequestView: View {
     
     @EnvironmentObject var router: Router
     
-    let viewModel = SyncRequestNotificationViewModel()
-    
+    @ObservedObject var viewModel: SyncRequestNotificationViewModel
+
     var body: some View {
         VStack(spacing: 10) {
             if amSender {

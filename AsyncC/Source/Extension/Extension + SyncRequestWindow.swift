@@ -31,8 +31,9 @@ extension AppDelegate {
         
         pendingSyncWindow?.contentViewController = NSHostingController(
             rootView: PendingSyncRequestView(senderName: senderName,
-                                             senderID: senderID,
-                                             amSender: isSender).environmentObject(self.router)
+                                             senderID: senderID, amSender: isSender,
+                                             viewModel: SyncRequestNotificationViewModel(teamManagingUseCase: self.router.teamManagingUseCase, syncUseCase: self.router.syncUseCase, sharePlayUseCase: self.router.sharePlayUseCase)
+                                            ).environmentObject(self.router)
         )
         
         // Set the CornerRadius for the View inside the NSPanel

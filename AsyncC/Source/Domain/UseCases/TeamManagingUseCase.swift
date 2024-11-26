@@ -13,13 +13,13 @@ final class TeamManagingUseCase {
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
     private let appTrackingUseCase: AppTrackingUseCase
-    private let emoticonUseCase: SyncUseCase
+    private let syncUseCase: SyncUseCase
     
-    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: SyncUseCase) {
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, appTrackingUseCase: AppTrackingUseCase, syncUseCase: SyncUseCase) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
         self.appTrackingUseCase = appTrackingUseCase
-        self.emoticonUseCase = emoticonUseCase
+        self.syncUseCase = syncUseCase
     }
     
     // MARK: - 새로운 Team 생성
@@ -87,7 +87,7 @@ final class TeamManagingUseCase {
             }
         }
         
-        emoticonUseCase.setUpListenerForEmoticons(userID: localRepository.getUserID())
+        syncUseCase.setUpListenerForEmoticons(userID: localRepository.getUserID())
         
     }
     
