@@ -37,6 +37,10 @@ final class SyncUseCase {
     
     func setUpListenerForEmoticons(userID: String) {
         firebaseRepository.setupListenerForSyncRequest(userID: userID) { result in
+            if self.router?.isFirstTimeSetUp() == true {
+                self.router?.finishFirstSetUp()
+                return
+            }
             switch result {
             case .success(let syncRequest):
                 DispatchQueue.main.async {
