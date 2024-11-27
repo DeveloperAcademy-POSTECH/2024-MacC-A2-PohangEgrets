@@ -435,6 +435,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         handler(.failure(FirebaseError(errorMessage: "No host found")))
     }
     
+    // 팀 코드 입력 후 해당 팀에서 user 삭제
     func removeUser(userID: String, teamCode: String) {
         let db = Firestore.firestore()
         let docRef = db.collection("teamMetaData").document(teamCode)
@@ -445,6 +446,20 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 ])
                 return
             }
+        }
+    }
+    
+    // users collection에 유저 삭제
+    func deleteUserDataFromFirestore(userID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let db = Firestore.firestore()
+        db.collection("users").document(userID).delete { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                print("firebase 사용자 데이터 제거 성공")
+                completion(.success(()))
+            }
+            
         }
     }
     

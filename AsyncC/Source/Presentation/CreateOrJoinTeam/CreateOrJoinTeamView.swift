@@ -28,6 +28,15 @@ struct CreateOrJoinTeamView: View {
                     .onTapGesture {
                         router.push(view: .LogoutView)
                     }
+                Button {
+                    viewModel.accountUseCase.deleteFirebaseAuthUser()
+                    router.push(view: .LoginView)
+                } label: {
+                    Text("회원탈퇴")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(.logOutTextGray)
+
+                }
             }
             .padding(.horizontal, 8)
             Divider()
