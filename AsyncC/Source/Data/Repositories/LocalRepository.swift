@@ -12,7 +12,7 @@ final class LocalRepository: LocalRepositoryProtocol {
     @AppStorage("userName") var userName: String = ""
     @AppStorage("teamName") var teamName: String = ""
     @AppStorage("teamCode") private var _teamCode: String = ""
-
+    
     var teamCode: String? {
         get {
             _teamCode.isEmpty ? nil : _teamCode
@@ -60,5 +60,10 @@ final class LocalRepository: LocalRepositoryProtocol {
     
     func resetTeamName() {
         teamName = ""
+    }
+    
+    func clearLocalUserData() {
+        self.saveUserID("")
+        self.saveUserName("")
     }
 }

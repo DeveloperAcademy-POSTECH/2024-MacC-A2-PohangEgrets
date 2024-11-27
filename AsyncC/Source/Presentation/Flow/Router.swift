@@ -46,7 +46,7 @@ class Router: ObservableObject{
     @ViewBuilder func view(for route: AsyncCViews) -> some View {
         switch route{
         case .CreateOrJoinTeamView:
-            CreateOrJoinTeamView(viewModel: CreateOrJoinTeamViewModel(teamUseCase: teamManagingUseCase))
+            CreateOrJoinTeamView(viewModel: CreateOrJoinTeamViewModel(teamUseCase: teamManagingUseCase, accountUseCase: accountManagingUseCase))
         case .CreateTeamView:
             CreateTeamView(viewModel: CreateTeamViewModel(teamManagingUseCase: teamManagingUseCase))
         case .JoinTeamView:

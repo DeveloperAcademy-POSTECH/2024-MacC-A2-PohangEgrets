@@ -31,4 +31,6 @@ protocol LocalRepositoryProtocol {
     func resetTeamCode()
     
     func resetTeamName()
+    
+    func clearLocalUserData()
 }
