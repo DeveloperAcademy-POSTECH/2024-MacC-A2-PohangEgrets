@@ -136,7 +136,7 @@ final class AccountManagingUseCase: NSObject {
         }
         
         print("Deleting user with userID: \(user.uid)")
-        
+    
         // Firestore 데이터 삭제
         firebaseRepository.deleteUserDataFromFirestore(userID: user.uid) { result in
             switch result {
@@ -144,7 +144,6 @@ final class AccountManagingUseCase: NSObject {
                 print("Firestore user data deleted successfully.")
             case .failure(let error):
                 print("Failed to delete Firestore user data: \(error.localizedDescription)")
-                self.signOut()
             }
         }
         
@@ -156,7 +155,8 @@ final class AccountManagingUseCase: NSObject {
             }
             
             print("Firebase user deleted successfully.")
-            
+            self.localRepository.clearLocalUserData()
+            self.signOut()
 //            // Apple API: 토큰 취소
 //            self.reauthenticateForApple { authCodeString in
 //                Auth.auth().revokeToken(withAuthorizationCode: authCodeString)
