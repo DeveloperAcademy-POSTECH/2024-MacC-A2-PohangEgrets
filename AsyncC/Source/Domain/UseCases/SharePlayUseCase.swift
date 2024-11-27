@@ -23,7 +23,6 @@ struct SyncActivity: GroupActivity {
 class SharePlayUseCase {
     private var activeSessions: [String: GroupSession<SyncActivity>] = [:] // Map of sessionID to active sessions
     
-    
     func startSharePlaySession(sessionID: String) async {
         let activity = SyncActivity(sessionID: sessionID)
         do {
