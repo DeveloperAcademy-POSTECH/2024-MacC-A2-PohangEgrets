@@ -14,7 +14,7 @@ struct LoginView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Image(systemName: "heart.fill")
+            Image(.syncLogo)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 50, height: 50)

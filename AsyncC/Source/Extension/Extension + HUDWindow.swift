@@ -28,7 +28,14 @@ extension AppDelegate {
         hudWindow?.isMovable = false
         hudWindow?.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
         hudWindow?.level = .floating
-        hudWindow?.contentViewController = NSHostingController(rootView: MainStatusView(viewModel: MainStatusViewModel(teamManagingUseCase: self.router.teamManagingUseCase, appTrackingUseCase: self.router.appTrackingUseCase)).environmentObject(self.router))
+
+        hudWindow?.contentViewController = NSHostingController(
+            rootView: MainStatusView(
+                viewModel: MainStatusViewModel(
+                    teamManagingUseCase: self.router.teamManagingUseCase,
+                    appTrackingUseCase: self.router.appTrackingUseCase,
+                    emoticonUseCase: self.router.syncUseCase)
+            ).environmentObject(self.router))
         
         // Set the CornerRadius for the View inside the NSPanel
         hudWindow?.contentView?.wantsLayer = true
@@ -46,8 +53,13 @@ extension AppDelegate {
             } else {
                 if let screen = button.window?.screen {
                     let statusBarFrame = button.window?.frame ?? NSRect(x: 0, y: 0, width: 0, height: 0)
-                    let xPosition = statusBarFrame.origin.x
+                    var xPosition = statusBarFrame.origin.x
                     let yPosition = screen.frame.maxY - statusBarFrame.height
+                    
+                    let tempXPosition = screen.frame.maxX - statusBarFrame.origin.x
+                    if tempXPosition < 400 {
+                        xPosition = statusBarFrame.origin.x - (400 - tempXPosition)
+                    }
                     
                     hudWindow.setFrameOrigin(NSPoint(x: xPosition, y: yPosition))
                 }
@@ -57,10 +69,18 @@ extension AppDelegate {
         }
     }
     
+    func hideHUDWindow() {
+        guard let hudWindow else { return }
+        if hudWindow.isVisible {
+            hudWindow.orderOut(nil)
+        }
+    }
+    
     func closeHUDWindow() {
         if let hudWindow = self.hudWindow {
             hudWindow.close()
             self.hudWindow = nil
+            
         }
     }
 }

@@ -157,61 +157,112 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
-    func sendEmoticon(
-        sender: String,
-        emoticon: String,
-        receiver: String
-    ) {
+    // MARK: - Send SyncRequest
+    func getSyncRequestOf(user userID: String, handler: @escaping ((Result<SyncRequest, Error>) -> Void)) {
         let db = Firestore.firestore()
-        let docRef = db.collection("emoticons").document(receiver)
+        let docRef = db.collection("syncRequests").document(userID)
         docRef.getDocument { (document, error) in
-            if let document = document {
-                db.collection("emoticons").document(receiver).setData([
-                    "sender": sender,
-                    "emoticon": emoticon,
-                    "receiver": receiver
-                ])
+            if let document, document.exists {
+                guard let data = document.data() else {return}
+                if let senderID = data["senderID"] as? String,
+                   let senderName = data["senderName"] as? String,
+                   let receiverID = data["receiverID"] as? String,
+                   let syncMessage = data["syncMessage"] as? String,
+                   let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
+                   let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
+                {
+                    
+                    let request = SyncRequest(
+                        senderID: senderID,
+                        senderName: senderName,
+                        receiverID: receiverID,
+                        syncMessage: syncMessageOption,
+                        timestamp: timestamp
+                    )
+                    handler(.success(request))
+                } else {
+                    handler(.failure(NSError(domain: "MappingError", code: -1, userInfo: nil)))
+                }
             } else {
-                print("Error: \(error?.localizedDescription ?? "No error description")")
+                handler(.failure(FirebaseError(errorMessage: "No host found")))
             }
         }
     }
     
-    func setUpListenerForEmoticons(userID: String, handler: @escaping (Result<Emoticon, any Error>) -> Void) {
+    
+    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
         let db = Firestore.firestore()
-        let docRef = db.collection("emoticons").document(userID)
+        let docRef = db.collection("syncRequests").document(receiver)
         
-        docRef
-            .addSnapshotListener { (documentSnapshot, error) in
-                guard let document = documentSnapshot else {
-                    if let error {
-                        handler(.failure(error))
-                    } else {
-                        print("Error fetching document")
-                    }
-                    return
-                }
-                
-                guard let data = document.data() else {
-                    if let error {
-                        handler(.failure(error))
-                    } else {
-                        print("Document data was empty.")
-                    }
-                    return
-                }
-                
-                guard let sender = data["sender"] as? String,
-                      let receiver = data["receiver"] as? String,
-                      let emoticonRawValue = data["emoticon"] as? String,
-                      let emoticonOption = Emoticon.emoticonOption(rawValue: emoticonRawValue) else {
-                    let mappingError = NSError(domain: "MappingError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid data format"])
-                    handler(.failure(mappingError))
-                    return
-                }
-                handler(.success(Emoticon(receiver: receiver, emoticon: emoticonOption, sender: sender)))
+        docRef.setData([
+            "senderID": senderID,
+            "senderName": "",
+            "receiverID": receiver,
+            "syncMessage": syncRequestType,
+            "timestamp": Timestamp(date: timestamp)
+        ]) { error in
+            if let error = error {
+                print("Failed to send syncRequest: \(error.localizedDescription)")
+            } else {
+                print("Emoticon successfully sent!")
             }
+        }
     }
+    
+    // MARK: - Listener for SyncRequests
+    var syncRequestListener: ListenerRegistration? = nil
+    
+    func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("syncRequests").document(userID)
+        print("created listener for emoticons")
+        
+        if syncRequestListener != nil {return}
+        
+        syncRequestListener = docRef.addSnapshotListener { (documentSnapshot, error) in
+            guard let data = documentSnapshot?.data() else {
+                handler(.failure(error ?? NSError(domain: "No data", code: -1, userInfo: nil)))
+                return
+            }
+            
+            if let senderID = data["senderID"] as? String,
+               let senderName = data["senderName"] as? String,
+               let receiverID = data["receiverID"] as? String,
+               let syncMessage = data["syncMessage"] as? String,
+               let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
+               let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
+            {
+                
+                let emoticon = SyncRequest(
+                    senderID: senderID,
+                    senderName: senderName,
+                    receiverID: receiverID,
+                    syncMessage: syncMessageOption,
+                    timestamp: timestamp
+                )
+                handler(.success(emoticon))
+            } else {
+                handler(.failure(NSError(domain: "MappingError", code: -1, userInfo: nil)))
+            }
+        }
+    }
+    
+    // MARK: - Update Acknowledgment
+    func updateAcknowledgment(for receiverID: String) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("emoticons").document(receiverID)
+        
+        docRef.updateData([
+            "isAcknowledged": true
+        ]) { error in
+            if let error = error {
+                print("Failed to update acknowledgment: \(error.localizedDescription)")
+            } else {
+                print("Acknowledgment successfully updated!")
+            }
+        }
+    }
+    
     
     func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void) {
         let db = Firestore.firestore()
@@ -265,43 +316,43 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     var teamMetaDataListener: ListenerRegistration? = nil
     
     func getUsersForMembersIDs(memberIDs: [String], handler: @escaping (Result<[String], Error>) -> Void) {
-            getAllUsers { result in
-                switch result {
-                case .success(let allUsers):
-                    let filteredUsers = allUsers.filter { memberIDs.contains($0.id) }
-                    handler(.success(filteredUsers.map({ $0.name })))
-                case .failure(let error):
-                    handler(.failure(error))
-                }
+        getAllUsers { result in
+            switch result {
+            case .success(let allUsers):
+                let filteredUsers = allUsers.filter { memberIDs.contains($0.id) }
+                handler(.success(filteredUsers.map({ $0.name })))
+            case .failure(let error):
+                handler(.failure(error))
             }
         }
+    }
     
     func getAllUsers(handler: @escaping (Result<[User], Error>) -> Void) {
-            let db = Firestore.firestore()
-            let collectionRef = db.collection("users")
-            
-            collectionRef.getDocuments { querySnapshot, error in
-                if let error = error {
-                    handler(.failure(error))
-                    return
-                }
-                
-                guard let documents = querySnapshot?.documents else {
-                    handler(.failure(FirebaseError(errorMessage: "No users found")))
-                    return
-                }
-                
-                let users: [User] = documents.compactMap { document in
-                    let data = document.data()
-                    return User(
-                        id: document.documentID,
-                        email: data["email"] as? String ?? "Unknown",
-                        name: data["name"] as? String ?? "Unknown"
-                    )
-                }
-                handler(.success(users))
+        let db = Firestore.firestore()
+        let collectionRef = db.collection("users")
+        
+        collectionRef.getDocuments { querySnapshot, error in
+            if let error = error {
+                handler(.failure(error))
+                return
             }
+            
+            guard let documents = querySnapshot?.documents else {
+                handler(.failure(FirebaseError(errorMessage: "No users found")))
+                return
+            }
+            
+            let users: [User] = documents.compactMap { document in
+                let data = document.data()
+                return User(
+                    id: document.documentID,
+                    email: data["email"] as? String ?? "Unknown",
+                    name: data["name"] as? String ?? "Unknown"
+                )
+            }
+            handler(.success(users))
         }
+    }
     
     func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void) {
         let db = Firestore.firestore()
@@ -393,9 +444,9 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                                              hostID: data["hostID"] as? String ?? "",
                                              isDisband: data["isDisband"] as? String ?? "")
                 handler(.success(teamData))
-                return
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "No team data found")))
             }
-            handler(.failure(FirebaseError(errorMessage: "No team data found")))
         }
     }
     
@@ -429,10 +480,10 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 let hostName = data["name"] as? String ?? ""
                 print("data: \(hostName)")
                 handler(.success(hostName))
-                return
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "No host found")))
             }
         }
-        handler(.failure(FirebaseError(errorMessage: "No host found")))
     }
     
     // 팀 코드 입력 후 해당 팀에서 user 삭제
