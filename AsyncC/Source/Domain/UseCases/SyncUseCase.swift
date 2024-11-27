@@ -21,12 +21,25 @@ final class SyncUseCase {
     // MARK: - Send Emoticon
     
     func requestForSync(receiver: String){
-        send(emoticon: .syncRequest, receiver: receiver)
-        firebaseRepository.checkExistUserBy(userID: receiver) { exists, recipientName in
-            if exists, let recipientName {
-                self.showSyncRequest(recipientName: recipientName, isSender: true)
+        
+        firebaseRepository.getSyncRequestOf(user: receiver) { result in
+            switch result {
+            case .success(let syncRequest):
+                if syncRequest.timestamp.timeIntervalSince(Date()) < -10 {
+                    self.send(emoticon: .syncRequest,
+                         receiver: receiver)
+                    self.showSyncRequest(recipientID: receiver,
+                                         isSender: true)
+                }
+            case .failure:
+                self.send(emoticon: .syncRequest,
+                     receiver: receiver)
+                self.showSyncRequest(recipientID: receiver,
+                                     isSender: true)
             }
         }
+        
+                
     }
     
     func send(emoticon: SyncRequest.SyncMessageOption, receiver: String) {
@@ -66,18 +79,25 @@ final class SyncUseCase {
     func showSyncRequest(senderName: String = "",
                          senderID: String = "",
                          recipientName: String = "",
+                         recipientID: String = "",
                          isSender: Bool) {
         guard let router else {return print("Router not found")}
-        router.hideHUDWindow()
-        router.showPendingSyncRequest(senderName: senderName,
-                                      senderID: senderID,
-                                      recipientName: recipientName,
-                                      isSender: isSender)
+        
+        firebaseRepository.checkExistUserBy(userID: isSender ? recipientID : senderID) { exists, userName in
+            if exists, let userName {
+                router.hideHUDWindow()
+                router.showPendingSyncRequest(senderName: isSender ? senderName : userName,
+                                              senderID: senderID,
+                                              recipientName: isSender ? userName : recipientName,
+                                              isSender: isSender)
+            }
+        }
+        
     }
     
     private func showSyncRequestAccepted() {
         print("showing sync request accepted")
-//        router?.showSyncingLoadingView()
+        //        router?.showSyncingLoadingView()
     }
     
     func setUpSyncWith(_ senderID: String) {
