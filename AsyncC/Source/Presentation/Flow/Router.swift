@@ -59,14 +59,14 @@ class Router: ObservableObject{
         case .LoginView:
             LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .LogoutView:
-            LogoutView()
+            LogoutView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .CheckToJoinTeamView(let teamCode, let teamName, let hostName):
             CheckToJoinTeamView(viewModel: CheckToJoinTeamViewModel(teamManagingUseCase: teamManagingUseCase),
                                 teamCode: teamCode,
                                 teamName: teamName,
                                 hostName: hostName)
         case .AccountDeleteView:
-            AccountDeleteView()
+            AccountDeleteView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         }
     }
     
