@@ -12,10 +12,10 @@ final class SyncUseCase {
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
     private let sharePlayUseCase: SharePlayUseCase
-
+    
     var router: Router?
     
-
+    
     init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, sharePlayUseCase: SharePlayUseCase) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
@@ -26,16 +26,28 @@ final class SyncUseCase {
     
     func requestForSync(receiver: String){
         let sessionID = UUID().uuidString
-        send(emoticon: .syncRequest, receiver: receiver, sessionID: sessionID)
-        print("Requesting sync with receiver: \(receiver), SessionID: \(sessionID)")
         
-        firebaseRepository.checkExistUserBy(userID: receiver) { exists, recipientName in
-            if exists, let recipientName {
-                self.showSyncRequest(recipientName: recipientName, isSender: true)
-            } else {
-                print("Receiver not found")
+        firebaseRepository.getSyncRequestOf(user: receiver) { result in
+            switch result {
+            case .success(let syncRequest):
+                if syncRequest.timestamp.timeIntervalSince(Date()) < -10 {
+                    self.send(emoticon: .syncRequest,
+                              receiver: receiver, sessionID: sessionID)
+                    print("Requesting sync with receiver: \(receiver), SessionID: \(sessionID)")
+                    
+                    self.showSyncRequest(sessionID: sessionID,
+                                         recipientID: receiver,
+                                         isSender: true)
+                }
+            case .failure:
+                self.send(emoticon: .syncRequest,
+                          receiver: receiver, sessionID: sessionID)
+                self.showSyncRequest(sessionID: sessionID, recipientID: receiver,
+                                     isSender: true)
             }
         }
+        
+        
     }
     
     func send(emoticon: SyncRequest.SyncMessageOption, receiver: String, sessionID: String) {
@@ -69,11 +81,11 @@ final class SyncUseCase {
                         
                         Task {
                             await self.sharePlayUseCase.startSharePlaySession(sessionID: syncRequest.sessionID)
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-//                                self.router?.closeSyncingLoadingWindow()
-//                            }
+                            //                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            //                                self.router?.closeSyncingLoadingWindow()
+                            //                            }
                         }
-//                        self.showSyncRequestAccepted()
+                        //                        self.showSyncRequestAccepted()
                     }
                 }
             case .failure(let error):
@@ -86,18 +98,25 @@ final class SyncUseCase {
                          senderID: String = "",
                          sessionID: String = "",
                          recipientName: String = "",
+                         recipientID: String = "",
                          isSender: Bool) {
         guard let router else {return print("Router not found")}
-        router.hideHUDWindow()
-        router.showPendingSyncRequest(senderName: senderName,
-                                      senderID: senderID, sessionID: sessionID,
-                                      recipientName: recipientName,
-                                      isSender: isSender)
+        
+        firebaseRepository.checkExistUserBy(userID: isSender ? recipientID : senderID) { exists, userName in
+            if exists, let userName {
+                router.hideHUDWindow()
+                router.showPendingSyncRequest(senderName: isSender ? senderName : userName,
+                                              senderID: senderID,
+                                              sessionID: sessionID,
+                                              recipientName: isSender ? userName : recipientName,
+                                              isSender: isSender)
+            }
+        }
     }
     
     private func showSyncRequestAccepted() {
         print("showing sync request accepted")
-//        router?.showSyncingLoadingView()
+        //        router?.showSyncingLoadingView()
     }
     
     func setUpSyncWith(_ senderID: String) {

@@ -8,7 +8,7 @@
 import SwiftUI
 import FirebaseCore
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var launchWindowController: NSWindowController?
     var statusBarItem: NSStatusItem?
     var hudWindow: NSPanel?
@@ -18,6 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var contentViewWindow: NSWindow?
     let router = Router()
     var exitConfirmation: NSPanel?
+    var accountDeactivation: NSPanel?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Firebase configure

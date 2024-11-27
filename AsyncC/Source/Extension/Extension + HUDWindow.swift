@@ -53,8 +53,13 @@ extension AppDelegate {
             } else {
                 if let screen = button.window?.screen {
                     let statusBarFrame = button.window?.frame ?? NSRect(x: 0, y: 0, width: 0, height: 0)
-                    let xPosition = statusBarFrame.origin.x
+                    var xPosition = statusBarFrame.origin.x
                     let yPosition = screen.frame.maxY - statusBarFrame.height
+                    
+                    let tempXPosition = screen.frame.maxX - statusBarFrame.origin.x
+                    if tempXPosition < 400 {
+                        xPosition = statusBarFrame.origin.x - (400 - tempXPosition)
+                    }
                     
                     hudWindow.setFrameOrigin(NSPoint(x: xPosition, y: yPosition))
                 }

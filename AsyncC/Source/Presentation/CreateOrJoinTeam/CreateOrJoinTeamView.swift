@@ -22,12 +22,22 @@ struct CreateOrJoinTeamView: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(.darkGray2)
                 Spacer()
-                Text("로그아웃")
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(.logOutTextGray)
-                    .onTapGesture {
-                        router.push(view: .LogoutView)
+
+                Button {
+                    if ((router.accountDeactivation()?.isVisible) != nil) {
+                        router.closeAccountDeactivation()
+                    } else {
+                        router.setUpAccountDeactivation()
+                        router.showAccountDeactivation()
                     }
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundStyle(.gray1)
+                        .frame(height: 16)
+                }
+                .buttonStyle(.plain)
             }
             .padding(.horizontal, 8)
             Divider()

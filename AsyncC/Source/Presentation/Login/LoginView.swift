@@ -10,27 +10,26 @@ import AuthenticationServices
 
 struct LoginView: View {
     @EnvironmentObject var router: Router
-    var viewModel: LoginViewModel
+    @ObservedObject var viewModel: LoginViewModel
     
     var body: some View {
         VStack(spacing: 0) {
-            Image(systemName: "heart.fill")
+            Image(.syncLogo)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 50, height: 50)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.top, 48)
             
-            SignInWithAppleButton(.signIn,
-                onRequest: viewModel.accountManagingUseCase.signInRequest,
-                onCompletion: { result in
-                    viewModel.accountManagingUseCase.handleAuthorization(result) {
-                        router.push(view: .CreateOrJoinTeamView)
-                    }
-                }
-            )
-                .frame(width: 120, height: 28)
-                .padding(.top, 28)
+            SignInWithAppleButton(onRequest: { request in
+                viewModel.accountManagingUseCase.handleSignInWithApple(request: request)
+            }, onCompletion: { result in
+                viewModel.accountManagingUseCase.handleSignInWithAppleCompletion(result: result)
+                router.push(view: .CreateOrJoinTeamView)
+            })
+            .frame(width: 120, height: 28)
+            .padding(.top, 28)
+            
             Spacer()
         }
         .frame(width: 270, height: 200)

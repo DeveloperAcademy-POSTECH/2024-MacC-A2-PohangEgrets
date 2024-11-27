@@ -53,7 +53,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             }
         }
     }
-
+    
     func setUserAppData(
         id: String,
         appName: String,
@@ -148,11 +148,11 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             } else {
                 completion(false, nil)
             }
-//            if let error = error {
-//                print("Error: \(error.localizedDescription)")
-//                completion(false, nil)
-//                return
-//            }
+            //            if let error = error {
+            //                print("Error: \(error.localizedDescription)")
+            //                completion(false, nil)
+            //                return
+            //            }
             
             
         }
@@ -160,6 +160,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     
     // MARK: - Send SyncRequest
     func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool, sessionID: String) {
+        
         let db = Firestore.firestore()
         let docRef = db.collection("syncRequests").document(receiver)
         
@@ -175,6 +176,39 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 print("Failed to send syncRequest: \(error.localizedDescription)")
             } else {
                 print("Emoticon successfully sent!")
+            }
+        }
+    }
+    
+    func getSyncRequestOf(user userID: String, handler: @escaping ((Result<SyncRequest, Error>) -> Void)) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("syncRequests").document(userID)
+        docRef.getDocument { (document, error) in
+            if let document, document.exists {
+                guard let data = document.data() else {return}
+                if let senderID = data["senderID"] as? String,
+                   let senderName = data["senderName"] as? String,
+                   let receiverID = data["receiverID"] as? String,
+                   let syncMessage = data["syncMessage"] as? String,
+                   let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
+                   let timestamp = (data["timestamp"] as? Timestamp)?.dateValue(),
+                    let sessionID = data["sessionID"] as? String
+                {
+                    
+                    let request = SyncRequest(
+                        senderID: senderID,
+                        senderName: senderName,
+                        receiverID: receiverID,
+                        syncMessage: syncMessageOption,
+                        timestamp: timestamp,
+                        sessionID: sessionID
+                    )
+                    handler(.success(request))
+                } else {
+                    handler(.failure(NSError(domain: "MappingError", code: -1, userInfo: nil)))
+                }
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "No host found")))
             }
         }
     }
@@ -446,20 +480,20 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     func getUserEmail(userID: String, handler: @escaping (Result<String, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("users").document(userID)
-
+        
         docRef.getDocument { document, error in
             if let error = error {
                 handler(.failure(error))
                 return
             }
-
+            
             guard let document = document, document.exists,
                   let data = document.data(),
                   let userEmail = data["email"] as? String else {
                 handler(.failure(FirebaseError(errorMessage: "User not found or no email field")))
                 return
             }
-
+            
             handler(.success(userEmail))
         }
     }
@@ -479,6 +513,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         }
     }
     
+    // 팀 코드 입력 후 해당 팀에서 user 삭제
     func removeUser(userID: String, teamCode: String) {
         let db = Firestore.firestore()
         let docRef = db.collection("teamMetaData").document(teamCode)
@@ -489,6 +524,20 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 ])
                 return
             }
+        }
+    }
+    
+    // users collection에 유저 삭제
+    func deleteUserDataFromFirestore(userID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let db = Firestore.firestore()
+        db.collection("users").document(userID).delete { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                print("firebase 사용자 데이터 제거 성공")
+                completion(.success(()))
+            }
+            
         }
     }
     

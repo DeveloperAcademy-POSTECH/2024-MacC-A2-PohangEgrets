@@ -13,6 +13,7 @@
 		6B8F682C2CDB08220036B936 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8F682B2CDB08220036B936 /* FirebaseFirestoreCombine-Community */; };
 		6B8F682E2CDB08220036B936 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8F682D2CDB08220036B936 /* FirebaseStorage */; };
 		6B8F68302CDB08220036B936 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8F682F2CDB08220036B936 /* FirebaseStorageCombine-Community */; };
+		B17F3A5F2CF768E200C65BD3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B17F3A5E2CF768E200C65BD3 /* FirebaseAuth */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 				6B8F68262CDB08220036B936 /* FirebaseCore in Frameworks */,
 				6B8F682E2CDB08220036B936 /* FirebaseStorage in Frameworks */,
 				6B8F68302CDB08220036B936 /* FirebaseStorageCombine-Community in Frameworks */,
+				B17F3A5F2CF768E200C65BD3 /* FirebaseAuth in Frameworks */,
 				6B8F682A2CDB08220036B936 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,12 +89,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B17F3A5D2CF768E200C65BD3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CC0F1A182CDA671E00562085 = {
 			isa = PBXGroup;
 			children = (
 				CC0F1A232CDA671E00562085 /* AsyncC */,
 				CC0F1A352CDA671F00562085 /* AsyncCTests */,
 				CC0F1A3F2CDA671F00562085 /* AsyncCUITests */,
+				B17F3A5D2CF768E200C65BD3 /* Frameworks */,
 				CC0F1A222CDA671E00562085 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -133,6 +143,7 @@
 				6B8F682B2CDB08220036B936 /* FirebaseFirestoreCombine-Community */,
 				6B8F682D2CDB08220036B936 /* FirebaseStorage */,
 				6B8F682F2CDB08220036B936 /* FirebaseStorageCombine-Community */,
+				B17F3A5E2CF768E200C65BD3 /* FirebaseAuth */,
 			);
 			productName = AsyncC;
 			productReference = CC0F1A212CDA671E00562085 /* AsyncC.app */;
@@ -423,7 +434,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AsyncC/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = C5ZC74W3Z4;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = GKWM8Q6TMS;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -436,7 +447,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.PohangEgrets.AsyncC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = AsyncC;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Sync Develop";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -454,7 +465,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AsyncC/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = C5ZC74W3Z4;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = GKWM8Q6TMS;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -467,7 +478,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.PohangEgrets.AsyncC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = AsyncC;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Sync Develop";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -623,6 +634,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6B8F68242CDB08220036B936 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
+		};
+		B17F3A5E2CF768E200C65BD3 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B8F68242CDB08220036B936 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

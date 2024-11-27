@@ -18,6 +18,8 @@ protocol FirebaseRepositoryProtocol {
     
     func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void)
     
+    func deleteUserDataFromFirestore(userID: String, completion: @escaping (Result<Void, Error>) -> Void)
+    
     func removeListenersForUserAppData()
     
     func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void)
@@ -55,6 +57,8 @@ protocol FirebaseRepositoryProtocol {
     func checkExistUserBy(userID: String, completion: @escaping (Bool, String?) -> Void)
     
     func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool, sessionID: String)
+    
+    func getSyncRequestOf(user userID: String, handler: @escaping ((Result<SyncRequest, Error>) -> Void))
     
     func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void)
     

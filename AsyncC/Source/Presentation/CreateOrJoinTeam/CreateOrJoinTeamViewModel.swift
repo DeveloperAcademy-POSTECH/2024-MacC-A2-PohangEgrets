@@ -9,8 +9,9 @@ import SwiftUI
 
 class CreateOrJoinTeamViewModel: ObservableObject {
     let teamUseCase: TeamManagingUseCase
-    
-    init(teamUseCase: TeamManagingUseCase) {
+    let accountUseCase: AccountManagingUseCase
+    init(teamUseCase: TeamManagingUseCase, accountUseCase: AccountManagingUseCase) {
         self.teamUseCase = teamUseCase
+        self.accountUseCase = accountUseCase
     }
 }
