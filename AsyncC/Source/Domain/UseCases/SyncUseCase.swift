@@ -11,9 +11,10 @@ import AppKit
 final class SyncUseCase {
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
+    private let sharePlayUseCase: SharePlayUseCase
+
     var router: Router?
     
-    private let sharePlayUseCase: SharePlayUseCase
 
     init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, sharePlayUseCase: SharePlayUseCase) {
         self.localRepository = localRepo
@@ -24,25 +25,32 @@ final class SyncUseCase {
     // MARK: - Send Emoticon
     
     func requestForSync(receiver: String){
-        send(emoticon: .syncRequest, receiver: receiver)
-        print("receiver: \(receiver)")
+        let sessionID = UUID().uuidString
+        send(emoticon: .syncRequest, receiver: receiver, sessionID: sessionID)
+        print("Requesting sync with receiver: \(receiver), SessionID: \(sessionID)")
+        
         firebaseRepository.checkExistUserBy(userID: receiver) { exists, recipientName in
             if exists, let recipientName {
                 self.showSyncRequest(recipientName: recipientName, isSender: true)
             } else {
-                print("person not found")
+                print("Receiver not found")
             }
         }
     }
     
-    func send(emoticon: SyncRequest.SyncMessageOption, receiver: String) {
+    func send(emoticon: SyncRequest.SyncMessageOption, receiver: String, sessionID: String) {
         let senderID = localRepository.getUserID()
         let senderName = localRepository.getUserName()
-        firebaseRepository.sendSyncRequest(senderID: senderID, senderName: senderName, syncRequestType: emoticon.rawValue, receiver: receiver, timestamp: Date.now, isAcknowledged: false)
+        
+        firebaseRepository.sendSyncRequest(senderID: senderID, senderName: senderName, syncRequestType: emoticon.rawValue, receiver: receiver, timestamp: Date.now, isAcknowledged: false, sessionID: sessionID)
     }
     
     func setUpListenerForEmoticons(userID: String) {
         firebaseRepository.setupListenerForSyncRequest(userID: userID) { result in
+            if self.router?.isFirstTimeSetUp() == true {
+                self.router?.finishFirstSetUp()
+                return
+            }
             switch result {
             case .success(let syncRequest):
                 DispatchQueue.main.async {
@@ -59,7 +67,7 @@ final class SyncUseCase {
                         self.router?.closePendingSyncWindow()
                         
                         Task {
-                            await self.sharePlayUseCase.startSharePlaySession()
+                            await self.sharePlayUseCase.startSharePlaySession(sessionID: syncRequest.sessionID)
 //                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
 //                                self.router?.closeSyncingLoadingWindow()
 //                            }
@@ -75,12 +83,13 @@ final class SyncUseCase {
     
     func showSyncRequest(senderName: String = "",
                          senderID: String = "",
+                         sessionID: String = "",
                          recipientName: String = "",
                          isSender: Bool) {
         guard let router else {return print("Router not found")}
         router.hideHUDWindow()
         router.showPendingSyncRequest(senderName: senderName,
-                                      senderID: senderID,
+                                      senderID: senderID, sessionID: sessionID,
                                       recipientName: recipientName,
                                       isSender: isSender)
     }

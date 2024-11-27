@@ -159,7 +159,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     }
     
     // MARK: - Send SyncRequest
-    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
+    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool, sessionID: String) {
         let db = Firestore.firestore()
         let docRef = db.collection("syncRequests").document(receiver)
         
@@ -168,7 +168,8 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             "senderName": "",
             "receiverID": receiver,
             "syncMessage": syncRequestType,
-            "timestamp": Timestamp(date: timestamp)
+            "timestamp": Timestamp(date: timestamp),
+            "sessionID": sessionID
         ]) { error in
             if let error = error {
                 print("Failed to send syncRequest: \(error.localizedDescription)")
@@ -199,17 +200,19 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                let receiverID = data["receiverID"] as? String,
                let syncMessage = data["syncMessage"] as? String,
                let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
-               let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
+               let timestamp = (data["timestamp"] as? Timestamp)?.dateValue(),
+               let sessionID = data["sessionID"] as? String
             {
                 
-                let emoticon = SyncRequest(
+                let syncRequest = SyncRequest(
                     senderID: senderID,
                     senderName: senderName,
                     receiverID: receiverID,
                     syncMessage: syncMessageOption,
-                    timestamp: timestamp
+                    timestamp: timestamp,
+                    sessionID: sessionID
                 )
-                handler(.success(emoticon))
+                handler(.success(syncRequest))
             } else {
                 handler(.failure(NSError(domain: "MappingError", code: -1, userInfo: nil)))
             }
@@ -413,9 +416,9 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                                              hostID: data["hostID"] as? String ?? "",
                                              isDisband: data["isDisband"] as? String ?? "")
                 handler(.success(teamData))
-                return
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "No team data found")))
             }
-            handler(.failure(FirebaseError(errorMessage: "No team data found")))
         }
     }
     
@@ -470,10 +473,10 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 let hostName = data["name"] as? String ?? ""
                 print("data: \(hostName)")
                 handler(.success(hostName))
-                return
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "No host found")))
             }
         }
-        handler(.failure(FirebaseError(errorMessage: "No host found")))
     }
     
     func removeUser(userID: String, teamCode: String) {

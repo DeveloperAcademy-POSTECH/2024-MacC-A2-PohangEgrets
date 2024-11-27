@@ -70,13 +70,13 @@ class SyncRequestNotificationViewModel: ObservableObject {
     }
     
     
-    func acceptSyncRequest(to receiverID: String) {
-        router?.syncUseCase.send(emoticon: .acceptedSyncRequest, receiver: receiverID)
+    func acceptSyncRequest(to receiverID: String, sessionID: String) {
+        router?.syncUseCase.send(emoticon: .acceptedSyncRequest, receiver: receiverID, sessionID: sessionID)
         router?.closePendingSyncWindow()
         //        router?.showSyncingLoadingView()
         
         Task {
-            await sharePlayUseCase.startSharePlaySession()
+            await sharePlayUseCase.startSharePlaySession(sessionID: sessionID)
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.router?.closeSyncingLoadingWindow()
             }

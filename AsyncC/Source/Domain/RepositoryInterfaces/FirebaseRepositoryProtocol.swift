@@ -54,7 +54,7 @@ protocol FirebaseRepositoryProtocol {
     
     func checkExistUserBy(userID: String, completion: @escaping (Bool, String?) -> Void)
     
-    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) 
+    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool, sessionID: String)
     
     func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void)
     

@@ -17,6 +17,7 @@ struct JoinTeamView: View {
     
     var body: some View {
         VStack(spacing: 16) {
+            Spacer()
             Text("팀 참여하기")
                 .font(Font.system(size: 16, weight: .semibold))
             ZStack {
@@ -51,8 +52,13 @@ struct JoinTeamView: View {
                     Spacer()
                 }
                 .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
+                .frame(height: 3)
+            } else {
+                Spacer()
+                    .frame(height: 3)
             }
             Spacer()
+                .frame(height: 4)
             HStack {
                 Spacer()
                 Button("취소") {
@@ -76,7 +82,7 @@ struct JoinTeamView: View {
                 .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
                 .disabled(teamCode.isEmpty)
             }
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
+            .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
         }
         .padding(EdgeInsets(top: 50, leading: 12, bottom: 16, trailing: 12))
         .frame(width: 270, height: 200)

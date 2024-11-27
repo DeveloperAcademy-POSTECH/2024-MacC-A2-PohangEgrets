@@ -21,7 +21,9 @@ class Router: ObservableObject{
     var teamManagingUseCase: TeamManagingUseCase
     var syncUseCase: SyncUseCase
     var sharePlayUseCase: SharePlayUseCase
-    
+
+    private var firstSetUp: Bool = true
+
     
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
@@ -117,11 +119,20 @@ class Router: ObservableObject{
         }
     }
     
+    func isFirstTimeSetUp() -> Bool {
+        return firstSetUp
+    }
+    
+    func finishFirstSetUp() {
+        firstSetUp = false
+    }
+    
     // MARK: - PendingSyncRequestView
-    func showPendingSyncRequest(senderName: String, senderID: String, recipientName: String, isSender: Bool) {
+    func showPendingSyncRequest(senderName: String, senderID: String, sessionID: String, recipientName: String, isSender: Bool) {
         if let delegate = appDelegate {
             delegate.setUpPendingSyncWindow(senderName: senderName,
                                             senderID: senderID,
+                                            sessionID: sessionID,
                                             recipientName: recipientName,
                                             isSender: isSender)
             delegate.showPendingSyncWindow()

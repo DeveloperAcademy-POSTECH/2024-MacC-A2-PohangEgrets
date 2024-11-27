@@ -20,6 +20,7 @@ extension AppDelegate {
     
     func setUpPendingSyncWindow(senderName: String,
                                 senderID: String,
+                                sessionID: String,
                                 recipientName: String,
                                 isSender: Bool) {
         makePendingSyncWindow()
@@ -35,6 +36,7 @@ extension AppDelegate {
         pendingSyncWindow?.contentViewController = NSHostingController(
             rootView: PendingSyncRequestView(senderName: senderName,
                                              senderID: senderID,
+                                             sessionID: sessionID,
                                              recipientName: recipientName,
                                              amSender: isSender,
                                              viewModel: SyncRequestNotificationViewModel(teamManagingUseCase: self.router.teamManagingUseCase, syncUseCase: self.router.syncUseCase, sharePlayUseCase: self.router.sharePlayUseCase)

@@ -11,6 +11,7 @@ import SwiftUI
 struct PendingSyncRequestView: View {
     let senderName: String
     let senderID: String
+    let sessionID: String // one-on-one sessionID
     let recipientName: String
     var amSender: Bool
     
@@ -39,7 +40,7 @@ struct PendingSyncRequestView: View {
                 if !amSender {
                     HStack {
                         Button {
-                            viewModel.acceptSyncRequest(to: senderID)
+                            viewModel.acceptSyncRequest(to: senderID, sessionID: sessionID)
                         } label: {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 4)
