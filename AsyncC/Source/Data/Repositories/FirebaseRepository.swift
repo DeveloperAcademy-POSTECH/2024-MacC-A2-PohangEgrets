@@ -158,6 +158,38 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     }
     
     // MARK: - Send SyncRequest
+    func getSyncRequestOf(user userID: String, handler: @escaping ((Result<SyncRequest, Error>) -> Void)) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("syncRequests").document(userID)
+        docRef.getDocument { (document, error) in
+            if let document, document.exists {
+                guard let data = document.data() else {return}
+                if let senderID = data["senderID"] as? String,
+                   let senderName = data["senderName"] as? String,
+                   let receiverID = data["receiverID"] as? String,
+                   let syncMessage = data["syncMessage"] as? String,
+                   let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
+                   let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
+                {
+                    
+                    let request = SyncRequest(
+                        senderID: senderID,
+                        senderName: senderName,
+                        receiverID: receiverID,
+                        syncMessage: syncMessageOption,
+                        timestamp: timestamp
+                    )
+                    handler(.success(request))
+                } else {
+                    handler(.failure(NSError(domain: "MappingError", code: -1, userInfo: nil)))
+                }
+            } else {
+                handler(.failure(FirebaseError(errorMessage: "No host found")))
+            }
+        }
+    }
+    
+    
     func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
         let db = Firestore.firestore()
         let docRef = db.collection("syncRequests").document(receiver)
