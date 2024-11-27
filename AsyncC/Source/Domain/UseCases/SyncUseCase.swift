@@ -59,6 +59,7 @@ final class SyncUseCase {
                             if exists, let userName {
                                 self.showSyncRequest(senderName: userName,
                                                      senderID: syncRequest.senderID,
+                                                     sessionID: syncRequest.sessionID,
                                                      isSender: false)
                             }
                         }
