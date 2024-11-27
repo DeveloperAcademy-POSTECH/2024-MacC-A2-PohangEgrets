@@ -17,6 +17,8 @@ extension AppDelegate {
             backing: .buffered,
             defer: false
         )
+        
+        contentViewWindow?.delegate = self
     }
     
     func setUpContentViewWindow() {
@@ -29,5 +31,12 @@ extension AppDelegate {
         contentViewWindow?.isReleasedWhenClosed = false
         contentViewWindow?.contentView = NSHostingView(rootView: ContentView().environmentObject(self.router))
         contentViewWindow?.makeKeyAndOrderFront(nil)
+    }
+    
+    func windowWillClose(_ notification: Notification) {
+        if let accountDeactivation = self.accountDeactivation {
+            accountDeactivation.close()
+            self.accountDeactivation = nil
+        }
     }
 }
