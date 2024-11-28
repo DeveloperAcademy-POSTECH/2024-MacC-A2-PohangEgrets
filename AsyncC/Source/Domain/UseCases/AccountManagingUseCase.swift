@@ -103,67 +103,69 @@ final class AccountManagingUseCase: NSObject {
     }
     
     // MARK: - 회원탈퇴
-    // 파이어베이스 Auth 회원탈퇴: O
-    // 애플 API 회원탈퇴: X
-    // Apple로 로그인으로 사용자를 생성할 때 Firebase는 사용자 토큰을 저장하지 않으므로 토큰을 취소하고 계정을 삭제하기 전에 사용자에게 다시 로그인하도록 요청해야 합니다.: X
-    
-    // 애플 API 회원탈퇴 시 다시 값 받아오는게 필요하면
-    func reauthenticateForApple(completion: @escaping (String) -> Void) {
-        let provider = ASAuthorizationAppleIDProvider()
-        let request = provider.createRequest()
-        request.requestedScopes = [.fullName, .email]
+    func deleteFirebaseAuthUser() async -> Bool {
+        guard let user = Auth.auth().currentUser else { return false }
+        guard let lastSignInDate = user.metadata.lastSignInDate else { return false }
         
-        let authController = ASAuthorizationController(authorizationRequests: [request])
-        authController.delegate = self
-        authController.performRequests()
-        
-        // Apple API의 인증 성공 핸들러에서 `authorizationCode`를 가져옵니다.
-        func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
-               let authorizationCode = appleIDCredential.authorizationCode,
-               let authCodeString = String(data: authorizationCode, encoding: .utf8) {
-                completion(authCodeString)
-            } else {
-                print("Failed to retrieve authorization code.")
-            }
-        }
-    }
-    
-    func deleteFirebaseAuthUser() {
-        guard let user = Auth.auth().currentUser else {
-            print("No user is logged in.")
-            return
-        }
-        
-        print("Deleting user with userID: \(user.uid)")
-    
-        // Firestore 데이터 삭제
-        firebaseRepository.deleteUserDataFromFirestore(userID: user.uid) { result in
-            switch result {
-            case .success:
-                print("Firestore user data deleted successfully.")
-            case .failure(let error):
-                print("Failed to delete Firestore user data: \(error.localizedDescription)")
-            }
-        }
-        
-        // Firebase 사용자 삭제
-        user.delete { error in
-            if let error = error {
-                print("Failed to delete Firebase user: \(error.localizedDescription)")
-                return
+        let needsReauth = !lastSignInDate.isWithinPast(minutes: 5)
+        let needsTokenRevocation = user.providerData.contains { $0.providerID == "apple.com" }
+        do {
+            if needsReauth || needsTokenRevocation {
+                let signInWithApple = SignInWithApple()
+                let appleIDCredential = try await signInWithApple()
+                
+                guard let appleIDToken = appleIDCredential.identityToken else {
+                    print("Unable to fetch identify token")
+                    return false
+                }
+                
+                guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                    print("Unable to serialise token string from data: \(appleIDCredential.debugDescription)")
+                    return false
+                }
+                
+                let nonce = randomNonceString()
+                let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
+                
+                if needsReauth {
+                    try await user.reauthenticate(with: credential)
+                }
+                if needsTokenRevocation {
+                    guard let authorizationCode = appleIDCredential.authorizationCode else { return false }
+                    guard let authCodeString = String(data: authorizationCode, encoding: .utf8) else { return false }
+                    
+                    try await Auth.auth().revokeToken(withAuthorizationCode: authCodeString)
+                }
             }
             
-            print("Firebase user deleted successfully.")
-            self.localRepository.clearLocalUserData()
-            self.signOut()
-//            // Apple API: 토큰 취소
-//            self.reauthenticateForApple { authCodeString in
-//                Auth.auth().revokeToken(withAuthorizationCode: authCodeString)
-//            }
+            // Firestore 데이터 삭제
+            firebaseRepository.deleteUserDataFromFirestore(userID: user.uid) { result in
+                switch result {
+                case .success:
+                    print("Firestore user data deleted successfully.")
+                case .failure(let error):
+                    print("Failed to delete Firestore user data: \(error.localizedDescription)")
+                }
+            }
+            
+            // Firebase 사용자 삭제
+            user.delete { error in
+                if let error = error {
+                    print("Failed to delete Firebase user: \(error.localizedDescription)")
+                    return
+                }
+                
+                print("Firebase user deleted successfully.")
+                
+                self.localRepository.clearLocalUserData()
+                self.signOut()
+            }
+        } catch {
+            print("유저 삭제 실패")
         }
+        return true
     }
-
+    
     // MARK: - 사용자 로컬 데이터 저장
     private func saveUserIDToLocal(userID: String) {
         localRepository.saveUserID(userID)
@@ -249,5 +251,32 @@ extension AccountManagingUseCase: ASAuthorizationControllerDelegate {
 extension AccountManagingUseCase: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return NSApplication.shared.keyWindow ?? NSApplication.shared.windows.first!
+    }
+}
+
+final class SignInWithApple: NSObject, ASAuthorizationControllerDelegate {
+    private var continuation: CheckedContinuation<ASAuthorizationAppleIDCredential, Error>?
+    
+    func callAsFunction() async throws -> ASAuthorizationAppleIDCredential {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.continuation = continuation
+            let appleIDProvider = ASAuthorizationAppleIDProvider()
+            let request = appleIDProvider.createRequest()
+            request.requestedScopes = [.fullName, .email]
+            
+            let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+            authorizationController.delegate = self
+            authorizationController.performRequests()
+        }
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if case let appleIDCredential as ASAuthorizationAppleIDCredential = authorization.credential {
+            continuation?.resume(returning: appleIDCredential)
+        }
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        continuation?.resume(throwing: error)
     }
 }
