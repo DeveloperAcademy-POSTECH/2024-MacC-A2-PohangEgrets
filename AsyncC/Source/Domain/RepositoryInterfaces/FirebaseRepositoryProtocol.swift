@@ -19,7 +19,7 @@ protocol FirebaseRepositoryProtocol {
     func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void)
     
     func deleteUserDataFromFirestore(userID: String, completion: @escaping (Result<Void, Error>) -> Void)
-
+    
     func removeListenersForUserAppData()
     
     func createNewTeamInFirestore(teamData: TeamMetaData, handler: @escaping (Result<String, Error>) -> Void)
@@ -35,6 +35,8 @@ protocol FirebaseRepositoryProtocol {
     func getAllUsers(handler: @escaping (Result<[User], Error>) -> Void)
     
     func getUserName(userID: String, handler: @escaping (Result<String, Error>) -> Void)
+    
+    func getUserEmail(userID: String, handler: @escaping (Result<String, Error>) -> Void)
     
     func getHostName(hostID: String, handler: @escaping ((Result<String, Error>) -> Void))
     
@@ -54,9 +56,9 @@ protocol FirebaseRepositoryProtocol {
     
     func checkExistUserBy(userID: String, completion: @escaping (Bool, String?) -> Void)
     
-    func getSyncRequestOf(user userID: String, handler: @escaping ((Result<SyncRequest, Error>) -> Void))
+    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool, sessionID: String)
     
-    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) 
+    func getSyncRequestOf(user userID: String, handler: @escaping ((Result<SyncRequest, Error>) -> Void))
     
     func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void)
     

@@ -14,7 +14,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var hudWindow: NSPanel?
     
     var pendingSyncWindow: NSPanel?
-    var syncingLoadingWindow: NSPanel?
     var contentViewWindow: NSWindow?
     let router = Router()
     var exitConfirmation: NSPanel?

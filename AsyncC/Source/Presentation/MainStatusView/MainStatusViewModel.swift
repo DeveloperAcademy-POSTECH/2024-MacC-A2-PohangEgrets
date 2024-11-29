@@ -19,7 +19,7 @@ import FirebaseAuth
 class MainStatusViewModel: ObservableObject {
     var teamManagingUseCase: TeamManagingUseCase
     var appTrackingUseCase: AppTrackingUseCase
-    var emoticonUseCase: SyncUseCase
+    var syncUseCase: SyncUseCase
     var accountUseCase: AccountManagingUseCase
     
     var cancellables = Set<AnyCancellable>()
@@ -42,14 +42,15 @@ class MainStatusViewModel: ObservableObject {
     @Published var isTeamHost: Bool = false
     @Published var isToggled: Bool = true
     @Published var isMenuVisible: Bool = false
-   @Published var userNameAndID: [String: String] = [:] // [userName: userID]
-      @Published var isSelectedButton: Bool = false
+    @Published var userNameAndID: [String: String] = [:] // [userName: userID]
+    @Published var emailToUserId: [String: String] = [:] // Email-to-ID mapping
+    @Published var isSelectedButton: Bool = false
     @Published var buttonStates: [String: Bool] = [:]
     
-    init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, emoticonUseCase: SyncUseCase, accountUseCase: AccountManagingUseCase) {
+    init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, syncUseCase: SyncUseCase, accountUseCase: AccountManagingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
-        self.emoticonUseCase =  emoticonUseCase
+        self.syncUseCase =  emoticonUseCase
         self.accountUseCase = accountUseCase
         
         appTrackingUseCase.$teamTrackingStatus
@@ -63,7 +64,7 @@ class MainStatusViewModel: ObservableObject {
     func updateUserTrackingStatus(userID: String, isActive: Bool) {
         trackingActive[userID] = isActive
         appTrackingUseCase.updateTrackingStatus(for: userID, isActive: isActive)
-       }
+    }
     
     func startTrackingStatuses(for teamMemberIDs: [String]) {
         appTrackingUseCase.startTrackingStatus(for: teamMemberIDs)
@@ -162,6 +163,7 @@ class MainStatusViewModel: ObservableObject {
                                 self.userNameAndID[userName] = userID
                                 updatedTrackings[userName] = appTrackings[userID]?.reversed()
                                 self.nameToUserId[userName] = userID // 이름-유저 ID 매핑 저장
+                            
                             case .failure(let error):
                                 print("Failed to get user name for userID \(userID): \(error)")
                                 updatedTrackings[userID] = appTrackings[userID]

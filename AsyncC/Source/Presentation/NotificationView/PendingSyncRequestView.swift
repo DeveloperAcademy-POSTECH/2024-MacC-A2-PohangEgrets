@@ -11,13 +11,13 @@ import SwiftUI
 struct PendingSyncRequestView: View {
     let senderName: String
     let senderID: String
+    let sessionID: String // one-on-one sessionID
     let recipientName: String
     var amSender: Bool
     
     @EnvironmentObject var router: Router
-    
-    @ObservedObject var viewModel = SyncRequestNotificationViewModel()
-    
+    @ObservedObject var viewModel: SyncRequestNotificationViewModel
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
@@ -40,7 +40,7 @@ struct PendingSyncRequestView: View {
                 if !amSender {
                     HStack {
                         Button {
-                            viewModel.acceptSyncRequest(to: senderID)
+                            viewModel.acceptSyncRequest(to: senderID, sessionID: sessionID)
                         } label: {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 4)

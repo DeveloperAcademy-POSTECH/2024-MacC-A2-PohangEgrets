@@ -20,15 +20,17 @@ class Router: ObservableObject{
     var appTrackingUseCase: AppTrackingUseCase
     var teamManagingUseCase: TeamManagingUseCase
     var syncUseCase: SyncUseCase
-    
+    var faceTimeUseCase: FaceTimeUseCase
+
     private var firstSetUp: Bool = true
 
     
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, emoticonUseCase: syncUseCase)
+        faceTimeUseCase = FaceTimeUseCase()
+        syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, faceTimeUseCase: faceTimeUseCase)
+        teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, syncUseCase: syncUseCase)
         syncUseCase.router = self
     }
     
@@ -55,7 +57,7 @@ class Router: ObservableObject{
             MainStatusView(viewModel: MainStatusViewModel(
                 teamManagingUseCase: self.teamManagingUseCase,
                 appTrackingUseCase: self.appTrackingUseCase,
-                emoticonUseCase: self.syncUseCase, accountUseCase: accountManagingUseCase))
+                syncUseCase: self.syncUseCase, accountUseCase: accountManagingUseCase))
         case .LoginView:
             LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .LogoutView:
@@ -129,10 +131,11 @@ class Router: ObservableObject{
     }
     
     // MARK: - PendingSyncRequestView
-    func showPendingSyncRequest(senderName: String, senderID: String, recipientName: String, isSender: Bool) {
+    func showPendingSyncRequest(senderName: String, senderID: String, sessionID: String, recipientName: String, isSender: Bool) {
         if let delegate = appDelegate {
             delegate.setUpPendingSyncWindow(senderName: senderName,
                                             senderID: senderID,
+                                            sessionID: sessionID,
                                             recipientName: recipientName,
                                             isSender: isSender)
             delegate.showPendingSyncWindow()
@@ -145,32 +148,18 @@ class Router: ObservableObject{
         }
     }
     
-    // MARK: - SyncingView
-    func showSyncingLoadingView() {
+    func setUpExitConfirmation() {
         if let delegate = appDelegate {
-            delegate.setUpSyncingLoadingWindow()
-            delegate.showSyncingLoadingWindow()
+            delegate.setUpExitConfirmation()
         }
     }
     
-    func closeSyncingLoadingWindow() {
-        if let delegate = appDelegate {
-            delegate.closeSyncingLoadingWindow()
-        }
-    }
-  
-    func setUpExitConfirmation() {
-            if let delegate = appDelegate {
-                delegate.setUpExitConfirmation()
-            }
-        }
-        
     func showExitConfirmation() {
         if let delegate = appDelegate {
             delegate.showExitConfirmation()
         }
     }
-        
+    
     func closeExitConfirmation() {
         if let delegate = appDelegate {
             delegate.closeExitConfirmation()

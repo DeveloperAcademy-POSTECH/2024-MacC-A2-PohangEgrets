@@ -53,7 +53,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             }
         }
     }
-
+    
     func setUserAppData(
         id: String,
         appName: String,
@@ -139,12 +139,6 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         let docRef = db.collection("users").document(userID)
         
         docRef.getDocument { (document, error) in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                completion(false, nil)
-                return
-            }
-            
             if let document = document, document.exists {
                 if let name = document.data()?["name"] as? String {
                     completion(true, name)
@@ -154,10 +148,38 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             } else {
                 completion(false, nil)
             }
+            //            if let error = error {
+            //                print("Error: \(error.localizedDescription)")
+            //                completion(false, nil)
+            //                return
+            //            }
+            
+            
         }
     }
     
     // MARK: - Send SyncRequest
+    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool, sessionID: String) {
+        
+        let db = Firestore.firestore()
+        let docRef = db.collection("syncRequests").document(receiver)
+        
+        docRef.setData([
+            "senderID": senderID,
+            "senderName": "",
+            "receiverID": receiver,
+            "syncMessage": syncRequestType,
+            "timestamp": Timestamp(date: timestamp),
+            "sessionID": sessionID
+        ]) { error in
+            if let error = error {
+                print("Failed to send syncRequest: \(error.localizedDescription)")
+            } else {
+                print("Emoticon successfully sent!")
+            }
+        }
+    }
+    
     func getSyncRequestOf(user userID: String, handler: @escaping ((Result<SyncRequest, Error>) -> Void)) {
         let db = Firestore.firestore()
         let docRef = db.collection("syncRequests").document(userID)
@@ -169,7 +191,8 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                    let receiverID = data["receiverID"] as? String,
                    let syncMessage = data["syncMessage"] as? String,
                    let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
-                   let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
+                   let timestamp = (data["timestamp"] as? Timestamp)?.dateValue(),
+                    let sessionID = data["sessionID"] as? String
                 {
                     
                     let request = SyncRequest(
@@ -177,7 +200,8 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                         senderName: senderName,
                         receiverID: receiverID,
                         syncMessage: syncMessageOption,
-                        timestamp: timestamp
+                        timestamp: timestamp,
+                        sessionID: sessionID
                     )
                     handler(.success(request))
                 } else {
@@ -185,26 +209,6 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 }
             } else {
                 handler(.failure(FirebaseError(errorMessage: "No host found")))
-            }
-        }
-    }
-    
-    
-    func sendSyncRequest(senderID: String, senderName: String, syncRequestType: String, receiver: String, timestamp: Date, isAcknowledged: Bool) {
-        let db = Firestore.firestore()
-        let docRef = db.collection("syncRequests").document(receiver)
-        
-        docRef.setData([
-            "senderID": senderID,
-            "senderName": "",
-            "receiverID": receiver,
-            "syncMessage": syncRequestType,
-            "timestamp": Timestamp(date: timestamp)
-        ]) { error in
-            if let error = error {
-                print("Failed to send syncRequest: \(error.localizedDescription)")
-            } else {
-                print("Emoticon successfully sent!")
             }
         }
     }
@@ -224,23 +228,25 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 handler(.failure(error ?? NSError(domain: "No data", code: -1, userInfo: nil)))
                 return
             }
-            
+            let sessionID = ""
             if let senderID = data["senderID"] as? String,
                let senderName = data["senderName"] as? String,
                let receiverID = data["receiverID"] as? String,
                let syncMessage = data["syncMessage"] as? String,
                let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
                let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
+//               let sessionID = ""
             {
                 
-                let emoticon = SyncRequest(
+                let syncRequest = SyncRequest(
                     senderID: senderID,
                     senderName: senderName,
                     receiverID: receiverID,
                     syncMessage: syncMessageOption,
-                    timestamp: timestamp
+                    timestamp: timestamp,
+                    sessionID: sessionID
                 )
-                handler(.success(emoticon))
+                handler(.success(syncRequest))
             } else {
                 handler(.failure(NSError(domain: "MappingError", code: -1, userInfo: nil)))
             }
@@ -468,6 +474,27 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             }
             
             handler(.success(userName))
+        }
+    }
+    
+    func getUserEmail(userID: String, handler: @escaping (Result<String, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("users").document(userID)
+        
+        docRef.getDocument { document, error in
+            if let error = error {
+                handler(.failure(error))
+                return
+            }
+            
+            guard let document = document, document.exists,
+                  let data = document.data(),
+                  let userEmail = data["email"] as? String else {
+                handler(.failure(FirebaseError(errorMessage: "User not found or no email field")))
+                return
+            }
+            
+            handler(.success(userEmail))
         }
     }
     
