@@ -11,15 +11,15 @@ import AppKit
 final class SyncUseCase {
     private let firebaseRepository: FirebaseRepositoryProtocol
     private let localRepository: LocalRepositoryProtocol
-    private let sharePlayUseCase: SharePlayUseCase
+    private let faceTimeUseCase: FaceTimeUseCase
     
     var router: Router?
     
     
-    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, sharePlayUseCase: SharePlayUseCase) {
+    init(localRepo: LocalRepositoryProtocol, firebaseRepo: FirebaseRepositoryProtocol, faceTimeUseCase: FaceTimeUseCase) {
         self.localRepository = localRepo
         self.firebaseRepository = firebaseRepo
-        self.sharePlayUseCase = sharePlayUseCase
+        self.faceTimeUseCase = faceTimeUseCase
     }
     
     // MARK: - Send Emoticon
@@ -46,8 +46,6 @@ final class SyncUseCase {
                                      isSender: true)
             }
         }
-        
-        
     }
     
     func send(emoticon: SyncRequest.SyncMessageOption, receiver: String, sessionID: String) {
@@ -78,14 +76,6 @@ final class SyncUseCase {
                     } else if syncRequest.syncMessage == .acceptedSyncRequest {
                         print("\(syncRequest.senderName) accepted your sync request")
                         self.router?.closePendingSyncWindow()
-                        
-                        Task {
-                            await self.sharePlayUseCase.startSharePlaySession(sessionID: syncRequest.sessionID)
-                            //                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            //                                self.router?.closeSyncingLoadingWindow()
-                            //                            }
-                        }
-                        //                        self.showSyncRequestAccepted()
                     }
                 }
             case .failure(let error):

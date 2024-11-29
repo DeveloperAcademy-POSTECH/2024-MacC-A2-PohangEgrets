@@ -228,14 +228,14 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                 handler(.failure(error ?? NSError(domain: "No data", code: -1, userInfo: nil)))
                 return
             }
-            
+            let sessionID = ""
             if let senderID = data["senderID"] as? String,
                let senderName = data["senderName"] as? String,
                let receiverID = data["receiverID"] as? String,
                let syncMessage = data["syncMessage"] as? String,
                let syncMessageOption = SyncRequest.SyncMessageOption(rawValue: syncMessage),
-               let timestamp = (data["timestamp"] as? Timestamp)?.dateValue(),
-               let sessionID = data["sessionID"] as? String
+               let timestamp = (data["timestamp"] as? Timestamp)?.dateValue()
+//               let sessionID = ""
             {
                 
                 let syncRequest = SyncRequest(

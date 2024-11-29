@@ -39,7 +39,7 @@ extension AppDelegate {
                                              sessionID: sessionID,
                                              recipientName: recipientName,
                                              amSender: isSender,
-                                             viewModel: SyncRequestNotificationViewModel(teamManagingUseCase: self.router.teamManagingUseCase, syncUseCase: self.router.syncUseCase, sharePlayUseCase: self.router.sharePlayUseCase)
+                                             viewModel: SyncRequestNotificationViewModel(teamManagingUseCase: self.router.teamManagingUseCase, syncUseCase: self.router.syncUseCase, faceTimeUseCase: self.router.faceTimeUseCase)
                                             ).environmentObject(self.router)
         )
         

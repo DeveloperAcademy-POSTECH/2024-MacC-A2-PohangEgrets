@@ -20,7 +20,7 @@ class Router: ObservableObject{
     var appTrackingUseCase: AppTrackingUseCase
     var teamManagingUseCase: TeamManagingUseCase
     var syncUseCase: SyncUseCase
-    var sharePlayUseCase: SharePlayUseCase
+    var faceTimeUseCase: FaceTimeUseCase
 
     private var firstSetUp: Bool = true
 
@@ -28,8 +28,8 @@ class Router: ObservableObject{
     init() {
         accountManagingUseCase = AccountManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
         appTrackingUseCase = AppTrackingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository)
-        sharePlayUseCase = SharePlayUseCase()
-        syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, sharePlayUseCase: sharePlayUseCase)
+        faceTimeUseCase = FaceTimeUseCase()
+        syncUseCase = SyncUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, faceTimeUseCase: faceTimeUseCase)
         teamManagingUseCase = TeamManagingUseCase(localRepo: localRepository, firebaseRepo: firebaseRepository, appTrackingUseCase: appTrackingUseCase, syncUseCase: syncUseCase)
         syncUseCase.router = self
     }
@@ -145,20 +145,6 @@ class Router: ObservableObject{
     func closePendingSyncWindow() {
         if let delegate = appDelegate {
             delegate.closePendingSyncWindow()
-        }
-    }
-    
-    // MARK: - SyncingView
-    func showSyncingLoadingView() {
-        if let delegate = appDelegate {
-            delegate.setUpSyncingLoadingWindow()
-            delegate.showSyncingLoadingWindow()
-        }
-    }
-    
-    func closeSyncingLoadingWindow() {
-        if let delegate = appDelegate {
-            delegate.closeSyncingLoadingWindow()
         }
     }
     
