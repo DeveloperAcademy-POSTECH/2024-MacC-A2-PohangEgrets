@@ -35,6 +35,7 @@ struct MainStatusView: View {
                 viewModel.getTeamData(teamCode: viewModel.getTeamCode())
                 viewModel.startShowingAppTracking()
                 viewModel.setUpAllListener()
+                viewModel.getUserName()
               
                 // Listener that checks if the room has been disbanded
                 router.teamManagingUseCase.listenToDisbandStatus(teamCode: viewModel.getTeamCode()) { isDisband in

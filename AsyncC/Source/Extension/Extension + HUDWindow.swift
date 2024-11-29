@@ -34,7 +34,8 @@ extension AppDelegate {
                 viewModel: MainStatusViewModel(
                     teamManagingUseCase: self.router.teamManagingUseCase,
                     appTrackingUseCase: self.router.appTrackingUseCase,
-                    emoticonUseCase: self.router.syncUseCase)
+                    emoticonUseCase: self.router.syncUseCase,
+                    accountUseCase: self.router.accountManagingUseCase)
             ).environmentObject(self.router))
         
         // Set the CornerRadius for the View inside the NSPanel

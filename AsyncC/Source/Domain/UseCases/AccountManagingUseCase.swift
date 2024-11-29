@@ -57,7 +57,11 @@ final class AccountManagingUseCase: NSObject {
                     if let user = authDataResult?.user {
                         let userID = user.uid
                         let email = user.email
+                        print("Apple 로그인 시점에서의 userID: \(userID)")
+                        print("Apple 로그인 시점에서의 email: \(email ?? "Apple 로그인 시점에서의 email N/A")")
+
                         let fullName = "\(appleIDCredential.fullName?.givenName ?? "") \(appleIDCredential.fullName?.familyName ?? "")".trimmingCharacters(in: .whitespaces)
+                        print("Apple 로그인 시점에서의 userName: \(fullName)")
                         
                         self.firebaseRepository.checkExistUserBy(userID: userID) { exists, name in
                             if exists {

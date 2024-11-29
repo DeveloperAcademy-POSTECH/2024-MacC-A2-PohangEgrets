@@ -27,7 +27,7 @@ struct AppIconBoxHeaderView: View {
             Spacer()
             
             if let userID = viewModel.nameToUserId[key] {
-                if key == viewModel.getUserName() {
+                if key == viewModel.userName {
                     Toggle("", isOn: Binding(
                         get: { viewModel.trackingActive[userID] ?? true },
                         set: { newValue in
