@@ -1,5 +1,5 @@
 //
-//  EmoticonUseCase.swift
+//  SyncUseCase.swift
 //  AsyncC
 //
 //  Created by Jin Lee on 11/8/24.
@@ -22,7 +22,7 @@ final class SyncUseCase {
         self.faceTimeUseCase = faceTimeUseCase
     }
     
-    // MARK: - Send Emoticon
+    // MARK: - Send Sync
     
     func requestForSync(receiver: String){
         let sessionID = UUID().uuidString

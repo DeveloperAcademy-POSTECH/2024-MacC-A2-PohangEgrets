@@ -43,14 +43,13 @@ class MainStatusViewModel: ObservableObject {
     @Published var isToggled: Bool = true
     @Published var isMenuVisible: Bool = false
     @Published var userNameAndID: [String: String] = [:] // [userName: userID]
-    @Published var emailToUserId: [String: String] = [:] // Email-to-ID mapping
     @Published var isSelectedButton: Bool = false
     @Published var buttonStates: [String: Bool] = [:]
     
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, syncUseCase: SyncUseCase, accountUseCase: AccountManagingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
-        self.syncUseCase =  emoticonUseCase
+        self.syncUseCase =  syncUseCase
         self.accountUseCase = accountUseCase
         
         appTrackingUseCase.$teamTrackingStatus

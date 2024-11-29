@@ -27,7 +27,7 @@ extension AppDelegate {
         exitConfirmation?.isMovable = false
         exitConfirmation?.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
         exitConfirmation?.level = .popUpMenu
-        exitConfirmation?.contentViewController = NSHostingController(rootView: DisbandConfirmationView(viewModel: MainStatusViewModel(teamManagingUseCase: self.router.teamManagingUseCase, appTrackingUseCase: self.router.appTrackingUseCase, emoticonUseCase: self.router.syncUseCase, accountUseCase: self.router.accountManagingUseCase)).environmentObject(self.router))
+        exitConfirmation?.contentViewController = NSHostingController(rootView: DisbandConfirmationView(viewModel: MainStatusViewModel(teamManagingUseCase: self.router.teamManagingUseCase, appTrackingUseCase: self.router.appTrackingUseCase, syncUseCase: self.router.syncUseCase, accountUseCase: self.router.accountManagingUseCase)).environmentObject(self.router))
         
         // Set the CornerRadius for the View inside the NSPanel
         exitConfirmation?.contentView?.wantsLayer = true
