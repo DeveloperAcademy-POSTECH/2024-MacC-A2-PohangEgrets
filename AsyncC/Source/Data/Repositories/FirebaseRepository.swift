@@ -175,7 +175,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
             if let error = error {
                 print("Failed to send syncRequest: \(error.localizedDescription)")
             } else {
-                print("Emoticon successfully sent!")
+                print("Sync successfully sent!")
             }
         }
     }
@@ -219,7 +219,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     func setupListenerForSyncRequest(userID: String, handler: @escaping (Result<SyncRequest, Error>) -> Void) {
         let db = Firestore.firestore()
         let docRef = db.collection("syncRequests").document(userID)
-        print("created listener for emoticons")
+        print("created listener for syncRequests")
         
         if syncRequestListener != nil {return}
         

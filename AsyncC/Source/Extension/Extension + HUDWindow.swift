@@ -34,7 +34,7 @@ extension AppDelegate {
                 viewModel: MainStatusViewModel(
                     teamManagingUseCase: self.router.teamManagingUseCase,
                     appTrackingUseCase: self.router.appTrackingUseCase,
-                    syncUseCasee: self.router.syncUseCase,
+                    syncUseCase: self.router.syncUseCase,
                     accountUseCase: self.router.accountManagingUseCase)
             ).environmentObject(self.router))
         

@@ -32,27 +32,26 @@ extension AppTrackingBoxView {
                                     AppIconBoxContentView(viewModel: viewModel, key: key)
                                 }
                             }
-                                .padding(.trailing, 4)
-                            
-                            if viewModel.userName != key {
-                                SyncButton(viewModel: viewModel, key: key, action: {
-                                    if let userID = viewModel.userNameAndID[key] {
-                                        viewModel.syncUseCase.requestForSync(receiver: userID)
-                                    }
-                                })
-                            }
+                            .padding(.trailing, 4)
+                        
+                        if viewModel.userName != key {
+                            SyncButton(viewModel: viewModel, key: key, action: {
+                                if let userID = viewModel.userNameAndID[key] {
+                                    viewModel.syncUseCase.requestForSync(receiver: userID)
+                                }
+                            })
+                        }
                     }
-                                                                                     }
                     .padding(.vertical, 4.5)
                     .padding(.horizontal, 16)
-                        
-
-                        if key == viewModel.userName {
-                            Rectangle()
-                                .fill(.clear)
-                                .frame(height: 1)
-                                .overlay {
-                                    Divider()
+                    
+                    
+                    if key == viewModel.userName {
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(height: 1)
+                            .overlay {
+                                Divider()
                             }
                             .padding(.vertical, 12)
                     }
