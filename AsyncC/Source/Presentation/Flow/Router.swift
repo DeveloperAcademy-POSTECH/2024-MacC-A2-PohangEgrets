@@ -57,7 +57,7 @@ class Router: ObservableObject{
             MainStatusView(viewModel: MainStatusViewModel(
                 teamManagingUseCase: self.teamManagingUseCase,
                 appTrackingUseCase: self.appTrackingUseCase,
-                syncUseCase: self.syncUseCase))
+                syncUseCase: self.syncUseCase, accountUseCase: accountManagingUseCase))
         case .LoginView:
             LoginView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .LogoutView:

@@ -14,14 +14,20 @@
 
 import SwiftUI
 import Combine
+import FirebaseAuth
 
 class MainStatusViewModel: ObservableObject {
     var teamManagingUseCase: TeamManagingUseCase
     var appTrackingUseCase: AppTrackingUseCase
     var syncUseCase: SyncUseCase
+    var accountUseCase: AccountManagingUseCase
     
     var cancellables = Set<AnyCancellable>()
-    @Published var nameToUserId: [String: String] = [:]
+    @Published var nameToUserId: [String: String] = [:] {
+        didSet {
+            print("nameToUserId: \(nameToUserId)")
+        }
+    }
     @Published var trackingActive: [String: Bool] = [:] // 유저별 TrackingActive 상태
     @Published var appTrackings: [String: [String]] = [:] {
         didSet {
@@ -29,6 +35,7 @@ class MainStatusViewModel: ObservableObject {
             objectWillChange.send()
         }
     }
+    @Published var userName: String = ""
     @Published var teamName: String = ""
     @Published var hostName: String = ""
     @Published var teamMembers: [String] = []
@@ -40,10 +47,11 @@ class MainStatusViewModel: ObservableObject {
     @Published var isSelectedButton: Bool = false
     @Published var buttonStates: [String: Bool] = [:]
     
-    init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, syncUseCase: SyncUseCase) {
+    init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, syncUseCase: SyncUseCase, accountUseCase: AccountManagingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
         self.appTrackingUseCase = appTrackingUseCase
-        self.syncUseCase = syncUseCase
+        self.syncUseCase =  emoticonUseCase
+        self.accountUseCase = accountUseCase
         
         appTrackingUseCase.$teamTrackingStatus
             .receive(on: RunLoop.main)
@@ -92,7 +100,7 @@ class MainStatusViewModel: ObservableObject {
     }
     
     func checkUser(key: String) -> Bool {
-        return getUserName() == key
+        return userName == key
     }
     
     func getTeamName() -> String {
@@ -103,8 +111,22 @@ class MainStatusViewModel: ObservableObject {
         teamManagingUseCase.getTeamCode()
     }
     
-    func getUserName() -> String {
-        teamManagingUseCase.getUserName()
+    func getUserName() {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("현재 유저 아이디를 받아올 수 없습니다.")
+            return
+        }
+        
+        accountUseCase.getUserName(userID: userID) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let userName):
+                self.userName = userName
+            case .failure(let error):
+                print("error: \(error.localizedDescription)")
+            }
+        }
     }
     
     func getUserID() -> String {
@@ -189,8 +211,8 @@ class MainStatusViewModel: ObservableObject {
     }
     
     func customSort(lhs: String, rhs: String) -> Bool {
-        if lhs == self.getUserName() { return true }
-        if rhs == self.getUserName() { return false }
+        if lhs == self.userName { return true }
+        if rhs == self.userName { return false }
         
         if lhs == self.hostName { return true }
         if rhs == self.hostName { return false }

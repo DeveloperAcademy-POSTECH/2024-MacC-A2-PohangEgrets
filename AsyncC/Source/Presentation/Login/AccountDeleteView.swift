@@ -32,8 +32,10 @@ struct AccountDeleteView: View {
                     .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
                     Button {
                         // MARK: - 회원 탈퇴 로직
-                        viewModel.accountManagingUseCase.deleteFirebaseAuthUser()
-                        router.push(view: .LoginView)
+                        Task {
+                            await viewModel.accountManagingUseCase.deleteFirebaseAuthUser()
+                            router.push(view: .LoginView)
+                        }
                     } label: {
                         Text("회원탈퇴")
                             .foregroundStyle(.red)

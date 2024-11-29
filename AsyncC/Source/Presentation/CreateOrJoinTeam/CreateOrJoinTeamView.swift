@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreateOrJoinTeamView: View {
     @EnvironmentObject var router: Router
-    var viewModel: CreateOrJoinTeamViewModel
+    @ObservedObject var viewModel: CreateOrJoinTeamViewModel
     
     var widthOfButton: CGFloat = 100
     var heightOfButton: CGFloat = 120
@@ -18,7 +18,7 @@ struct CreateOrJoinTeamView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                Text("\(router.localRepository.userName)")
+                Text(viewModel.userName ?? "")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(.darkGray2)
                 Spacer()
@@ -51,5 +51,8 @@ struct CreateOrJoinTeamView: View {
         }
         .padding(EdgeInsets(top: 24, leading: 12, bottom: 19, trailing: 12))
         .frame(width: 270, height: 200)
+        .onAppear {
+            viewModel.fetchUserName()
+        }
     }
 }
