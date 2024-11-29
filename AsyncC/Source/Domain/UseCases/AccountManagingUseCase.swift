@@ -179,7 +179,19 @@ final class AccountManagingUseCase: NSObject {
         firebaseRepository.setUsers(id: id, email: email, name: name)
     }
     
-    // MARK: - 유저 이름 변경
+    // MARK: - 유저
+    
+    func getUserName(userID: String, completion: @escaping (Result<String, Error>) -> Void) {
+        firebaseRepository.getUserName(userID: userID) { result in
+            switch result {
+            case .success(let userName):
+                completion(.success(userName))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     private func changeUserNameToFirebase(name: String) {
         firebaseRepository.updateUsers(id: localRepository.userID, email: nil, name: name)
     }
