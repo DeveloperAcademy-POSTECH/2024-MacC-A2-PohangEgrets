@@ -29,6 +29,7 @@ class CreateOrJoinTeamViewModel: ObservableObject {
         }
     
     func fetchUserName() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             guard let userID = Auth.auth().currentUser?.uid else {
                 print("CreateOrJoinTeamViewModel: 현재 유저 아이디를 받아올 수 없습니다.")
                 return
@@ -43,6 +44,7 @@ class CreateOrJoinTeamViewModel: ObservableObject {
                     }
                 case .failure(let error):
                     print("Error fetching user name: \(error.localizedDescription)")
+                }
             }
         }
     }
