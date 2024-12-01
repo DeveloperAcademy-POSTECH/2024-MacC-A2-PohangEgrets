@@ -9,8 +9,6 @@ import AppKit
 
 final class FaceTimeUseCase {
     
-    
-    
     // Function to start a FaceTime video call
     func startFaceTimeCall(with contact: String) {
         
