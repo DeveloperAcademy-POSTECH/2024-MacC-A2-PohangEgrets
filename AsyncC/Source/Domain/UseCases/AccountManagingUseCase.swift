@@ -50,8 +50,6 @@ final class AccountManagingUseCase: NSObject {
                         print("Error during Firebase Sign-In: \(error.localizedDescription)")
                         return
                     }
-                    
-                    NotificationCenter.default.post(name: .AuthStateDidChange, object: nil)
 
                     let firebaseUser = Auth.auth().currentUser
                     let fbName = firebaseUser?.displayName
@@ -71,12 +69,14 @@ final class AccountManagingUseCase: NSObject {
                                     self.saveUserIDToLocal(userID: userID)
                                     self.saveUserNameToLocal(userName: fbName ?? "N/A")
                                     print("User exists in Firebase. Fetched name: \(name)")
+                                    NotificationCenter.default.post(name: .AuthStateDidChange, object: nil)
                                 }
                             } else {
                                 self.saveUserIDToLocal(userID: userID)
                                 self.saveUserNameToLocal(userName: fbName ?? "N/A")
                                 self.saveUserIDToFirebase(id: userID, email: email ?? "N/A", name: fullName.isEmpty ? "N/A" : fullName)
                                 print("User not found in Firebase. Saved new user with name: \(fullName)")
+                                NotificationCenter.default.post(name: .AuthStateDidChange, object: nil)
                             }
                         }
                     }
