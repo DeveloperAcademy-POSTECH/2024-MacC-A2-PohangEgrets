@@ -13,7 +13,7 @@
 		6B8F682C2CDB08220036B936 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8F682B2CDB08220036B936 /* FirebaseFirestoreCombine-Community */; };
 		6B8F682E2CDB08220036B936 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8F682D2CDB08220036B936 /* FirebaseStorage */; };
 		6B8F68302CDB08220036B936 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8F682F2CDB08220036B936 /* FirebaseStorageCombine-Community */; };
-		B17F3A5F2CF768E200C65BD3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B17F3A5E2CF768E200C65BD3 /* FirebaseAuth */; };
+		CCACF0C22CF468F400AE5BC1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CCACF0C12CF468F400AE5BC1 /* FirebaseAuth */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,7 +67,7 @@
 				6B8F68262CDB08220036B936 /* FirebaseCore in Frameworks */,
 				6B8F682E2CDB08220036B936 /* FirebaseStorage in Frameworks */,
 				6B8F68302CDB08220036B936 /* FirebaseStorageCombine-Community in Frameworks */,
-				B17F3A5F2CF768E200C65BD3 /* FirebaseAuth in Frameworks */,
+				CCACF0C22CF468F400AE5BC1 /* FirebaseAuth in Frameworks */,
 				6B8F682A2CDB08220036B936 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,20 +89,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B17F3A5D2CF768E200C65BD3 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		CC0F1A182CDA671E00562085 = {
 			isa = PBXGroup;
 			children = (
 				CC0F1A232CDA671E00562085 /* AsyncC */,
 				CC0F1A352CDA671F00562085 /* AsyncCTests */,
 				CC0F1A3F2CDA671F00562085 /* AsyncCUITests */,
-				B17F3A5D2CF768E200C65BD3 /* Frameworks */,
+				CCACF0C02CF468F400AE5BC1 /* Frameworks */,
 				CC0F1A222CDA671E00562085 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -115,6 +108,13 @@
 				CC0F1A3C2CDA671F00562085 /* AsyncCUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CCACF0C02CF468F400AE5BC1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,7 +143,7 @@
 				6B8F682B2CDB08220036B936 /* FirebaseFirestoreCombine-Community */,
 				6B8F682D2CDB08220036B936 /* FirebaseStorage */,
 				6B8F682F2CDB08220036B936 /* FirebaseStorageCombine-Community */,
-				B17F3A5E2CF768E200C65BD3 /* FirebaseAuth */,
+				CCACF0C12CF468F400AE5BC1 /* FirebaseAuth */,
 			);
 			productName = AsyncC;
 			productReference = CC0F1A212CDA671E00562085 /* AsyncC.app */;
@@ -428,6 +428,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AsyncC/AsyncC.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -438,6 +439,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -459,6 +461,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AsyncC/AsyncC.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -469,6 +472,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -635,7 +639,7 @@
 			package = 6B8F68242CDB08220036B936 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
 		};
-		B17F3A5E2CF768E200C65BD3 /* FirebaseAuth */ = {
+		CCACF0C12CF468F400AE5BC1 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6B8F68242CDB08220036B936 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;

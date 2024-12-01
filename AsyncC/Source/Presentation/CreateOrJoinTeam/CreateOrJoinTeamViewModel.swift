@@ -11,28 +11,45 @@ import FirebaseAuth
 class CreateOrJoinTeamViewModel: ObservableObject {
     let teamUseCase: TeamManagingUseCase
     let accountUseCase: AccountManagingUseCase
-    @Published var userName: String?
+    @Published var userName: String? {
+        didSet {
+            print("CreateOrJoinTeam.userName: \(userName ?? "N/A")")
+        }
+    }
     
     init(teamUseCase: TeamManagingUseCase, accountUseCase: AccountManagingUseCase) {
         self.teamUseCase = teamUseCase
         self.accountUseCase = accountUseCase
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(onAuthStateChanged), name: .AuthStateDidChange, object: nil)
     }
     
-    func fetchUserName() {
-        guard let userID = Auth.auth().currentUser?.uid else {
-            print("현재 유저 아이디를 받아올 수 없습니다.")
-            return
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .AuthStateDidChange, object: nil)
+    }
+    
+    @objc private func onAuthStateChanged() {
+            print("Auth state changed, fetching user name...")
+            self.fetchUserName()
         }
-        
-        accountUseCase.getUserName(userID: userID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let userName):
-                DispatchQueue.main.async {
-                    self.userName = userName
+    
+    func fetchUserName() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            guard let userID = Auth.auth().currentUser?.uid else {
+                print("CreateOrJoinTeamViewModel: 현재 유저 아이디를 받아올 수 없습니다.")
+                return
+            }
+            
+            self.accountUseCase.getUserName(userID: userID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let userName):
+                    DispatchQueue.main.async {
+                        self.userName = userName
+                    }
+                case .failure(let error):
+                    print("Error fetching user name: \(error.localizedDescription)")
                 }
-            case .failure(let error):
-                print("Error fetching user name: \(error.localizedDescription)")
             }
         }
     }

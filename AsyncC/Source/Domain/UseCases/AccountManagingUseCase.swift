@@ -51,6 +51,8 @@ final class AccountManagingUseCase: NSObject {
                         return
                     }
                     
+                    NotificationCenter.default.post(name: .AuthStateDidChange, object: nil)
+
                     let firebaseUser = Auth.auth().currentUser
                     let fbName = firebaseUser?.displayName
                     
