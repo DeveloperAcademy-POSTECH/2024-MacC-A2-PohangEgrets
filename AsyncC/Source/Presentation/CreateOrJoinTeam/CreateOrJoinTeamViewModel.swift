@@ -11,11 +11,7 @@ import FirebaseAuth
 class CreateOrJoinTeamViewModel: ObservableObject {
     let teamUseCase: TeamManagingUseCase
     let accountUseCase: AccountManagingUseCase
-    @Published var userName: String? {
-        didSet {
-            print("CreateOrJoinTeam.userName: \(userName ?? "N/A")")
-        }
-    }
+    @Published var userName: String?
     
     init(teamUseCase: TeamManagingUseCase, accountUseCase: AccountManagingUseCase) {
         self.teamUseCase = teamUseCase
@@ -29,7 +25,6 @@ class CreateOrJoinTeamViewModel: ObservableObject {
     }
     
     @objc private func onAuthStateChanged() {
-            print("Auth state changed, fetching user name...")
             self.fetchUserName()
         }
     
