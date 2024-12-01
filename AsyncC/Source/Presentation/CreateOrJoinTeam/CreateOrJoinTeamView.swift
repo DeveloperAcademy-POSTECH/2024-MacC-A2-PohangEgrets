@@ -51,8 +51,5 @@ struct CreateOrJoinTeamView: View {
         }
         .padding(EdgeInsets(top: 24, leading: 12, bottom: 19, trailing: 12))
         .frame(width: 270, height: 200)
-        .onAppear {
-            viewModel.fetchUserName()
-        }
     }
 }
