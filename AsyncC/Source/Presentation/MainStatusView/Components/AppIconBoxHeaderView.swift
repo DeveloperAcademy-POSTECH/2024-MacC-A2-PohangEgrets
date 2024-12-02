@@ -76,7 +76,7 @@ extension AppIconBoxHeaderView {
                     .overlay(
                         Circle()
                             .fill(Color.white)
-                            .frame(width: 18, height: 18)
+                            .frame(width: 17, height: 17)
                             .offset(x: configuration.isOn ? 7 : -7)
                     )
                     .onTapGesture {
