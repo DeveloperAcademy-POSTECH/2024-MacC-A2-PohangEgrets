@@ -87,14 +87,26 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
         let db = Firestore.firestore()
         let docRef = db.collection("users").document(id)
         docRef.getDocument { (document, error) in
-            if let document = document {
+            if let document = document, !document.exists {
+                // Create new user
                 db.collection("users").document(id).setData([
                     "id": id,
                     "email": email,
                     "name": name
-                ])
+                ]) { error in
+                    if let error = error {
+                        print("Error creating user: \(error.localizedDescription)")
+                    } else {
+                        // Add default Sync app data
+                        self.setUserAppData(
+                            id: id,
+                            appName: "Sync",
+                            epochSeconds: Int(Date().timeIntervalSince1970)
+                        )
+                    }
+                }
             } else {
-                print("Error: \(error?.localizedDescription ?? "No error description")")
+                print("Error: \(error?.localizedDescription ?? "User already exists")")
             }
         }
     }
