@@ -38,7 +38,7 @@ struct AppIconBoxHeaderView: View {
                             }
                         }
                     ))
-                    .toggleStyle(SwitchToggleStyle(tint: .blue))
+                    .toggleStyle(CustomTintedToggleStyle(activeColor: .accent, inactiveColor: .gray))
                     .padding(.trailing, 8)
                     .onChange(of: viewModel.isToggled) { old, new in
                         if old {
@@ -58,5 +58,31 @@ struct AppIconBoxHeaderView: View {
         }
         .padding(.top, 8)
         .padding(.leading, 8)
+    }
+}
+
+extension AppIconBoxHeaderView {
+    struct CustomTintedToggleStyle: ToggleStyle {
+        var activeColor: Color
+        var inactiveColor: Color
+        
+        func makeBody(configuration: Configuration) -> some View {
+            HStack {
+                configuration.label
+                
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(configuration.isOn ? activeColor : inactiveColor)
+                    .frame(width: 33, height: 20)
+                    .overlay(
+                        Circle()
+                            .fill(Color.white)
+                            .frame(width: 17, height: 17)
+                            .offset(x: configuration.isOn ? 7 : -7)
+                    )
+                    .onTapGesture {
+                        configuration.isOn.toggle()
+                    }
+            }
+        }
     }
 }
