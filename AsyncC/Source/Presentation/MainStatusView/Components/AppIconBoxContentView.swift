@@ -17,17 +17,63 @@ struct AppIconBoxContentView: View {
                 if viewModel.trackingActive[userID] ?? true || viewModel.checkUser(key: key) {
                     ForEach(viewModel.appTrackings[key] ?? [], id: \.self) { appName in
                         if let nsImage = NSImage(named: appName) {
-                            Image(nsImage: nsImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 36, height: 36)
-                                .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
+                            ZStack {
+                                Image(nsImage: nsImage)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 36, height: 36)
+                                    .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
+                                    .onHover { hovering in
+                                        viewModel.isAppIconHover = hovering
+                                    }
+                                if viewModel.isAppIconHover {
+                                    Text("\(appName)")
+                                        .font(.system(size: 9, weight: .medium))
+                                        .foregroundStyle(.black)
+                                        .frame(width: 36, height: 36)
+                                        .allowsHitTesting(!viewModel.isAppIconHover)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                        .offset(x: 0.5, y: -12.5)
+                                    Text("\(appName)")
+                                        .font(.system(size: 9, weight: .medium))
+                                        .foregroundStyle(.white)
+                                        .frame(width: 36, height: 36)
+                                        .allowsHitTesting(!viewModel.isAppIconHover)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                        .offset(y: -13)
+                                }
+                            }
                         } else {
-                            Image("etc")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 36, height: 36)
-                                .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
+                            ZStack {
+                                Image("etc")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 36, height: 36)
+                                    .opacity(viewModel.getOpacity(appName: appName, apps: viewModel.appTrackings[key] ?? []))
+                                    .onHover { hovering in
+                                        viewModel.isAppIconHover = hovering
+                                    }
+                                if viewModel.isAppIconHover {
+                                    Text("\(appName)")
+                                        .font(.system(size: 9, weight: .medium))
+                                        .foregroundStyle(.black)
+                                        .frame(width: 36, height: 36)
+                                        .allowsHitTesting(!viewModel.isAppIconHover)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                        .offset(x: 0.5, y: -12.5)
+                                    Text("\(appName)")
+                                        .font(.system(size: 9, weight: .medium))
+                                        .foregroundStyle(.white)
+                                        .frame(width: 36, height: 36)
+                                        .allowsHitTesting(!viewModel.isAppIconHover)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                        .offset(y: -13)
+                                }
+                            }
                         }
                     }
                 } else {
