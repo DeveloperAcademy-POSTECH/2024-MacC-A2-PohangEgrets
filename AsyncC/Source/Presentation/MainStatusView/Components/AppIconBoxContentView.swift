@@ -31,17 +31,20 @@ struct AppIconBoxContentView: View {
                         }
                     }
                 } else {
-                    HStack() {
+                    VStack() {
                         Spacer()
-                        VStack {
+                        HStack {
                             Spacer()
                             Text("비활성화됨")
                                 .font(.system(size: 16, weight: .medium))
+                                .frame(width: 78)
                                 .foregroundColor(.buttonDefault.opacity(0.5))
+                                .multilineTextAlignment(.center)
                             Spacer()
                         }
                         Spacer()
                     }
+                    .frame(width: 78, height: 36)
                 }
             }
         }
