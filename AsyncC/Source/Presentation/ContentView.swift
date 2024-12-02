@@ -8,14 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var router: Router
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $router.path) {
+            VStack {
+                Text("Launch Screen")
+            }
+            .onAppear {
+                if router.accountManagingUseCase.isSignedIn() {
+                    router.push(view: .CreateOrJoinTeamView)
+                } else {
+                    router.push(view: .LoginView)
+                }
+            }
+            .navigationDestination(for: Router.AsyncCViews.self) { destination in
+                router.view(for: destination)
+            }
+            .navigationBarBackButtonHidden(true)
         }
-        .padding()
     }
 }
 
