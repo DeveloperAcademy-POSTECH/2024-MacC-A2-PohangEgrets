@@ -112,7 +112,7 @@ class MainStatusViewModel: ObservableObject {
     
     func getUserName() {
         guard let userID = Auth.auth().currentUser?.uid else {
-            print("현재 유저 아이디를 받아올 수 없습니다.")
+            print("MainStatusViewModel: 현재 유저 아이디를 받아올 수 없습니다.")
             return
         }
         
