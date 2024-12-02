@@ -25,7 +25,7 @@ struct SyncButton: View {
             } label: {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(.ultraThinMaterial)
-                    .frame(width: 99, height: 69)
+                    .frame(width: 99, height: 68)
                     .shadow(color: .black.opacity(0.25), radius: 3, x: 1, y: 1)
                     .overlay {
                         VStack(spacing: 12) {
