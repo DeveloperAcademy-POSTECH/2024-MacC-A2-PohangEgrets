@@ -34,7 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CC0F1A212CDA671E00562085 /* AsyncC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsyncC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC0F1A212CDA671E00562085 /* Sync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC0F1A322CDA671F00562085 /* AsyncCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsyncCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC0F1A3C2CDA671F00562085 /* AsyncCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsyncCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -103,7 +103,7 @@
 		CC0F1A222CDA671E00562085 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CC0F1A212CDA671E00562085 /* AsyncC.app */,
+				CC0F1A212CDA671E00562085 /* Sync.app */,
 				CC0F1A322CDA671F00562085 /* AsyncCTests.xctest */,
 				CC0F1A3C2CDA671F00562085 /* AsyncCUITests.xctest */,
 			);
@@ -120,9 +120,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CC0F1A202CDA671E00562085 /* AsyncC */ = {
+		CC0F1A202CDA671E00562085 /* Sync */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CC0F1A462CDA671F00562085 /* Build configuration list for PBXNativeTarget "AsyncC" */;
+			buildConfigurationList = CC0F1A462CDA671F00562085 /* Build configuration list for PBXNativeTarget "Sync" */;
 			buildPhases = (
 				CC0F1A1D2CDA671E00562085 /* Sources */,
 				CC0F1A1E2CDA671E00562085 /* Frameworks */,
@@ -135,7 +135,7 @@
 			fileSystemSynchronizedGroups = (
 				CC0F1A232CDA671E00562085 /* AsyncC */,
 			);
-			name = AsyncC;
+			name = Sync;
 			packageProductDependencies = (
 				6B8F68252CDB08220036B936 /* FirebaseCore */,
 				6B8F68272CDB08220036B936 /* FirebaseDatabase */,
@@ -146,7 +146,7 @@
 				CCACF0C12CF468F400AE5BC1 /* FirebaseAuth */,
 			);
 			productName = AsyncC;
-			productReference = CC0F1A212CDA671E00562085 /* AsyncC.app */;
+			productReference = CC0F1A212CDA671E00562085 /* Sync.app */;
 			productType = "com.apple.product-type.application";
 		};
 		CC0F1A312CDA671F00562085 /* AsyncCTests */ = {
@@ -235,7 +235,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CC0F1A202CDA671E00562085 /* AsyncC */,
+				CC0F1A202CDA671E00562085 /* Sync */,
 				CC0F1A312CDA671F00562085 /* AsyncCTests */,
 				CC0F1A3B2CDA671F00562085 /* AsyncCUITests */,
 			);
@@ -293,12 +293,12 @@
 /* Begin PBXTargetDependency section */
 		CC0F1A342CDA671F00562085 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CC0F1A202CDA671E00562085 /* AsyncC */;
+			target = CC0F1A202CDA671E00562085 /* Sync */;
 			targetProxy = CC0F1A332CDA671F00562085 /* PBXContainerItemProxy */;
 		};
 		CC0F1A3E2CDA671F00562085 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CC0F1A202CDA671E00562085 /* AsyncC */;
+			target = CC0F1A202CDA671E00562085 /* Sync */;
 			targetProxy = CC0F1A3D2CDA671F00562085 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -439,7 +439,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Sync;
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -472,7 +473,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Sync;
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -568,7 +570,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CC0F1A462CDA671F00562085 /* Build configuration list for PBXNativeTarget "AsyncC" */ = {
+		CC0F1A462CDA671F00562085 /* Build configuration list for PBXNativeTarget "Sync" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CC0F1A472CDA671F00562085 /* Debug */,

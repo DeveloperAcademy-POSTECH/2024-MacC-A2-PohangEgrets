@@ -27,7 +27,7 @@ extension AppDelegate {
         contentViewWindow?.appearance = NSAppearance(named: .aqua)
         contentViewWindow?.level = .floating
         contentViewWindow?.center()
-        contentViewWindow?.title = "AsyncC"
+        contentViewWindow?.title = "Sync"
         contentViewWindow?.isReleasedWhenClosed = false
         contentViewWindow?.contentView = NSHostingView(rootView: ContentView().environmentObject(self.router))
         contentViewWindow?.makeKeyAndOrderFront(nil)
