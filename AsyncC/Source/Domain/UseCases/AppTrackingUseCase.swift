@@ -135,8 +135,8 @@ final class AppTrackingUseCase: ObservableObject {
             if !uniqueApps.contains(appName) {
                 uniqueApps.insert(appName)
                 arrayOfLatestApps[count] = appName
+                count -= 1
             }
-            count -= 1
         }
         arrayOfLatestApps.removeAll(where: {$0 == ""})
         teamMemberAppTrackings[userID] = arrayOfLatestApps

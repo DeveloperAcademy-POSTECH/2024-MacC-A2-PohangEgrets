@@ -40,7 +40,7 @@ class CreateOrJoinTeamViewModel: ObservableObject {
                     }
                 case .failure(let error):
                     print("Error fetching user name: \(error.localizedDescription)")
-                    self.userName = "Guest"
+                    self.userName = ""
                 }
             }
         }
