@@ -5,13 +5,6 @@
 //  Created by Hyun Lee on 11/13/24.
 //
 
-//
-//  MainStatusViewModel.swift
-//  AsyncC
-//
-//  Created by Hyun Lee on 11/13/24.
-//
-
 import SwiftUI
 import Combine
 import FirebaseAuth
@@ -66,10 +59,6 @@ class MainStatusViewModel: ObservableObject {
         appTrackingUseCase.updateTrackingStatus(for: userID, isActive: isActive)
     }
     
-    func startTrackingStatuses(for teamMemberIDs: [String]) {
-        appTrackingUseCase.startTrackingStatus(for: teamMemberIDs)
-    }
-    
     func getTeamData(teamCode: String) {
         teamManagingUseCase.getTeamDetails(teamCode: teamCode) { [weak self] result in
             switch result {
@@ -78,7 +67,6 @@ class MainStatusViewModel: ObservableObject {
                     self?.teamName = details.teamName
                     self?.hostName = details.hostName
                     self?.teamMembers = details.teamMemberIDs
-                    self?.startTrackingStatuses(for: self?.teamMembers ?? [])
                 }
                 self?.checkHost()
                 
@@ -163,7 +151,7 @@ class MainStatusViewModel: ObservableObject {
                                 self.userNameAndID[userName] = userID
                                 updatedTrackings[userName] = appTrackings[userID]?.reversed()
                                 self.nameToUserId[userName] = userID // 이름-유저 ID 매핑 저장
-                            
+                                
                             case .failure(let error):
                                 print("Failed to get user name for userID \(userID): \(error)")
                                 updatedTrackings[userID] = appTrackings[userID]

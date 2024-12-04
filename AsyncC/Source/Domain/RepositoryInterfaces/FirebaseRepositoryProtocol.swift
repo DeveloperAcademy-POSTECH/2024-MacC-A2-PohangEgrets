@@ -16,7 +16,7 @@ protocol FirebaseRepositoryProtocol {
                         appName: String,
                         epochSeconds: Int) -> Void
     
-    func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void)
+    func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<(UserAppData, TrackingActive), Error>) -> Void)
     
     func deleteUserDataFromFirestore(userID: String, completion: @escaping (Result<Void, Error>) -> Void)
     

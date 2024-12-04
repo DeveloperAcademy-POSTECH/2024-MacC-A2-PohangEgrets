@@ -22,22 +22,6 @@ final class AppTrackingUseCase: ObservableObject {
         self.firebaseRepository = firebaseRepo
     }
 
-    func startTrackingStatus(for teamMemberIDs: [String]) {
-        for userID in teamMemberIDs {
-            firebaseRepository.setUpListenerForTrackingActive(for: userID) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let isActive):
-                        self.teamTrackingStatus[userID] = isActive
-                    case .failure:
-                        self.teamTrackingStatus[userID] = true
-                    }
-                }
-            }
-        }
-    }
-    
     func toggleCurrentUserTrackingStatus() { // 자신의 TrackingActive 상태를 변경하는 메서드:
         let currentUserID = getUserIDFromLocal()
         let currentStatus = teamTrackingStatus[currentUserID] ?? true
@@ -111,8 +95,9 @@ final class AppTrackingUseCase: ObservableObject {
         let userID = getUserIDFromLocal()
         firebaseRepository.setUpListenersForUserAppData(userIDToIgnore: userID, userIDsToTrack: teamMemberIDs) { result in
             switch result {
-            case .success(let appData):
-                self.updateAppTracking(with: appData)
+            case .success(let (userAppData, trackingActive)):
+                self.updateAppTracking(with: userAppData)
+                self.updateTrackingStatus(with: trackingActive)
             case .failure(let error):
                 print(error)
             }
@@ -140,5 +125,12 @@ final class AppTrackingUseCase: ObservableObject {
         }
         arrayOfLatestApps.removeAll(where: {$0 == ""})
         teamMemberAppTrackings[userID] = arrayOfLatestApps
+    }
+    
+    // true/false 만드는 함수
+    private func updateTrackingStatus(with trackingActive: TrackingActive) {
+        DispatchQueue.main.async {
+            self.teamTrackingStatus[trackingActive.userID] = trackingActive.Active
+        }
     }
 }

@@ -282,7 +282,7 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
     }
     
     
-    func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<UserAppData, Error>) -> Void) {
+    func setUpListenersForUserAppData(userIDToIgnore: String, userIDsToTrack: [String], handler: @escaping (Result<(UserAppData, TrackingActive), Error>) -> Void) {
         let db = Firestore.firestore()
         for userID in userIDsToTrack {
             let docRef = db.collection("userAppData").document(userID)
@@ -314,8 +314,9 @@ final class FirebaseRepository: FirebaseRepositoryProtocol
                             return nil
                         }
                     } ?? []
-                    if !appDataTuples.isEmpty, let id = data["userID"] as? String {
-                        handler(.success(UserAppData(userID: id, appData: appDataTuples)))
+                    
+                    if !appDataTuples.isEmpty, let id = data["userID"] as? String, let trackingStatus = data["trackingActive"] as? Bool {
+                        handler(.success((UserAppData(userID: id, appData: appDataTuples), TrackingActive(userID: id, Active: trackingStatus))))
                     }
                 }
             userAppDataListeners.append(listener)
