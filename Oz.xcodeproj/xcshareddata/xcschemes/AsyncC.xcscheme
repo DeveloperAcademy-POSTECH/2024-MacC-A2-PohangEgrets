@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CC0F1A202CDA671E00562085"
-               BuildableName = "Sync.app"
-               BlueprintName = "Sync"
+               BuildableName = "AsyncC.app"
+               BlueprintName = "AsyncC"
                ReferencedContainer = "container:AsyncC.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -69,8 +69,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CC0F1A202CDA671E00562085"
-            BuildableName = "Sync.app"
-            BlueprintName = "Sync"
+            BuildableName = "AsyncC.app"
+            BlueprintName = "AsyncC"
             ReferencedContainer = "container:AsyncC.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -86,8 +86,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CC0F1A202CDA671E00562085"
-            BuildableName = "Sync.app"
-            BlueprintName = "Sync"
+            BuildableName = "AsyncC.app"
+            BlueprintName = "AsyncC"
             ReferencedContainer = "container:AsyncC.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
