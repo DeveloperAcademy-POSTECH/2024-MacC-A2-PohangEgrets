@@ -142,3 +142,4 @@ final class AppTrackingUseCase: ObservableObject {
         teamMemberAppTrackings[userID] = arrayOfLatestApps
     }
 }
+

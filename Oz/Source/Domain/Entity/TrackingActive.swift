@@ -11,3 +11,4 @@ struct TrackingActive {
     let userID: String
     let Active: Bool
 }
+

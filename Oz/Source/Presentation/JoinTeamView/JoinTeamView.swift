@@ -88,3 +88,4 @@ struct JoinTeamView: View {
         .frame(width: 270, height: 200)
     }
 }
+

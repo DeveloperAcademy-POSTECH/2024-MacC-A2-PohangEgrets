@@ -298,3 +298,4 @@ final class SignInWithApple: NSObject, ASAuthorizationControllerDelegate {
         continuation?.resume(throwing: error)
     }
 }
+

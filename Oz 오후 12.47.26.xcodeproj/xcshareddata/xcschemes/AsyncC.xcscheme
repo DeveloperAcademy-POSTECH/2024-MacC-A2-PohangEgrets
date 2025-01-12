@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CC0F1A202CDA671E00562085"
-               BuildableName = "AsyncC.app"
-               BlueprintName = "AsyncC"
-               ReferencedContainer = "container:AsyncC.xcodeproj">
+               BuildableName = "Oz.app"
+               BlueprintName = "Oz"
+               ReferencedContainer = "container:Oz.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -36,9 +36,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CC0F1A312CDA671F00562085"
-               BuildableName = "AsyncCTests.xctest"
-               BlueprintName = "AsyncCTests"
-               ReferencedContainer = "container:AsyncC.xcodeproj">
+               BuildableName = "OzTests.xctest"
+               BlueprintName = "OzTests"
+               ReferencedContainer = "container:Oz.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CC0F1A3B2CDA671F00562085"
-               BuildableName = "AsyncCUITests.xctest"
-               BlueprintName = "AsyncCUITests"
-               ReferencedContainer = "container:AsyncC.xcodeproj">
+               BuildableName = "OzUITests.xctest"
+               BlueprintName = "OzUITests"
+               ReferencedContainer = "container:Oz.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -69,9 +69,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CC0F1A202CDA671E00562085"
-            BuildableName = "AsyncC.app"
-            BlueprintName = "AsyncC"
-            ReferencedContainer = "container:AsyncC.xcodeproj">
+            BuildableName = "Oz.app"
+            BlueprintName = "Oz"
+            ReferencedContainer = "container:Oz.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -86,9 +86,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CC0F1A202CDA671E00562085"
-            BuildableName = "AsyncC.app"
-            BlueprintName = "AsyncC"
-            ReferencedContainer = "container:AsyncC.xcodeproj">
+            BuildableName = "Oz.app"
+            BlueprintName = "Oz"
+            ReferencedContainer = "container:Oz.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -31,3 +31,4 @@ struct DisbandConfirmationView: View {
         .customButtonStyle(backgroundColor: .clear, foregroundColor: .darkGray2)
     }
 }
+

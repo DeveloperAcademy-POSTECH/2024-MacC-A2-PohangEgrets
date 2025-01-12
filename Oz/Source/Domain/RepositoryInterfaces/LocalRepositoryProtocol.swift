@@ -34,3 +34,4 @@ protocol LocalRepositoryProtocol {
     
     func clearLocalUserData()
 }
+

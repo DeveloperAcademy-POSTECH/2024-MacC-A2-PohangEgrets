@@ -14,3 +14,4 @@ class LoginViewModel: ObservableObject {
         self.accountManagingUseCase = accountManagingUseCase
     }
 }
+

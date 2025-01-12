@@ -26,3 +26,4 @@ extension View {
         self.modifier(CustomButtonStyle(backgroundColor: backgroundColor, foregroundColor: foregroundColor))
     }
 }
+

@@ -250,3 +250,4 @@ final class TeamManagingUseCase {
         firebaseRepository.changeDisbandStatus(teamCode: teamCode)
     }
 }
+

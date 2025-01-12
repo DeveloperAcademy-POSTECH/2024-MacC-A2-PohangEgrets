@@ -98,3 +98,4 @@ struct AppIconBoxContentView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
+

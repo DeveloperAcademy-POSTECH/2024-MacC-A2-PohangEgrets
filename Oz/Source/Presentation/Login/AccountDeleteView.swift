@@ -48,3 +48,4 @@ struct AccountDeleteView: View {
         .frame(width: 270, height: 200)
     }
 }
+

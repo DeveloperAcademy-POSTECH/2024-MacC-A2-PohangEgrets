@@ -67,3 +67,4 @@ final class LocalRepository: LocalRepositoryProtocol {
         self.saveUserName("")
     }
 }
+

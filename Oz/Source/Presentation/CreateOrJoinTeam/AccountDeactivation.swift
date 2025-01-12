@@ -41,3 +41,4 @@ struct AccountDeactivation: View {
         .padding(.vertical, 8)
     }
 }
+

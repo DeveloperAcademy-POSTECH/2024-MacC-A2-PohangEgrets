@@ -12,3 +12,4 @@ struct User { // 처음 계정 생성할때만 edit
     let email: String
     let name: String
 }
+

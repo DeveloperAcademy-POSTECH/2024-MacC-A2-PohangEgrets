@@ -588,3 +588,4 @@ class FirebaseError: Error {
         self.errorMessage = errorMessage
     }
 }
+

@@ -36,3 +36,4 @@ struct ExitConfirmationView: View {
         .customButtonStyle(backgroundColor: .clear, foregroundColor: .darkGray2)
     }
 }
+
