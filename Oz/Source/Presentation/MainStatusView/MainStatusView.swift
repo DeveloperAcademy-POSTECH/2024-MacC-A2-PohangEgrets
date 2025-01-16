@@ -29,6 +29,7 @@ struct MainStatusView: View {
                     .padding(.vertical, 12)
                 
                 AppTrackingBoxView(viewModel: viewModel)
+                LeaveTeamButtonOnRole()
             }
             .frame(width: 270)
             .onAppear {
@@ -54,6 +55,29 @@ struct MainStatusView: View {
             }
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+    
+    func LeaveTeamButtonOnRole() -> some View {
+            Button {
+                if viewModel.isTeamHost {
+                    viewModel.disbandTeam()
+                } else {
+                    viewModel.leaveTeam()
+                    router.closeHUDWindow()
+                    router.removeStatusBarItem()
+                    router.setUpContentViewWindow()
+                    router.closeExitConfirmation()
+                }
+            } label: {
+                Text(viewModel.isTeamHost ? "팀 해체하기" : "팀 나가기")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(viewModel.isLeaveRoomTextHover ? .systemBlue : .leaveRoomText)
+                    .onHover { hovering in
+                        viewModel.isLeaveRoomTextHover = hovering
+                    }
+                    .padding(.bottom, 16)
+            }
+            .buttonStyle(.plain)
     }
 }
 

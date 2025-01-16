@@ -46,6 +46,7 @@ class MainStatusViewModel: ObservableObject {
     @Published var isSelectedButton: Bool = false
     @Published var buttonStates: [String: Bool] = [:]
     @Published var isAppIconHover: Bool = false
+    @Published var isLeaveRoomTextHover: Bool = false
     
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, syncUseCase: SyncUseCase, accountUseCase: AccountManagingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
