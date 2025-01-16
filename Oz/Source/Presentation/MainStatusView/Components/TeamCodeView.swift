@@ -16,20 +16,12 @@ struct TeamCodeView: View {
             HStack {
                 Text(viewModel.getTeamName())
                     .font(.system(size: 20, weight: .medium))
-                    .padding(.horizontal, 16)
                     .foregroundStyle(.darkGray2)
+                    .lineLimit(1)
                 Spacer()
-                
-                Button {
-                    performActionBasedOnRole()
-                } label: {
-                    Image(systemName: "chevron.right")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundStyle(.darkGray1)
-                        .frame(height: 16)
+                if viewModel.isTeamHost {
+                    ChangeTeamNameButton()
                 }
-                .buttonStyle(.plain)
             }
             .padding(.top, 20)
 
@@ -55,27 +47,21 @@ struct TeamCodeView: View {
             }
             .foregroundStyle(.gray1)
             .padding(.top, 12)
-            .padding(.horizontal, 16)
         }
+        .padding(.horizontal, 16)
     }
     
-    // Action that behaves differently when the 'Leave' button is pressed based on whether the user is a host
-    func performActionBasedOnRole() {
-        if viewModel.isTeamHost {
-            if !((router.exitConfirmation()?.isVisible) != nil) {
-                router.setUpDisbandConfirmation()
-                router.showDisbandConfirmation()
-            } else {
-                router.closeDisbandConfirmation()
-            }
-        } else {
-            if !((router.exitConfirmation()?.isVisible) != nil) {
-                router.setUpExitConfirmation()
-                router.showExitConfirmation()
-            } else {
-                router.closeExitConfirmation()
-            }
+    func ChangeTeamNameButton() -> some View {
+        Button {
+            
+        } label: {
+            Image(systemName: "pencil")
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(.darkGray1)
+                .frame(height: 16)
         }
+        .buttonStyle(.plain)
     }
 }
 
