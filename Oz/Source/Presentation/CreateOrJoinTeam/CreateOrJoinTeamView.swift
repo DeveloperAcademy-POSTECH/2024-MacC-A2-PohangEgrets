@@ -24,14 +24,9 @@ struct CreateOrJoinTeamView: View {
                 Spacer()
 
                 Button {
-                    if ((router.accountDeactivation()?.isVisible) != nil) {
-                        router.closeAccountDeactivation()
-                    } else {
-                        router.setUpAccountDeactivation()
-                        router.showAccountDeactivation()
-                    }
+                    
                 } label: {
-                    Image(systemName: "chevron.right")
+                    Image(systemName: "pencil")
                         .resizable()
                         .scaledToFit()
                         .foregroundStyle(.gray1)
@@ -47,9 +42,33 @@ struct CreateOrJoinTeamView: View {
                 CreateOrJoinTeamButton(actionType: .join)
             }
             .padding(.top, 15)
+            HStack(spacing: 8) {
+                Button {
+                    router.push(view: .LogoutView)
+                    router.closeAccountDeactivation()
+                } label: {
+                    Text("로그아웃")
+                        .foregroundStyle(.leaveRoomText)
+                        .font(.system(size: 8, weight: .semibold))
+                }
+                .buttonStyle(.plain)
+                Rectangle()
+                    .frame(width: 0.7, height: 7)
+                    .foregroundStyle(.darkGray2)
+                Button {
+                    router.push(view: .AccountDeleteView)
+                    router.closeAccountDeactivation()
+                } label: {
+                    Text("탈퇴하기")
+                        .foregroundStyle(.leaveRoomText)
+                        .font(.system(size: 8, weight: .semibold))
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.top, 11)
             Spacer()
         }
-        .padding(EdgeInsets(top: 24, leading: 12, bottom: 19, trailing: 12))
+        .padding(EdgeInsets(top: 24, leading: 12, bottom: 10, trailing: 12))
         .frame(width: 270, height: 200)
         .onAppear {
             viewModel.fetchUserName()
