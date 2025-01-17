@@ -47,6 +47,17 @@ class MainStatusViewModel: ObservableObject {
     @Published var buttonStates: [String: Bool] = [:]
     @Published var isAppIconHover: Bool = false
     @Published var isLeaveRoomTextHover: Bool = false
+    @Published var isCopyTeamCode: Bool = false {
+        didSet {
+            if isCopyTeamCode == true {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        self.isCopyTeamCode = false
+                    }
+                }
+            }
+        }
+    }
     
     init(teamManagingUseCase: TeamManagingUseCase, appTrackingUseCase: AppTrackingUseCase, syncUseCase: SyncUseCase, accountUseCase: AccountManagingUseCase) {
         self.teamManagingUseCase = teamManagingUseCase
@@ -225,6 +236,7 @@ class MainStatusViewModel: ObservableObject {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(self.getTeamCode(), forType: .string)
+        isCopyTeamCode = true
         print("팀 코드 복사")
     }
     
