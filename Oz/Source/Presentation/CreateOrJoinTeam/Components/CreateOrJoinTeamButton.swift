@@ -11,7 +11,7 @@ struct CreateOrJoinTeamButton: View {
     @EnvironmentObject var router: Router
     
     var widthOfButton: CGFloat = 100
-    var heightOfButton: CGFloat = 120
+    var heightOfButton: CGFloat = 105
     
     var actionType: ActionToGetTeam
     
@@ -23,20 +23,27 @@ struct CreateOrJoinTeamButton: View {
                 Rectangle()
                     .frame(width: widthOfButton, height: heightOfButton)
                     .foregroundStyle(.clear)
-                VStack (spacing: 0){
-                    Image(actionType.imageName())
+                ZStack {
+                    Image(systemName: actionType.imageName())
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 80, height: 80)
-                    Text(actionType.buttonText())
-                    Spacer()
+                        .foregroundStyle(.darkGray2)
+                        .frame(width: 60)
+                    VStack {
+                        Spacer()
+                        Text(actionType.buttonText())
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(.darkGray2)
+                            .padding(.bottom, 15)
+                    }
                 }
+                .offset(y: -6)
             }
         }
         .buttonStyle(PlainButtonStyle())
         .background(.defaultGray)
         .cornerRadius(10)
-        .shadow(color: .black.opacity(0.2), radius: 4, x: 1, y: 1)
+        .shadow(color: .black.opacity(0.15), radius: 2, x: 1, y: 1)
     }
 }
 
@@ -48,9 +55,9 @@ extension CreateOrJoinTeamButton {
         
         func imageName() -> String {
             if self == .create {
-                return "CreateTeamIcon"
+                return "person.3.fill"
             } else {
-                return "JoinTeamIcon"
+                return "person.2.badge.plus.fill"
             }
         }
         
