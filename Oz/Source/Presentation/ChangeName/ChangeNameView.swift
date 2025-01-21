@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct ChangeNameView: View {
-    @EnvironmentObject var router: Router
-    @State var nickName: String = ""
-    @State var viewModel: ChangeNameViewModel
+    @EnvironmentObject var router: Router    
+    @ObservedObject var viewModel: ChangeNameViewModel
     
     var body: some View {
         VStack(spacing: 16) {
@@ -20,12 +19,12 @@ struct ChangeNameView: View {
                 RoundedRectangle(cornerRadius: 5)
                     .foregroundStyle(.lightGray2)
                     .frame(height: 32)
-                TextField("변경할 닉네임을 입력하세요", text:  $nickName)
+                TextField("변경할 닉네임을 입력하세요", text:  $viewModel.nickName)
                     .textFieldStyle(.plain)
                     .padding()
                     .onSubmit {
-                        if nickName != "" {
-                            viewModel.changeName(to: nickName)
+                        if viewModel.nickName != "" {
+                            viewModel.changeName(to: viewModel.nickName)
                             router.pop()
                         }
                     }
@@ -38,11 +37,11 @@ struct ChangeNameView: View {
                 }
                 .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
                 Button("수정") {
-                    viewModel.changeName(to: nickName)
+                    viewModel.changeName(to: viewModel.nickName)
                     router.pop()
                 }
                 .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
-                .disabled(nickName.isEmpty)
+                .disabled(viewModel.nickName.isEmpty)
             }
         }
         .padding(EdgeInsets(top: 50, leading: 12, bottom: 16, trailing: 12))
