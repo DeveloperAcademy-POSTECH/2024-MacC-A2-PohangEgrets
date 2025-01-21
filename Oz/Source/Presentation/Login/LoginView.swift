@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AuthenticationServices
+import FirebaseAuth
 
 struct LoginView: View {
     @EnvironmentObject var router: Router
@@ -25,7 +26,13 @@ struct LoginView: View {
                 viewModel.accountManagingUseCase.handleSignInWithApple(request: request)
             }, onCompletion: { result in
                 viewModel.accountManagingUseCase.handleSignInWithAppleCompletion(result: result)
-                router.push(view: .CreateOrJoinTeamView)
+                Auth.auth().addStateDidChangeListener { auth, user in
+                    if let user = user {
+                        router.push(view: .CreateOrJoinTeamView)
+                    } else {
+                        print("아직 로그인하지 않았습니다.")
+                    }
+                }
             })
             .frame(width: 120, height: 28)
             .padding(.top, 28)
