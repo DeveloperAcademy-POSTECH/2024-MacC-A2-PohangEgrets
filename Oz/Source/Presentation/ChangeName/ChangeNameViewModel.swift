@@ -9,7 +9,7 @@ import SwiftUI
 
 class ChangeNameViewModel: ObservableObject {
     let accountUseCase: AccountManagingUseCase
-    var nickName: String = ""
+    @Published var nickName: String = ""
     
     init(accountUseCase: AccountManagingUseCase) {
         self.accountUseCase = accountUseCase
