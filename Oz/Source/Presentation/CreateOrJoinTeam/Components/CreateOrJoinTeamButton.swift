@@ -22,7 +22,7 @@ struct CreateOrJoinTeamButton: View {
             ZStack {
                 Rectangle()
                     .frame(width: widthOfButton, height: heightOfButton)
-                    .foregroundStyle(.clear)
+                    .foregroundStyle(.white.opacity(0.2))                
                 ZStack {
                     Image(systemName: actionType.imageName())
                         .resizable()
@@ -40,7 +40,7 @@ struct CreateOrJoinTeamButton: View {
                 .offset(y: -6)
             }
         }
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
         .background(.defaultGray)
         .cornerRadius(10)
         .shadow(color: .black.opacity(0.15), radius: 2, x: 1, y: 1)

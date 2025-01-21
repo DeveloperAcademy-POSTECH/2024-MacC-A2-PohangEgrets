@@ -43,6 +43,7 @@ class Router: ObservableObject{
         case CheckToJoinTeamView(teamCode: String, teamName: String, hostName: String)
         case LogoutView
         case AccountDeleteView
+        case ChangeNameView
     }
     
     @ViewBuilder func view(for route: AsyncCViews) -> some View {
@@ -69,6 +70,8 @@ class Router: ObservableObject{
                                 hostName: hostName)
         case .AccountDeleteView:
             AccountDeleteView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
+        case .ChangeNameView:
+            ChangeNameView(viewModel: ChangeNameViewModel(accountUseCase: accountManagingUseCase))
         }
     }
     

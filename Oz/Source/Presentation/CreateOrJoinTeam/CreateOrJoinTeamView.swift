@@ -24,7 +24,7 @@ struct CreateOrJoinTeamView: View {
                 Spacer()
 
                 Button {
-                    
+                    router.push(view: .ChangeNameView)
                 } label: {
                     Image(systemName: "pencil")
                         .resizable()
