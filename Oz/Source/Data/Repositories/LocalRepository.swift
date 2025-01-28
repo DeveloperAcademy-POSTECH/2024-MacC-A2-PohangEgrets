@@ -12,6 +12,7 @@ final class LocalRepository: LocalRepositoryProtocol {
     @AppStorage("userName") var userName: String = ""
     @AppStorage("teamName") var teamName: String = ""
     @AppStorage("teamCode") private var _teamCode: String = ""
+    @AppStorage("firstSignIn") var firstSignIn: Bool = true
     
     var teamCode: String? {
         get {
@@ -54,6 +55,14 @@ final class LocalRepository: LocalRepositoryProtocol {
         teamName = inputTeamName
     }
     
+    func saveFirstSignIn(_ isFirstSignIn: Bool) {
+        self.firstSignIn = isFirstSignIn
+    }
+    
+    func getFirstSignIn() -> Bool {
+        return firstSignIn
+    }
+    
     func getTeamName() -> String {
         return teamName
     }
@@ -65,6 +74,7 @@ final class LocalRepository: LocalRepositoryProtocol {
     func clearLocalUserData() {
         self.saveUserID("")
         self.saveUserName("")
+        self.saveFirstSignIn(true)
     }
 }
 

@@ -14,18 +14,18 @@ class ChangeNameViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     @Published var nickName: String = ""
-    @Published var isLoginView: Bool = false
+//    @Published var isLoginView: Bool = false
     
     init(accountUseCase: AccountManagingUseCase, loginViewModel: LoginViewModel) {
         self.accountUseCase = accountUseCase
         self.loginViewModel = loginViewModel
         
-        loginViewModel.$isLoginView
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newValue in
-                self?.isLoginView = newValue
-            }
-            .store(in: &cancellables)
+//        loginViewModel.$isLoginView
+//            .receive(on: DispatchQueue.main)
+//            .sink { [weak self] newValue in
+//                self?.isLoginView = newValue
+//            }
+//            .store(in: &cancellables)
     }
     
     func changeName(to name: String) {

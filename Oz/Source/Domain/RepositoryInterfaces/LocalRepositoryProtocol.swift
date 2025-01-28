@@ -28,6 +28,10 @@ protocol LocalRepositoryProtocol {
     
     func getTeamName() -> String
     
+    func getFirstSignIn() -> Bool
+    
+    func saveFirstSignIn(_ isFirstSignIn: Bool)
+    
     func resetTeamCode()
     
     func resetTeamName()

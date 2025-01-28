@@ -191,6 +191,14 @@ final class AccountManagingUseCase: NSObject {
         firebaseRepository.setUsers(id: id, email: email, name: name)
     }
     
+    public func getFirstSignIn() -> Bool {
+        return localRepository.getFirstSignIn()
+    }
+    
+    public func saveFirstSignIn(firstSignIn: Bool) {
+        return localRepository.saveFirstSignIn(firstSignIn)
+    }
+    
     // MARK: - 유저
     
     func getUserName(userID: String, completion: @escaping (Result<String, Error>) -> Void) {

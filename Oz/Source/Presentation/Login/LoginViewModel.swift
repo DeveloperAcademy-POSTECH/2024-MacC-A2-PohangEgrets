@@ -12,12 +12,14 @@ import Combine
 
 class LoginViewModel: ObservableObject {
     private let accountManagingUseCase: AccountManagingUseCase
+    
     @Published var shouldNavigateToChangeNameView: Bool = true
-    @Published var isLoginView = true
-
+    @Published var isSignOut = false
+    
     init(accountManagingUseCase: AccountManagingUseCase) {
         self.accountManagingUseCase = accountManagingUseCase
-        observeAuthStateChanges()
+        self.observeAuthStateChanges()
+        self.saveFirstSignIn(firstSignIn: false)
     }
     
     public func handleSignInWithApple(request: ASAuthorizationAppleIDRequest) {
@@ -45,6 +47,14 @@ class LoginViewModel: ObservableObject {
     
     public func deleteFirebaseAuthUser() async -> Bool {
         return await accountManagingUseCase.deleteFirebaseAuthUser()
+    }
+    
+    public func getFirstSignIn() -> Bool {
+        return accountManagingUseCase.getFirstSignIn()
+    }
+    
+    public func saveFirstSignIn(firstSignIn: Bool) {
+        return accountManagingUseCase.saveFirstSignIn(firstSignIn: firstSignIn)
     }
 }
 

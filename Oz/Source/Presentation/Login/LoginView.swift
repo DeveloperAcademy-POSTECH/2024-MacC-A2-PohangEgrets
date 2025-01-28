@@ -33,13 +33,21 @@ struct LoginView: View {
             Spacer()
         }
         .frame(width: 270, height: 200)
-        .onChange(of: viewModel.shouldNavigateToChangeNameView) { shouldNavigate in
-            if shouldNavigate && viewModel.isLoginView {
+        .onChange(of: viewModel.shouldNavigateToChangeNameView ) {
+            
+            if viewModel.shouldNavigateToChangeNameView && viewModel.getFirstSignIn() {
+                print("닉네임 변경화면으로 이동")
                 router.push(view: .ChangeNameView)
             }
-        }
-        .onAppear {
-            viewModel.isLoginView = true
+            
+            if viewModel.shouldNavigateToChangeNameView && !viewModel.getFirstSignIn(){
+                print("팀 생성 참가로 이동")
+                router.push(view: .CreateOrJoinTeamView)
+            }
+            
+            if viewModel.shouldNavigateToChangeNameView && viewModel.isSignOut  {
+                print("로그아웃 이후 팀 생성 참가로 이동")
+            }
         }
     }
 }
