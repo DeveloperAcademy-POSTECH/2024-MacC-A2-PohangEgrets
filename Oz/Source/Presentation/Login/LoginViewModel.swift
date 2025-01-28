@@ -6,12 +6,45 @@
 //
 
 import SwiftUI
+import AuthenticationServices
+import FirebaseAuth
+import Combine
 
 class LoginViewModel: ObservableObject {
-    let accountManagingUseCase: AccountManagingUseCase
-    
+    private let accountManagingUseCase: AccountManagingUseCase
+    @Published var shouldNavigateToChangeNameView: Bool = true
+    @Published var isLoginView = true
+
     init(accountManagingUseCase: AccountManagingUseCase) {
         self.accountManagingUseCase = accountManagingUseCase
+        observeAuthStateChanges()
+    }
+    
+    public func handleSignInWithApple(request: ASAuthorizationAppleIDRequest) {
+        accountManagingUseCase.handleSignInWithApple(request: request)
+    }
+    
+    public func handleSignInWithAppleCompletion(result: Result<ASAuthorization, any Error>) {
+        accountManagingUseCase.handleSignInWithAppleCompletion(result: result)
+    }
+    
+    private func observeAuthStateChanges() {
+        Auth.auth().addStateDidChangeListener { [weak self] _, user in
+            guard let self = self else { return }
+            if user != nil {
+                self.shouldNavigateToChangeNameView = true
+            } else {
+                self.shouldNavigateToChangeNameView = false
+            }
+        }
+    }
+    
+    public func signOut() {
+        accountManagingUseCase.signOut()
+    }
+    
+    public func deleteFirebaseAuthUser() async -> Bool {
+        return await accountManagingUseCase.deleteFirebaseAuthUser()
     }
 }
 

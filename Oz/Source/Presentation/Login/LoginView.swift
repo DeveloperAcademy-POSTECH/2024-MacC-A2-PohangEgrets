@@ -23,16 +23,9 @@ struct LoginView: View {
                 .padding(.top, 48)
             
             SignInWithAppleButton(onRequest: { request in
-                viewModel.accountManagingUseCase.handleSignInWithApple(request: request)
+                viewModel.handleSignInWithApple(request: request)
             }, onCompletion: { result in
-                viewModel.accountManagingUseCase.handleSignInWithAppleCompletion(result: result)
-                Auth.auth().addStateDidChangeListener { auth, user in
-                    if let user = user {
-                        router.push(view: .CreateOrJoinTeamView)
-                    } else {
-                        print("아직 로그인하지 않았습니다.")
-                    }
-                }
+                viewModel.handleSignInWithAppleCompletion(result: result)
             })
             .frame(width: 120, height: 28)
             .padding(.top, 28)
@@ -40,6 +33,14 @@ struct LoginView: View {
             Spacer()
         }
         .frame(width: 270, height: 200)
+        .onChange(of: viewModel.shouldNavigateToChangeNameView) { shouldNavigate in
+            if shouldNavigate && viewModel.isLoginView {
+                router.push(view: .ChangeNameView)
+            }
+        }
+        .onAppear {
+            viewModel.isLoginView = true
+        }
     }
 }
 

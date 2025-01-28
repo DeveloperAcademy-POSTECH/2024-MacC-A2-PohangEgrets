@@ -9,6 +9,7 @@ import AuthenticationServices
 import CryptoKit
 import FirebaseAuth
 import FirebaseFirestore
+import SwiftUI
 
 final class AccountManagingUseCase: NSObject {
     fileprivate var currentNonce: String?
@@ -110,8 +111,12 @@ final class AccountManagingUseCase: NSObject {
     
     // MARK: - 회원탈퇴
     func deleteFirebaseAuthUser() async -> Bool {
-        guard let user = Auth.auth().currentUser else { return false }
-        guard let lastSignInDate = user.metadata.lastSignInDate else { return false }
+        guard let user = Auth.auth().currentUser else {
+            return false
+        }
+        guard let lastSignInDate = user.metadata.lastSignInDate else {
+            return false
+        }
         
         let needsReauth = !lastSignInDate.isWithinPast(minutes: 5)
         let needsTokenRevocation = user.providerData.contains { $0.providerID == "apple.com" }
@@ -168,6 +173,7 @@ final class AccountManagingUseCase: NSObject {
             }
         } catch {
             print("유저 삭제 실패")
+            return false
         }
         return true
     }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChangeNameView: View {
-    @EnvironmentObject var router: Router    
+    @EnvironmentObject var router: Router
     @ObservedObject var viewModel: ChangeNameViewModel
     
     var body: some View {
@@ -36,9 +36,16 @@ struct ChangeNameView: View {
                     router.pop()
                 }
                 .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
+                
                 Button("수정") {
                     viewModel.changeName(to: viewModel.nickName)
-                    router.pop()
+                    if viewModel.isLoginView {
+                        print("LoginView에서의 접근이 아님")
+                        router.push(view: .CreateOrJoinTeamView)
+                    } else {
+                        print("LoginView에서의 접근")
+                        router.pop()
+                    }
                 }
                 .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
                 .disabled(viewModel.nickName.isEmpty)
