@@ -23,7 +23,6 @@ struct LogoutView: View {
                 HStack() {
                     Button {
                         router.pop()
-                        viewModel.isSignOut = false
                     } label: {
                         Text("취소")
                     }
@@ -31,7 +30,6 @@ struct LogoutView: View {
                     Button {
                         viewModel.signOut()
                         router.push(view: .LoginView)
-                        viewModel.isSignOut = true
                     } label: {
                         Text("로그아웃")
                             .foregroundStyle(.red)

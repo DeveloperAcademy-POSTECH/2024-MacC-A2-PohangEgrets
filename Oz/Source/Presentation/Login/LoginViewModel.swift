@@ -14,7 +14,6 @@ class LoginViewModel: ObservableObject {
     private let accountManagingUseCase: AccountManagingUseCase
     
     @Published var shouldNavigateToChangeNameView: Bool = true
-    @Published var isSignOut = false
     
     init(accountManagingUseCase: AccountManagingUseCase) {
         self.accountManagingUseCase = accountManagingUseCase

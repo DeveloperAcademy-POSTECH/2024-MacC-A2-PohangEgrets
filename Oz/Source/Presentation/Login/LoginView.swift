@@ -44,10 +44,6 @@ struct LoginView: View {
                 print("팀 생성 참가로 이동")
                 router.push(view: .CreateOrJoinTeamView)
             }
-            
-            if viewModel.shouldNavigateToChangeNameView && viewModel.isSignOut  {
-                print("로그아웃 이후 팀 생성 참가로 이동")
-            }
         }
     }
 }
