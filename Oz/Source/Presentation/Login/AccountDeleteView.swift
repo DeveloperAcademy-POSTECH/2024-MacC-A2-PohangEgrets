@@ -10,7 +10,7 @@ import SwiftUI
 struct AccountDeleteView: View {
     @EnvironmentObject var router: Router
     @ObservedObject var viewModel: LoginViewModel
-
+    
     var body: some View {
         VStack {
             Text("SyncC")
@@ -33,8 +33,13 @@ struct AccountDeleteView: View {
                     Button {
                         // MARK: - 회원 탈퇴 로직
                         Task {
-                            await viewModel.accountManagingUseCase.deleteFirebaseAuthUser()
-                            router.push(view: .LoginView)
+                            let delet = await viewModel.deleteFirebaseAuthUser()
+                            
+                            if delet {
+                                router.push(view: .LoginView)
+                            } else {
+                                router.pop()
+                            }
                         }
                     } label: {
                         Text("회원탈퇴")

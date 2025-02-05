@@ -9,8 +9,8 @@ import SwiftUI
 
 struct LogoutView: View {
     @EnvironmentObject var router: Router    
-    
     @ObservedObject var viewModel: LoginViewModel
+    
     var body: some View {
         VStack(spacing: 27) {
             Text("SyncC")
@@ -28,7 +28,7 @@ struct LogoutView: View {
                     }
                     .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
                     Button {
-                        viewModel.accountManagingUseCase.signOut()
+                        viewModel.signOut()
                         router.push(view: .LoginView)
                     } label: {
                         Text("로그아웃")

@@ -71,7 +71,7 @@ class Router: ObservableObject{
         case .AccountDeleteView:
             AccountDeleteView(viewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase))
         case .ChangeNameView:
-            ChangeNameView(viewModel: ChangeNameViewModel(accountUseCase: accountManagingUseCase))
+            ChangeNameView(viewModel: ChangeNameViewModel(accountUseCase: accountManagingUseCase, loginViewModel: LoginViewModel(accountManagingUseCase: accountManagingUseCase)))
         }
     }
     

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AuthenticationServices
+import FirebaseAuth
 
 struct LoginView: View {
     @EnvironmentObject var router: Router
@@ -22,10 +23,9 @@ struct LoginView: View {
                 .padding(.top, 48)
             
             SignInWithAppleButton(onRequest: { request in
-                viewModel.accountManagingUseCase.handleSignInWithApple(request: request)
+                viewModel.handleSignInWithApple(request: request)
             }, onCompletion: { result in
-                viewModel.accountManagingUseCase.handleSignInWithAppleCompletion(result: result)
-                router.push(view: .CreateOrJoinTeamView)
+                viewModel.handleSignInWithAppleCompletion(result: result)
             })
             .frame(width: 120, height: 28)
             .padding(.top, 28)
@@ -33,6 +33,18 @@ struct LoginView: View {
             Spacer()
         }
         .frame(width: 270, height: 200)
+        .onChange(of: viewModel.shouldNavigateToChangeNameView ) {
+            
+            if viewModel.shouldNavigateToChangeNameView && viewModel.getFirstSignIn() {
+                print("닉네임 변경화면으로 이동")
+                router.push(view: .ChangeNameView)
+            }
+            
+            if viewModel.shouldNavigateToChangeNameView && !viewModel.getFirstSignIn(){
+                print("팀 생성 참가로 이동")
+                router.push(view: .CreateOrJoinTeamView)
+            }
+        }
     }
 }
 

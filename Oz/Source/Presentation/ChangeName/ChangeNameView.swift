@@ -32,13 +32,20 @@ struct ChangeNameView: View {
             Spacer()
             HStack {
                 Spacer()
-                Button("취소") {
-                    router.pop()
-                }
-                .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
+                    Button("취소") {
+                        router.pop()
+                    }
+                    .customButtonStyle(backgroundColor: .white, foregroundColor: .darkGray2)
+                
                 Button("수정") {
                     viewModel.changeName(to: viewModel.nickName)
-                    router.pop()
+//                    if viewModel.isLoginView {
+//                        print("LoginView에서 접근")
+                        router.pop()
+//                    } else {
+//                        print("LoginView에서의 접근이 아님")
+                        router.push(view: .CreateOrJoinTeamView)
+//                    }
                 }
                 .customButtonStyle(backgroundColor: .systemBlue, foregroundColor: .white)
                 .disabled(viewModel.nickName.isEmpty)
